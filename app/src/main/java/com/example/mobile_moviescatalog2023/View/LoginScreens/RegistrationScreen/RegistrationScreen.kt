@@ -1,7 +1,6 @@
 package com.example.mobile_moviescatalog2023.View.LoginScreens.RegistrationScreen
 
 import android.annotation.SuppressLint
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -13,11 +12,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -39,9 +38,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -53,10 +50,12 @@ import com.example.mobile_moviescatalog2023.R
 import com.example.mobile_moviescatalog2023.View.LoginScreens.LoginHeader
 import com.example.mobile_moviescatalog2023.ui.theme.FilmusTheme
 import com.example.mobile_moviescatalog2023.ui.theme.interFamily
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import com.maxkeppeker.sheets.core.models.base.UseCaseState
+import com.maxkeppeler.sheets.calendar.CalendarDialog
+import com.maxkeppeler.sheets.calendar.models.CalendarConfig
+import com.maxkeppeler.sheets.calendar.models.CalendarSelection
+import com.maxkeppeler.sheets.calendar.models.CalendarStyle
+import java.time.LocalDate
 
 @Composable
 fun RegistrationScreen(navController: NavHostController) {
@@ -299,6 +298,7 @@ fun MailBox() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BirthDateBox() {
+    val viewModel: RegistrationViewModel = RegistrationViewModel()
     Column(
         modifier = Modifier.fillMaxWidth().padding(bottom = 20.dp),
         horizontalAlignment = Alignment.Start
@@ -315,7 +315,22 @@ fun BirthDateBox() {
         )
 
         var textState by remember { mutableStateOf("") }
-        val maxLength = 100
+        val calendarState = UseCaseState()
+//        val selectedDate = remember { mutableStateOf<LocalDate?>(LocalDate.now()) }
+
+        CalendarDialog(
+            state = calendarState,
+            config = CalendarConfig(
+                monthSelection = true,
+                yearSelection = true,
+                style = CalendarStyle.MONTH
+            ),
+            selection = CalendarSelection.Date { date ->
+                textState = viewModel.formatDate(date.toString())
+            }
+        )
+
+        val maxLength = 10
         OutlinedTextField(
             value = textState,
             colors = TextFieldDefaults.outlinedTextFieldColors(),
@@ -329,13 +344,11 @@ fun BirthDateBox() {
             },
             singleLine = true,
             trailingIcon = {
-                if (textState.isNotEmpty()) {
-                    IconButton(onClick = { textState = "" }) {
-                        Icon(
-                            imageVector = Icons.Outlined.Close,
-                            contentDescription = null
-                        )
-                    }
+                IconButton(onClick = { calendarState.show() }) {
+                    Icon(
+                        imageVector = Icons.Default.DateRange,
+                        contentDescription = null
+                    )
                 }
             },
             shape = RoundedCornerShape(10.dp),

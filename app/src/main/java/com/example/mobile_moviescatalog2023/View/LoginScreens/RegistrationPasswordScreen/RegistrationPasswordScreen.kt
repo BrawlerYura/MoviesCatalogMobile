@@ -162,16 +162,14 @@ fun RepeatPassword() {
             },
             singleLine = true,
             trailingIcon = {
-                if (textState.isNotEmpty()) {
-                    IconButton(onClick = { isTextHidden = !isTextHidden }) {
-                        Icon(
-                            imageVector = ImageVector.vectorResource(id =
-                            if (isTextHidden) {R.drawable.opened_eye}
-                            else {R.drawable.closed_eye}),
-                            contentDescription = null,
-                            modifier = Modifier.size(24.dp)
-                        )
-                    }
+                IconButton(onClick = { isTextHidden = !isTextHidden }) {
+                    Icon(
+                        imageVector = ImageVector.vectorResource(id =
+                        if (isTextHidden) {R.drawable.opened_eye}
+                        else {R.drawable.closed_eye}),
+                        contentDescription = null,
+                        modifier = Modifier.size(24.dp)
+                    )
                 }
             },
             shape = RoundedCornerShape(10.dp),
