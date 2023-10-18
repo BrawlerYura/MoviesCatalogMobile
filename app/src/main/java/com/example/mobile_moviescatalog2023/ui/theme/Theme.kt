@@ -44,20 +44,10 @@ private val DarkColorScheme = darkColorScheme(
 
 @Composable
 fun FilmusTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
     content: @Composable() () -> Unit
 ) {
     val colorScheme = DarkColorScheme
 
-    val statusBarColor = MaterialTheme.colorScheme.background
-    val view = LocalView.current
-    if (!view.isInEditMode) {
-        SideEffect {
-            val window = (view.context as Activity).window
-            window.statusBarColor = statusBarColor.toArgb()
-            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = !darkTheme
-        }
-    }
 
     MaterialTheme(
         colorScheme = colorScheme,

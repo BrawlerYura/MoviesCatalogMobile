@@ -5,7 +5,7 @@ plugins {
 
 android {
     namespace = "com.example.mobile_moviescatalog2023"
-    compileSdk = 33
+    compileSdk = 34
 
     defaultConfig {
         applicationId = "com.example.mobile_moviescatalog2023"

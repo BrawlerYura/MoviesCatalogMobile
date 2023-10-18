@@ -1,5 +1,6 @@
 package com.example.mobile_moviescatalog2023.View.LoginScreens.RegistrationScreen
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -37,6 +38,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
@@ -46,7 +48,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.example.mobile_moviescatalog2023.Navigation.NavigationModel
 import com.example.mobile_moviescatalog2023.R
+import com.example.mobile_moviescatalog2023.View.LoginScreens.LoginHeader
 import com.example.mobile_moviescatalog2023.ui.theme.FilmusTheme
 import com.example.mobile_moviescatalog2023.ui.theme.interFamily
 import kotlinx.coroutines.CoroutineScope
@@ -80,7 +84,8 @@ fun RegistrationScreen(navController: NavHostController) {
                         fontWeight = FontWeight.W700,
                         fontSize = 20.sp,
                         color = MaterialTheme.colorScheme.onBackground
-                    )
+                    ),
+                    modifier = Modifier.padding(bottom = 15.dp)
                 )
 
                 NameBox()
@@ -95,6 +100,7 @@ fun RegistrationScreen(navController: NavHostController) {
 
                 Button(
                     onClick = {
+                        navController.navigate(NavigationModel.MainScreens.RegistrationPasswordScreen.name)
                     },
                     shape = RoundedCornerShape(10.dp),
                     modifier = Modifier
@@ -137,7 +143,7 @@ fun RegistrationScreen(navController: NavHostController) {
                             color = MaterialTheme.colorScheme.primary,
                         ),
                         modifier = Modifier.clickable {
-//                            navController.navigate(NavigationModel.MainScreens.RegistrationScreen.name)
+                            navController.navigate(NavigationModel.MainScreens.LoginScreen.name)
                         }
                     )
                 }
@@ -146,50 +152,11 @@ fun RegistrationScreen(navController: NavHostController) {
     }
 }
 
-
-@Composable
-fun LoginHeader(navController: NavHostController) {
-    Box(
-        modifier = Modifier
-            .padding(bottom = 20.dp)
-            .fillMaxWidth()
-            .height(24.dp)
-    ) {
-        var isClickable by remember { mutableStateOf(true) }
-
-        Image(
-            painter = painterResource(R.drawable.back_icon),
-            contentDescription = null,
-            modifier = Modifier.height(12.dp).width(12.dp).align(Alignment.CenterStart)
-                .clickable {
-                    if (isClickable) {
-                        isClickable = false
-                        navController.popBackStack()
-                        CoroutineScope(Dispatchers.Main).launch {
-                            delay(1000L)
-                            isClickable = true
-                        }
-                    }
-                }
-        )
-        Text(
-            text = stringResource(R.string.app_name),
-            style = TextStyle(
-                fontFamily = interFamily,
-                fontWeight = FontWeight.W600,
-                fontSize = 17.sp,
-                color = MaterialTheme.colorScheme.primary
-            ),
-            modifier = Modifier.align(Alignment.Center)
-        )
-    }
-}
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NameBox() {
     Column(
-        modifier = Modifier.fillMaxWidth().padding(top = 15.dp, bottom = 20.dp),
+        modifier = Modifier.fillMaxWidth().padding(bottom = 15.dp),
         horizontalAlignment = Alignment.Start
     ) {
         Text(
@@ -237,7 +204,7 @@ fun NameBox() {
 @Composable
 fun LoginBox() {
     Column(
-        modifier = Modifier.fillMaxWidth().padding(top = 15.dp, bottom = 20.dp),
+        modifier = Modifier.fillMaxWidth().padding(bottom = 15.dp),
         horizontalAlignment = Alignment.Start
     ) {
         Text(
@@ -285,7 +252,7 @@ fun LoginBox() {
 @Composable
 fun MailBox() {
     Column(
-        modifier = Modifier.fillMaxWidth().padding(top = 15.dp, bottom = 20.dp),
+        modifier = Modifier.fillMaxWidth().padding(bottom = 15.dp),
         horizontalAlignment = Alignment.Start
     ) {
         Text(
@@ -333,7 +300,7 @@ fun MailBox() {
 @Composable
 fun BirthDateBox() {
     Column(
-        modifier = Modifier.fillMaxWidth().padding(top = 15.dp, bottom = 20.dp),
+        modifier = Modifier.fillMaxWidth().padding(bottom = 20.dp),
         horizontalAlignment = Alignment.Start
     ) {
         Text(
@@ -377,11 +344,12 @@ fun BirthDateBox() {
     }
 }
 
+@SuppressLint("SuspiciousIndentation")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun GenderBox() {
     Column(
-        modifier = Modifier.fillMaxWidth().padding(bottom = 20.dp),
+        modifier = Modifier.fillMaxWidth().padding(bottom = 15.dp),
         horizontalAlignment = Alignment.Start
     ) {
         Text(
@@ -402,7 +370,7 @@ fun GenderBox() {
                     .fillMaxWidth()
                     .height(42.dp)
                     .clip(RoundedCornerShape(8.dp))
-                    .background(MaterialTheme.colorScheme.secondary),
+                    .background(MaterialTheme.colorScheme.surface),
                 horizontalArrangement = Arrangement.Center
             ) {
                 items.forEachIndexed { index, item ->
@@ -416,14 +384,14 @@ fun GenderBox() {
                         },
                         colors = CardDefaults.cardColors(
                             containerColor = if (selectedIndex.value == index) {
-                                MaterialTheme.colorScheme.background
+                                MaterialTheme.colorScheme.onBackground
                             } else {
-                                MaterialTheme.colorScheme.secondary
+                                MaterialTheme.colorScheme.surface
                             },
                             contentColor = if (selectedIndex.value == index)
-                                MaterialTheme.colorScheme.scrim
+                                Color(0xFF404040)
                             else
-                                MaterialTheme.colorScheme.onSecondary
+                                Color(0xFF909499)
                         ),
                         shape = RoundedCornerShape(7.dp),
                     ) {
@@ -440,34 +408,5 @@ fun GenderBox() {
                 }
             }
 
-    }
-}
-
-@Composable
-fun BottomRegistrationTextBox(navController : NavHostController) {
-    Box (modifier = Modifier.fillMaxSize().padding(bottom = 16.dp)){
-        Row(modifier = Modifier.align(Alignment.BottomCenter)) {
-            Text(
-                text = stringResource(R.string.already_have_account_question),
-                style = TextStyle(
-                    fontFamily = interFamily,
-                    fontWeight = FontWeight.W600,
-                    fontSize = 15.sp,
-                    color = MaterialTheme.colorScheme.onBackground
-                ),
-            )
-            Text(
-                text = stringResource(R.string.login_prompt),
-                style = TextStyle(
-                    fontFamily = interFamily,
-                    fontWeight = FontWeight.W600,
-                    fontSize = 15.sp,
-                    color = MaterialTheme.colorScheme.primary,
-                ),
-                modifier = Modifier.clickable {
-//                    navController.navigate(NavigationModel.MainScreens.LoginScreen.name)
-                }
-            )
-        }
     }
 }
