@@ -66,4 +66,11 @@ dependencies {
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
+
+    implementation("androidx.navigation:navigation-compose:2.7.4")
+    implementation("androidx.appcompat:appcompat:1.2.0")
+    implementation("androidx.core:core-splashscreen:1.0.1")
+    implementation("com.google.accompanist:accompanist-systemuicontroller:0.20.0")
+    implementation("com.maxkeppeler.sheets-compose-dialogs:calendar:1.2.0")
+    implementation("com.squareup.okhttp3:okhttp:4.10.0")
 }
