@@ -44,9 +44,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.mobile_moviescatalog2023.Navigation.NavigationModel
 import com.example.mobile_moviescatalog2023.R
+import com.example.mobile_moviescatalog2023.View.LoginScreens.LoginBox
 import com.example.mobile_moviescatalog2023.View.LoginScreens.LoginHeader
 import com.example.mobile_moviescatalog2023.ui.theme.FilmusTheme
 import com.example.mobile_moviescatalog2023.ui.theme.interFamily
@@ -55,10 +58,10 @@ import com.maxkeppeler.sheets.calendar.CalendarDialog
 import com.maxkeppeler.sheets.calendar.models.CalendarConfig
 import com.maxkeppeler.sheets.calendar.models.CalendarSelection
 import com.maxkeppeler.sheets.calendar.models.CalendarStyle
-import java.time.LocalDate
 
 @Composable
 fun RegistrationScreen(navController: NavHostController) {
+    val viewModel : RegistrationViewModel = viewModel(LocalViewModelStoreOwner.current!!)
     FilmusTheme {
         Box(
             modifier = Modifier
@@ -87,15 +90,15 @@ fun RegistrationScreen(navController: NavHostController) {
                     modifier = Modifier.padding(bottom = 15.dp)
                 )
 
-                NameBox()
+                NameBox(viewModel)
 
-                GenderBox()
+                GenderBox(viewModel)
 
                 LoginBox()
 
-                MailBox()
+                MailBox(viewModel)
 
-                BirthDateBox()
+                BirthDateBox(viewModel)
 
                 Button(
                     onClick = {
@@ -153,7 +156,7 @@ fun RegistrationScreen(navController: NavHostController) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun NameBox() {
+fun NameBox(viewModel: RegistrationViewModel) {
     Column(
         modifier = Modifier.fillMaxWidth().padding(bottom = 15.dp),
         horizontalAlignment = Alignment.Start
@@ -169,10 +172,10 @@ fun NameBox() {
             modifier = Modifier.padding(bottom = 8.dp)
         )
 
-        var textState by remember { mutableStateOf("") }
-        val maxLength = 100
+        var name by remember { mutableStateOf("") }
+
         OutlinedTextField(
-            value = textState,
+            value = name,
             colors = TextFieldDefaults.outlinedTextFieldColors(),
             textStyle = TextStyle(
                 fontFamily = interFamily,
@@ -180,12 +183,16 @@ fun NameBox() {
                 fontSize = 15.sp
             ),
             onValueChange = {
-                if (it.length <= maxLength) textState = it
-            },
+                name = it
+                viewModel.send(RegistrationEvent.SaveNameEvent(name))
+                            },
             singleLine = true,
             trailingIcon = {
-                if (textState.isNotEmpty()) {
-                    IconButton(onClick = { textState = "" }) {
+                if (name.isNotEmpty()) {
+                    IconButton(onClick = {
+                        name = ""
+                        viewModel.send(RegistrationEvent.SaveNameEvent(name))
+                    }) {
                         Icon(
                             imageVector = Icons.Outlined.Close,
                             contentDescription = null
@@ -199,57 +206,10 @@ fun NameBox() {
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun LoginBox() {
-    Column(
-        modifier = Modifier.fillMaxWidth().padding(bottom = 15.dp),
-        horizontalAlignment = Alignment.Start
-    ) {
-        Text(
-            text = stringResource(R.string.login_label),
-            style = TextStyle(
-                fontFamily = interFamily,
-                fontWeight = FontWeight.W500,
-                fontSize = 15.sp,
-                color = MaterialTheme.colorScheme.onBackground
-            ),
-            modifier = Modifier.padding(bottom = 8.dp)
-        )
-
-        var textState by remember { mutableStateOf("") }
-        val maxLength = 100
-        OutlinedTextField(
-            value = textState,
-            colors = TextFieldDefaults.outlinedTextFieldColors(),
-            textStyle = TextStyle(
-                fontFamily = interFamily,
-                fontWeight = FontWeight.W400,
-                fontSize = 15.sp
-            ),
-            onValueChange = {
-                if (it.length <= maxLength) textState = it
-            },
-            singleLine = true,
-            trailingIcon = {
-                if (textState.isNotEmpty()) {
-                    IconButton(onClick = { textState = "" }) {
-                        Icon(
-                            imageVector = Icons.Outlined.Close,
-                            contentDescription = null
-                        )
-                    }
-                }
-            },
-            shape = RoundedCornerShape(10.dp),
-            modifier = Modifier.fillMaxWidth()
-        )
-    }
-}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MailBox() {
+fun MailBox(viewModel: RegistrationViewModel) {
     Column(
         modifier = Modifier.fillMaxWidth().padding(bottom = 15.dp),
         horizontalAlignment = Alignment.Start
@@ -265,10 +225,9 @@ fun MailBox() {
             modifier = Modifier.padding(bottom = 8.dp)
         )
 
-        var textState by remember { mutableStateOf("") }
-        val maxLength = 100
+        var mailText by remember { mutableStateOf("") }
         OutlinedTextField(
-            value = textState,
+            value = mailText,
             colors = TextFieldDefaults.outlinedTextFieldColors(),
             textStyle = TextStyle(
                 fontFamily = interFamily,
@@ -276,12 +235,16 @@ fun MailBox() {
                 fontSize = 15.sp
             ),
             onValueChange = {
-                if (it.length <= maxLength) textState = it
+                mailText = it
+                viewModel.send(RegistrationEvent.SaveEmailEvent(mailText))
             },
             singleLine = true,
             trailingIcon = {
-                if (textState.isNotEmpty()) {
-                    IconButton(onClick = { textState = "" }) {
+                if (mailText.isNotEmpty()) {
+                    IconButton(onClick = {
+                        mailText = ""
+                        viewModel.send(RegistrationEvent.SaveEmailEvent(mailText))
+                    }) {
                         Icon(
                             imageVector = Icons.Outlined.Close,
                             contentDescription = null
@@ -297,8 +260,7 @@ fun MailBox() {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun BirthDateBox() {
-    val viewModel: RegistrationViewModel = RegistrationViewModel()
+fun BirthDateBox(viewModel: RegistrationViewModel) {
     Column(
         modifier = Modifier.fillMaxWidth().padding(bottom = 20.dp),
         horizontalAlignment = Alignment.Start
@@ -314,9 +276,8 @@ fun BirthDateBox() {
             modifier = Modifier.padding(bottom = 8.dp)
         )
 
-        var textState by remember { mutableStateOf("") }
+        var birthDateText by remember { mutableStateOf("") }
         val calendarState = UseCaseState()
-//        val selectedDate = remember { mutableStateOf<LocalDate?>(LocalDate.now()) }
 
         CalendarDialog(
             state = calendarState,
@@ -326,13 +287,14 @@ fun BirthDateBox() {
                 style = CalendarStyle.MONTH
             ),
             selection = CalendarSelection.Date { date ->
-                textState = viewModel.formatDate(date.toString())
+                viewModel.send(RegistrationEvent.SaveBirthDateWithFormatEvent(date.toString()))
+                birthDateText = viewModel.resultLive.value?.birthDate ?: ""
             }
         )
 
         val maxLength = 10
         OutlinedTextField(
-            value = textState,
+            value = birthDateText,
             colors = TextFieldDefaults.outlinedTextFieldColors(),
             textStyle = TextStyle(
                 fontFamily = interFamily,
@@ -340,7 +302,10 @@ fun BirthDateBox() {
                 fontSize = 15.sp
             ),
             onValueChange = {
-                if (it.length <= maxLength) textState = it
+                if (it.length <= maxLength) {
+                    birthDateText = it
+                    viewModel.send(RegistrationEvent.SaveBirthDateEvent(birthDateText))
+                }
             },
             singleLine = true,
             trailingIcon = {
@@ -360,7 +325,7 @@ fun BirthDateBox() {
 @SuppressLint("SuspiciousIndentation")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun GenderBox() {
+fun GenderBox(viewModel: RegistrationViewModel) {
     Column(
         modifier = Modifier.fillMaxWidth().padding(bottom = 15.dp),
         horizontalAlignment = Alignment.Start
@@ -394,6 +359,10 @@ fun GenderBox() {
                             .padding(2.dp),
                         onClick = {
                             selectedIndex.value = index
+                            viewModel.send(RegistrationEvent.SaveGenderEvent(
+                                if(selectedIndex.value == 0) { "male" }
+                                else { "female" }
+                            ))
                         },
                         colors = CardDefaults.cardColors(
                             containerColor = if (selectedIndex.value == index) {
@@ -420,6 +389,5 @@ fun GenderBox() {
                     }
                 }
             }
-
     }
 }

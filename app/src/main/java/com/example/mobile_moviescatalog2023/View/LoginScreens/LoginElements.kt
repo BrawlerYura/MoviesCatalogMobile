@@ -13,6 +13,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -164,6 +166,54 @@ fun LoginHeader(navController: NavHostController) {
                 color = MaterialTheme.colorScheme.primary
             ),
             modifier = Modifier.align(Alignment.Center)
+        )
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun LoginBox() {
+    Column(
+        modifier = Modifier.fillMaxWidth().padding(bottom = 15.dp),
+        horizontalAlignment = Alignment.Start
+    ) {
+        Text(
+            text = stringResource(R.string.login_label),
+            style = TextStyle(
+                fontFamily = interFamily,
+                fontWeight = FontWeight.W500,
+                fontSize = 15.sp,
+                color = MaterialTheme.colorScheme.onBackground
+            ),
+            modifier = Modifier.padding(bottom = 8.dp)
+        )
+
+        var textState by remember { mutableStateOf("") }
+        val maxLength = 100
+        OutlinedTextField(
+            value = textState,
+            colors = TextFieldDefaults.outlinedTextFieldColors(),
+            textStyle = TextStyle(
+                fontFamily = interFamily,
+                fontWeight = FontWeight.W400,
+                fontSize = 15.sp
+            ),
+            onValueChange = {
+                if (it.length <= maxLength) textState = it
+            },
+            singleLine = true,
+            trailingIcon = {
+                if (textState.isNotEmpty()) {
+                    IconButton(onClick = { textState = "" }) {
+                        Icon(
+                            imageVector = Icons.Outlined.Close,
+                            contentDescription = null
+                        )
+                    }
+                }
+            },
+            shape = RoundedCornerShape(10.dp),
+            modifier = Modifier.fillMaxWidth()
         )
     }
 }

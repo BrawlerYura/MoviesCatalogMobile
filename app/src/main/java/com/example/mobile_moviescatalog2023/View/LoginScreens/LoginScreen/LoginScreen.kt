@@ -29,9 +29,9 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.mobile_moviescatalog2023.Navigation.NavigationModel
 import com.example.mobile_moviescatalog2023.R
+import com.example.mobile_moviescatalog2023.View.LoginScreens.LoginBox
 import com.example.mobile_moviescatalog2023.View.LoginScreens.LoginHeader
 import com.example.mobile_moviescatalog2023.View.LoginScreens.PasswordBox
-import com.example.mobile_moviescatalog2023.View.LoginScreens.RegistrationScreen.LoginBox
 import com.example.mobile_moviescatalog2023.ui.theme.FilmusTheme
 import com.example.mobile_moviescatalog2023.ui.theme.interFamily
 
