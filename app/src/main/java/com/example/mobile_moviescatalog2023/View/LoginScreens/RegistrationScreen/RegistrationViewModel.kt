@@ -8,7 +8,7 @@ import androidx.lifecycle.ViewModel
 class RegistrationViewModel: ViewModel() {
 
     private val stateLiveMutable = MutableLiveData<RegistrationState>()
-    val resultLive: LiveData<RegistrationState> = stateLiveMutable
+    val stateLive: LiveData<RegistrationState> = stateLiveMutable
 
     init {
         stateLiveMutable.value = RegistrationState("", "male", "", "", "")
@@ -44,7 +44,7 @@ class RegistrationViewModel: ViewModel() {
 
     private fun saveGender(gender: String) {
         stateLiveMutable.value = stateLiveMutable.value?.copy(gender = gender)
-        Log.e("aaa", resultLive.value?.gender ?: "")
+        Log.e("aaa", stateLive.value?.gender ?: "")
     }
 
     private fun saveEmail(email: String) {

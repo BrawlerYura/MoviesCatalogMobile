@@ -2,7 +2,6 @@ package com.example.mobile_moviescatalog2023.View.LoginScreens.RegistrationScree
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -49,6 +48,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.mobile_moviescatalog2023.Navigation.NavigationModel
 import com.example.mobile_moviescatalog2023.R
+import com.example.mobile_moviescatalog2023.View.LoginScreens.BottomRegistrationTextBox
 import com.example.mobile_moviescatalog2023.View.LoginScreens.LoginBox
 import com.example.mobile_moviescatalog2023.View.LoginScreens.LoginHeader
 import com.example.mobile_moviescatalog2023.ui.theme.FilmusTheme
@@ -125,31 +125,7 @@ fun RegistrationScreen(navController: NavHostController) {
                     )
                 }
             }
-            Box(modifier = Modifier.fillMaxSize().padding(bottom = 16.dp)) {
-                Row(modifier = Modifier.align(Alignment.BottomCenter)) {
-                    Text(
-                        text = stringResource(R.string.already_have_account_question),
-                        style = TextStyle(
-                            fontFamily = interFamily,
-                            fontWeight = FontWeight.W600,
-                            fontSize = 15.sp,
-                            color = MaterialTheme.colorScheme.onBackground
-                        ),
-                    )
-                    Text(
-                        text = stringResource(R.string.login_prompt),
-                        style = TextStyle(
-                            fontFamily = interFamily,
-                            fontWeight = FontWeight.W600,
-                            fontSize = 15.sp,
-                            color = MaterialTheme.colorScheme.primary,
-                        ),
-                        modifier = Modifier.clickable {
-                            navController.navigate(NavigationModel.MainScreens.LoginScreen.name)
-                        }
-                    )
-                }
-            }
+            BottomRegistrationTextBox(navController)
         }
     }
 }
@@ -288,7 +264,7 @@ fun BirthDateBox(viewModel: RegistrationViewModel) {
             ),
             selection = CalendarSelection.Date { date ->
                 viewModel.send(RegistrationEvent.SaveBirthDateWithFormatEvent(date.toString()))
-                birthDateText = viewModel.resultLive.value?.birthDate ?: ""
+                birthDateText = viewModel.stateLive.value?.birthDate ?: ""
             }
         )
 

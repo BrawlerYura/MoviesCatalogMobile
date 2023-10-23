@@ -42,65 +42,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.mobile_moviescatalog2023.R
+import com.example.mobile_moviescatalog2023.View.LoginScreens.RegistrationPasswordScreen.RegistrationPasswordViewModel
 import com.example.mobile_moviescatalog2023.ui.theme.interFamily
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun PasswordBox() {
-    Column(
-        modifier = Modifier.fillMaxWidth().padding(bottom = 15.dp),
-        horizontalAlignment = Alignment.Start
-    ) {
-        Text(
-            text = stringResource(R.string.password_label),
-            style = TextStyle(
-                fontFamily = interFamily,
-                fontWeight = FontWeight.W500,
-                fontSize = 15.sp,
-                color = MaterialTheme.colorScheme.onBackground
-            ),
-            modifier = Modifier.padding(bottom = 8.dp)
-        )
-
-        var textState by remember { mutableStateOf("") }
-        var isTextHidden by remember { mutableStateOf(true) }
-        val maxLength = 100
-        OutlinedTextField(
-            value = textState,
-            keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Password),
-            visualTransformation =  if (isTextHidden) PasswordVisualTransformation() else VisualTransformation.None,
-            colors = TextFieldDefaults.outlinedTextFieldColors(),
-            textStyle = TextStyle(
-                fontFamily = interFamily,
-                fontWeight = FontWeight.W400,
-                fontSize = 15.sp
-            ),
-            onValueChange = {
-                if (it.length <= maxLength) textState = it
-            },
-            singleLine = true,
-            trailingIcon = {
-                IconButton(onClick = { isTextHidden = !isTextHidden }) {
-                    Icon(
-                        imageVector = ImageVector.vectorResource(id =
-                        if (isTextHidden) {
-                            R.drawable.opened_eye}
-                        else {
-                            R.drawable.closed_eye}),
-                        contentDescription = null,
-                        modifier = Modifier.size(24.dp)
-                    )
-                }
-            },
-            shape = RoundedCornerShape(10.dp),
-            modifier = Modifier.fillMaxWidth()
-        )
-    }
-}
 
 @Composable
 fun BottomRegistrationTextBox(navController : NavHostController) {
@@ -124,7 +71,6 @@ fun BottomRegistrationTextBox(navController : NavHostController) {
                     color = MaterialTheme.colorScheme.primary,
                 ),
                 modifier = Modifier.clickable {
-//                    navController.navigate(NavigationModel.MainScreens.LoginScreen.name)
                 }
             )
         }
