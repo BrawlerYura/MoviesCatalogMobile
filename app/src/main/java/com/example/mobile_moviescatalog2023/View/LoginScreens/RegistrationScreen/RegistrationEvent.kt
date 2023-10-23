@@ -7,6 +7,8 @@ interface RegistrationEvent {
 
     class SaveEmailEvent(val email: String) : RegistrationEvent
 
+    class SaveLoginEvent(val login: String) : RegistrationEvent
+
     class SaveBirthDateEvent(val birthDate: String) : RegistrationEvent
 
     class SaveBirthDateWithFormatEvent(val birthDate: String) : RegistrationEvent

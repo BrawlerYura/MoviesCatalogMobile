@@ -42,6 +42,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.mobile_moviescatalog2023.R
+import com.example.mobile_moviescatalog2023.View.LoginScreens.LoginScreen.LoginViewModel
 import com.example.mobile_moviescatalog2023.View.LoginScreens.RegistrationPasswordScreen.RegistrationPasswordViewModel
 import com.example.mobile_moviescatalog2023.ui.theme.interFamily
 import kotlinx.coroutines.CoroutineScope
@@ -112,54 +113,6 @@ fun LoginHeader(navController: NavHostController) {
                 color = MaterialTheme.colorScheme.primary
             ),
             modifier = Modifier.align(Alignment.Center)
-        )
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun LoginBox() {
-    Column(
-        modifier = Modifier.fillMaxWidth().padding(bottom = 15.dp),
-        horizontalAlignment = Alignment.Start
-    ) {
-        Text(
-            text = stringResource(R.string.login_label),
-            style = TextStyle(
-                fontFamily = interFamily,
-                fontWeight = FontWeight.W500,
-                fontSize = 15.sp,
-                color = MaterialTheme.colorScheme.onBackground
-            ),
-            modifier = Modifier.padding(bottom = 8.dp)
-        )
-
-        var textState by remember { mutableStateOf("") }
-        val maxLength = 100
-        OutlinedTextField(
-            value = textState,
-            colors = TextFieldDefaults.outlinedTextFieldColors(),
-            textStyle = TextStyle(
-                fontFamily = interFamily,
-                fontWeight = FontWeight.W400,
-                fontSize = 15.sp
-            ),
-            onValueChange = {
-                if (it.length <= maxLength) textState = it
-            },
-            singleLine = true,
-            trailingIcon = {
-                if (textState.isNotEmpty()) {
-                    IconButton(onClick = { textState = "" }) {
-                        Icon(
-                            imageVector = Icons.Outlined.Close,
-                            contentDescription = null
-                        )
-                    }
-                }
-            },
-            shape = RoundedCornerShape(10.dp),
-            modifier = Modifier.fillMaxWidth()
         )
     }
 }

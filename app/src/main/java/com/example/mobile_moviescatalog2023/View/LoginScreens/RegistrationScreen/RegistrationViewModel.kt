@@ -25,6 +25,9 @@ class RegistrationViewModel: ViewModel() {
             is RegistrationEvent.SaveEmailEvent -> {
                 saveEmail(event.email)
             }
+            is RegistrationEvent.SaveLoginEvent -> {
+                saveLogin(event.login)
+            }
             is RegistrationEvent.SaveBirthDateWithFormatEvent -> {
                 saveBirthDateWithFormat(event.birthDate)
             }
@@ -49,6 +52,10 @@ class RegistrationViewModel: ViewModel() {
 
     private fun saveEmail(email: String) {
         stateLiveMutable.value = stateLiveMutable.value?.copy(email = email)
+    }
+
+    private fun saveLogin(login: String) {
+        stateLiveMutable.value = stateLiveMutable.value?.copy(login = login)
     }
 
     private fun saveBirthDateWithFormat(birthDate: String) {

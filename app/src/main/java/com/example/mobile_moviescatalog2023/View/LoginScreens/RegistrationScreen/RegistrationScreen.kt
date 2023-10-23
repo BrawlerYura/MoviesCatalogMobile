@@ -49,7 +49,6 @@ import androidx.navigation.NavHostController
 import com.example.mobile_moviescatalog2023.Navigation.NavigationModel
 import com.example.mobile_moviescatalog2023.R
 import com.example.mobile_moviescatalog2023.View.LoginScreens.BottomRegistrationTextBox
-import com.example.mobile_moviescatalog2023.View.LoginScreens.LoginBox
 import com.example.mobile_moviescatalog2023.View.LoginScreens.LoginHeader
 import com.example.mobile_moviescatalog2023.ui.theme.FilmusTheme
 import com.example.mobile_moviescatalog2023.ui.theme.interFamily
@@ -94,7 +93,7 @@ fun RegistrationScreen(navController: NavHostController) {
 
                 GenderBox(viewModel)
 
-                LoginBox()
+                LoginBox(viewModel)
 
                 MailBox(viewModel)
 
@@ -365,5 +364,56 @@ fun GenderBox(viewModel: RegistrationViewModel) {
                     }
                 }
             }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun LoginBox(viewModel: RegistrationViewModel) {
+    Column(
+        modifier = Modifier.fillMaxWidth().padding(bottom = 15.dp),
+        horizontalAlignment = Alignment.Start
+    ) {
+        Text(
+            text = stringResource(R.string.login_label),
+            style = TextStyle(
+                fontFamily = interFamily,
+                fontWeight = FontWeight.W500,
+                fontSize = 15.sp,
+                color = MaterialTheme.colorScheme.onBackground
+            ),
+            modifier = Modifier.padding(bottom = 8.dp)
+        )
+
+        var loginTextState by remember { mutableStateOf("") }
+        OutlinedTextField(
+            value = loginTextState,
+            colors = TextFieldDefaults.outlinedTextFieldColors(),
+            textStyle = TextStyle(
+                fontFamily = interFamily,
+                fontWeight = FontWeight.W400,
+                fontSize = 15.sp
+            ),
+            onValueChange = {
+                loginTextState = it
+                viewModel.send(RegistrationEvent.SaveLoginEvent(loginTextState))
+            },
+            singleLine = true,
+            trailingIcon = {
+                if (loginTextState.isNotEmpty()) {
+                    IconButton(onClick = {
+                        loginTextState = ""
+                        viewModel.send(RegistrationEvent.SaveLoginEvent(loginTextState))
+                    }) {
+                        Icon(
+                            imageVector = Icons.Outlined.Close,
+                            contentDescription = null
+                        )
+                    }
+                }
+            },
+            shape = RoundedCornerShape(10.dp),
+            modifier = Modifier.fillMaxWidth()
+        )
     }
 }
