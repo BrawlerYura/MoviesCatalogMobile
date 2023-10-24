@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.kapt3.base.Kapt.kapt
+
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
@@ -73,4 +75,5 @@ dependencies {
     implementation("com.google.accompanist:accompanist-systemuicontroller:0.20.0")
     implementation("com.maxkeppeler.sheets-compose-dialogs:calendar:1.2.0")
     implementation("com.squareup.okhttp3:okhttp:4.10.0")
+    implementation("io.insert-koin:koin-androidx-compose:3.1.2")
 }

@@ -13,11 +13,14 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.mobile_moviescatalog2023.View.IntroducingScreen.IntroducingScreen
+import com.example.mobile_moviescatalog2023.View.LoginScreens.LoginScreen.LoginContract
 import com.example.mobile_moviescatalog2023.View.LoginScreens.LoginScreen.LoginScreen
+import com.example.mobile_moviescatalog2023.View.LoginScreens.LoginScreen.LoginViewModel
 import com.example.mobile_moviescatalog2023.View.LoginScreens.RegistrationScreen.RegistrationPasswordScreen
 import com.example.mobile_moviescatalog2023.View.LoginScreens.RegistrationScreen.RegistrationScreen
 import com.example.mobile_moviescatalog2023.View.MainScreen.MainScreen
 import com.example.mobile_moviescatalog2023.View.SplashScreen.SplashScreen
+import org.koin.androidx.compose.getViewModel
 
 
 @Composable
@@ -40,27 +43,44 @@ fun Navigation() {
         navController = navController,
         startDestination = NavigationModel.MainScreens.SplashScreen.name
     ) {
-        composable(NavigationModel.MainScreens.SplashScreen.name, enterTransition = noEnterTransition, exitTransition = noExitTransition) {
+        composable(NavigationModel.MainScreens.SplashScreen.name) {
             SplashScreen(navController = navController)
         }
 
-        composable(NavigationModel.MainScreens.MainScreen.name, enterTransition = noEnterTransition, exitTransition = noExitTransition) {
+        composable(NavigationModel.MainScreens.MainScreen.name) {
             MainScreen(navController = navController)
         }
 
-        composable(NavigationModel.MainScreens.IntroducingScreen.name, enterTransition = noEnterTransition, exitTransition = noExitTransition) {
+        composable(NavigationModel.MainScreens.IntroducingScreen.name) {
             IntroducingScreen(navController = navController)
         }
 
-        composable(NavigationModel.MainScreens.LoginScreen.name, enterTransition = noEnterTransition, exitTransition = noExitTransition) {
-            LoginScreen(navController = navController)
+        composable(NavigationModel.MainScreens.LoginScreen.name) {
+            val viewModel = getViewModel<LoginViewModel>()
+            LoginScreen(
+                state = viewModel.state.value,
+                onEventSent = { event ->  viewModel.setEvent(event) },
+                onNavigationRequested = { navigationEffect ->
+                    when(navigationEffect) {
+                        is LoginContract.Effect.Navigation.SignIn -> {
+                            navController.navigate(NavigationModel.MainScreens.LoginScreen.name)
+                        }
+                        is LoginContract.Effect.Navigation.SignUp -> {
+                            navController.navigate(NavigationModel.MainScreens.RegistrationScreen.name)
+                        }
+                        is LoginContract.Effect.Navigation.Back -> {
+                            navController.popBackStack()
+                        }
+                    }
+                }
+            )
         }
 
-        composable(NavigationModel.MainScreens.RegistrationScreen.name, enterTransition = noEnterTransition, exitTransition = noExitTransition) {
+        composable(NavigationModel.MainScreens.RegistrationScreen.name) {
             RegistrationScreen(navController = navController)
         }
 
-        composable(NavigationModel.MainScreens.RegistrationPasswordScreen.name, enterTransition = noEnterTransition, exitTransition = noExitTransition) {
+        composable(NavigationModel.MainScreens.RegistrationPasswordScreen.name) {
             RegistrationPasswordScreen(navController = navController)
         }
     }

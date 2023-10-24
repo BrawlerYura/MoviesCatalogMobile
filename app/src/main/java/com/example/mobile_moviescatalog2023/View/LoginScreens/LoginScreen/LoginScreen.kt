@@ -54,13 +54,11 @@ import com.example.mobile_moviescatalog2023.ui.theme.FilmusTheme
 import com.example.mobile_moviescatalog2023.ui.theme.interFamily
 
 @Composable
-fun LoginScreen(navController: NavHostController) {
-    LoginScreenInner(navController)
-}
-
-@Composable
-fun LoginScreenInner(navController: NavHostController) {
-    val viewModel : LoginViewModel = viewModel(LocalViewModelStoreOwner.current!!)
+fun LoginScreen(
+    state: LoginContract.State,
+    onEventSent: (event: LoginContract.Event) -> Unit,
+    onNavigationRequested: (navigationEffect: LoginContract.Effect.Navigation) -> Unit
+) {
     FilmusTheme {
         Box(
             modifier = Modifier
@@ -76,7 +74,7 @@ fun LoginScreenInner(navController: NavHostController) {
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
 
-                LoginHeader(navController)
+                LoginHeader(onNavigationRequested)
 
                 Text(
                     text = stringResource(R.string.login_title),
@@ -89,9 +87,9 @@ fun LoginScreenInner(navController: NavHostController) {
                     modifier = Modifier.padding(bottom = 15.dp)
                 )
 
-                LoginBox(viewModel)
+                LoginBox(state, onEventSent)
 
-                PasswordBox(viewModel)
+                PasswordBox(state, onEventSent)
 
                 Button(
                     onClick = {
@@ -138,7 +136,7 @@ fun LoginScreenInner(navController: NavHostController) {
                             color = MaterialTheme.colorScheme.primary,
                         ),
                         modifier = Modifier.clickable {
-                            navController.navigate(NavigationModel.MainScreens.RegistrationScreen.name)
+                            onNavigationRequested(LoginContract.Effect.Navigation.SignUp)
                         }
                     )
                 }
@@ -149,7 +147,7 @@ fun LoginScreenInner(navController: NavHostController) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LoginBox(viewModel: LoginViewModel) {
+fun LoginBox(state: LoginContract.State, onEventSent: (event: LoginContract.Event) -> Unit) {
     Column(
         modifier = Modifier.fillMaxWidth().padding(bottom = 15.dp),
         horizontalAlignment = Alignment.Start
@@ -165,9 +163,8 @@ fun LoginBox(viewModel: LoginViewModel) {
             modifier = Modifier.padding(bottom = 8.dp)
         )
 
-        var loginTextState by remember { mutableStateOf("") }
         OutlinedTextField(
-            value = loginTextState,
+            value = state.login,
             colors = TextFieldDefaults.outlinedTextFieldColors(),
             textStyle = TextStyle(
                 fontFamily = interFamily,
@@ -175,15 +172,13 @@ fun LoginBox(viewModel: LoginViewModel) {
                 fontSize = 15.sp
             ),
             onValueChange = {
-                loginTextState = it
-                viewModel.send(LoginEvent.SaveLoginEvent(loginTextState))
+                onEventSent(LoginContract.Event.SaveLoginEvent(it))
             },
             singleLine = true,
             trailingIcon = {
-                if (loginTextState.isNotEmpty()) {
+                if (state.login.isNotEmpty()) {
                     IconButton(onClick = {
-                        loginTextState = ""
-                        viewModel.send(LoginEvent.SaveLoginEvent(loginTextState))
+                        onEventSent(LoginContract.Event.SaveLoginEvent(""))
                     }) {
                         Icon(
                             imageVector = Icons.Outlined.Close,
@@ -200,7 +195,7 @@ fun LoginBox(viewModel: LoginViewModel) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PasswordBox(viewModel: LoginViewModel) {
+fun PasswordBox(state: LoginContract.State, onEventSent: (event: LoginContract.Event) -> Unit) {
     Column(
         modifier = Modifier.fillMaxWidth().padding(bottom = 15.dp),
         horizontalAlignment = Alignment.Start
@@ -216,10 +211,9 @@ fun PasswordBox(viewModel: LoginViewModel) {
             modifier = Modifier.padding(bottom = 8.dp)
         )
 
-        var passwordTextState by remember { mutableStateOf("") }
         var isTextHidden by remember { mutableStateOf(true) }
         OutlinedTextField(
-            value = passwordTextState,
+            value = state.password,
             keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Password),
             visualTransformation =  if (isTextHidden) PasswordVisualTransformation() else VisualTransformation.None,
             colors = TextFieldDefaults.outlinedTextFieldColors(),
@@ -229,8 +223,7 @@ fun PasswordBox(viewModel: LoginViewModel) {
                 fontSize = 15.sp
             ),
             onValueChange = {
-                passwordTextState = it
-                viewModel.send(LoginEvent.SavePasswordEvent(passwordTextState))
+                onEventSent(LoginContract.Event.SavePasswordEvent(it))
             },
             singleLine = true,
             trailingIcon = {

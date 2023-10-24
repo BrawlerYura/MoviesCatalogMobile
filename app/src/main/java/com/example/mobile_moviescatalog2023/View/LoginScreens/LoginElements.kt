@@ -42,6 +42,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.mobile_moviescatalog2023.R
+import com.example.mobile_moviescatalog2023.View.LoginScreens.LoginScreen.LoginContract
 import com.example.mobile_moviescatalog2023.View.LoginScreens.LoginScreen.LoginViewModel
 import com.example.mobile_moviescatalog2023.View.LoginScreens.RegistrationPasswordScreen.RegistrationPasswordViewModel
 import com.example.mobile_moviescatalog2023.ui.theme.interFamily
@@ -80,7 +81,7 @@ fun BottomRegistrationTextBox(navController : NavHostController) {
 
 
 @Composable
-fun LoginHeader(navController: NavHostController) {
+fun LoginHeader(onNavigationRequested: (navigationEffect: LoginContract.Effect.Navigation) -> Unit) {
     Box(
         modifier = Modifier
             .padding(bottom = 20.dp)
@@ -96,7 +97,7 @@ fun LoginHeader(navController: NavHostController) {
                 .clickable {
                     if (isClickable) {
                         isClickable = false
-                        navController.popBackStack()
+                        onNavigationRequested(LoginContract.Effect.Navigation.Back)
                         CoroutineScope(Dispatchers.Main).launch {
                             delay(1000L)
                             isClickable = true

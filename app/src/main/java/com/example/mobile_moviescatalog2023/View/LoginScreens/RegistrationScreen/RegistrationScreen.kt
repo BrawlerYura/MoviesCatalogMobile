@@ -76,7 +76,7 @@ fun RegistrationScreen(navController: NavHostController) {
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
 
-                LoginHeader(navController)
+//                LoginHeader(navController)
 
                 Text(
                     text = stringResource(R.string.registration_button),

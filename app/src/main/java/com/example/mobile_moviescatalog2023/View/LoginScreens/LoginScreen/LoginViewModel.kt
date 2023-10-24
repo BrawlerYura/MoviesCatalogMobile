@@ -1,34 +1,26 @@
 package com.example.mobile_moviescatalog2023.View.LoginScreens.LoginScreen
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import com.example.mobile_moviescatalog2023.View.LoginScreens.RegistrationScreen.RegistrationEvent
+import com.example.mobile_moviescatalog2023.View.Base.BaseViewModel
 
-class LoginViewModel: ViewModel() {
-    private val stateLiveMutable = MutableLiveData<LoginState>()
-    val stateLive: LiveData<LoginState> = stateLiveMutable
-
-    init {
-        stateLiveMutable.value = LoginState("", "")
-    }
-
-    fun send(event: LoginEvent) {
-        when(event) {
-            is LoginEvent.SaveLoginEvent -> {
-                saveLogin(event.login)
-            }
-            is LoginEvent.SavePasswordEvent -> {
-                savePassword(event.password)
-            }
-        }
-    }
+class LoginViewModel () : BaseViewModel<LoginContract.Event, LoginContract.State, LoginContract.Effect>() {
 
     private fun saveLogin(login: String) {
-        stateLiveMutable.value = stateLiveMutable.value?.copy(login = login)
+        setState { copy(login = login) }
     }
 
     private fun savePassword(password: String) {
-        stateLiveMutable.value = stateLiveMutable.value?.copy(password = password)
+        setState { copy(password = password) }
+    }
+
+    override fun setInitialState() = LoginContract.State (
+        login = "",
+        password = ""
+    )
+
+    override fun handleEvents(event: LoginContract.Event) {
+        when (event) {
+            is LoginContract.Event.SaveLoginEvent -> saveLogin(login = event.login)
+            is LoginContract.Event.SavePasswordEvent -> savePassword(password = event.password)
+        }
     }
 }
