@@ -64,7 +64,7 @@ fun Navigation() {
         }
 
         composable(NavigationModel.MainScreens.RegistrationPasswordScreen.name) {
-            RegistrationPasswordScreen(navController = navController)
+            RegistrationPasswordScreenDestination(navController)
         }
     }
 }

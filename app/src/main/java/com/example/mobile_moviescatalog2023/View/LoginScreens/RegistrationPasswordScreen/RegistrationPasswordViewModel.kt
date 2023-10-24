@@ -3,32 +3,31 @@ package com.example.mobile_moviescatalog2023.View.LoginScreens.RegistrationPassw
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.mobile_moviescatalog2023.View.Base.BaseViewModel
 
-class RegistrationPasswordViewModel: ViewModel() {
-
-    private val stateLiveMutable = MutableLiveData<RegistrationPasswordState>()
-    val stateLive: LiveData<RegistrationPasswordState> = stateLiveMutable
-
-    init {
-        stateLiveMutable.value = RegistrationPasswordState("", "")
-    }
-
-    fun send(event: RegistrationPasswordEvent) {
-        when(event) {
-            is RegistrationPasswordEvent.SavePasswordEvent -> {
-                savePassword(event.password)
-            }
-            is RegistrationPasswordEvent.SaveRepeatedPasswordEvent -> {
-                saveRepeatedPassword(event.repeatedPassword)
-            }
-        }
-    }
+class RegistrationPasswordViewModel: BaseViewModel<
+        RegistrationPasswordContract.Event,
+        RegistrationPasswordContract.State,
+        RegistrationPasswordContract.Effect
+        >() {
 
     private fun savePassword(password: String) {
-        stateLiveMutable.value = stateLiveMutable.value?.copy(password = password)
+        setState { copy(password = password) }
     }
 
     private fun saveRepeatedPassword(repeatedPassword: String) {
-        stateLiveMutable.value = stateLiveMutable.value?.copy(repeatedPassword = repeatedPassword)
+        setState { copy(repPassword = repeatedPassword) }
+    }
+
+    override fun setInitialState() = RegistrationPasswordContract.State (
+        password = "",
+        repPassword = ""
+    )
+
+    override fun handleEvents(event: RegistrationPasswordContract.Event) {
+        when(event) {
+            is RegistrationPasswordContract.Event.SavePasswordEvent -> savePassword(event.password)
+            is RegistrationPasswordContract.Event.SaveRepeatedPasswordEvent -> saveRepeatedPassword(event.repPassword)
+        }
     }
 }

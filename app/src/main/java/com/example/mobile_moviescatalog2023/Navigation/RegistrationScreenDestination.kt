@@ -12,20 +12,21 @@ fun RegistratinoScreenDestination(navController: NavHostController) {
     val viewModel = getViewModel<RegistrationViewModel>()
     RegistrationScreen(
         state = viewModel.state.value,
-        onEventSent = { event ->  viewModel.setEvent(event) }
-    ) { navigationEffect ->
-        when (navigationEffect) {
-            is RegistrationContract.Effect.Navigation.NextScreen -> {
-                navController.navigate(NavigationModel.MainScreens.RegistrationPasswordScreen.name)
-            }
+        onEventSent = { event ->  viewModel.setEvent(event) },
+        onNavigationRequested = { navigationEffect ->
+            when (navigationEffect) {
+                is RegistrationContract.Effect.Navigation.NextScreen -> {
+                    navController.navigate(NavigationModel.MainScreens.RegistrationPasswordScreen.name)
+                }
 
-            is RegistrationContract.Effect.Navigation.ToLogin -> {
-                navController.navigate(NavigationModel.MainScreens.LoginScreen.name)
-            }
+                is RegistrationContract.Effect.Navigation.ToLogin -> {
+                    navController.navigate(NavigationModel.MainScreens.LoginScreen.name)
+                }
 
-            is RegistrationContract.Effect.Navigation.Back -> {
-                navController.popBackStack()
+                is RegistrationContract.Effect.Navigation.Back -> {
+                    navController.popBackStack()
+                }
             }
         }
-    }
+    )
 }
