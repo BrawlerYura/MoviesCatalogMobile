@@ -47,8 +47,6 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.mobile_moviescatalog2023.Navigation.NavigationModel
 import com.example.mobile_moviescatalog2023.R
-import com.example.mobile_moviescatalog2023.View.LoginScreens.BottomRegistrationTextBox
-import com.example.mobile_moviescatalog2023.View.LoginScreens.LoginHeader
 import com.example.mobile_moviescatalog2023.View.LoginScreens.RegistrationPasswordScreen.RegistrationPasswordEvent
 import com.example.mobile_moviescatalog2023.View.LoginScreens.RegistrationPasswordScreen.RegistrationPasswordViewModel
 import com.example.mobile_moviescatalog2023.ui.theme.FilmusTheme
@@ -113,7 +111,7 @@ fun RegistrationPasswordScreen(navController: NavHostController) {
                     )
                 }
             }
-            BottomRegistrationTextBox(navController)
+//            BottomRegistrationTextBox()
         }
     }
 }

@@ -4,70 +4,28 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.mobile_moviescatalog2023.View.Base.BaseViewModel
+import com.example.mobile_moviescatalog2023.View.LoginScreens.LoginScreen.LoginContract
 
-class RegistrationViewModel: ViewModel() {
-
-    private val stateLiveMutable = MutableLiveData<RegistrationState>()
-    val stateLive: LiveData<RegistrationState> = stateLiveMutable
-
-    init {
-        stateLiveMutable.value = RegistrationState("", "male", "", "", "")
-    }
-
-    fun send(event: RegistrationEvent) {
-        when(event) {
-            is RegistrationEvent.SaveNameEvent -> {
-                saveName(event.name)
-            }
-            is RegistrationEvent.SaveGenderEvent -> {
-                saveGender(event.gender)
-            }
-            is RegistrationEvent.SaveEmailEvent -> {
-                saveEmail(event.email)
-            }
-            is RegistrationEvent.SaveLoginEvent -> {
-                saveLogin(event.login)
-            }
-            is RegistrationEvent.SaveBirthDateWithFormatEvent -> {
-                saveBirthDateWithFormat(event.birthDate)
-            }
-            is RegistrationEvent.SaveBirthDateEvent -> {
-                saveBirthDate(event.birthDate)
-            }
-            is RegistrationEvent.LoadNameEvent -> {
-                loadName()
-            }
-        }
-    }
-
+class RegistrationViewModel: BaseViewModel<RegistrationContract.Event, RegistrationContract.State, RegistrationContract.Effect>() {
     private fun saveName(name: String) {
-        stateLiveMutable.value = stateLiveMutable.value?.copy(name = name)
-        Log.e("bbb", stateLiveMutable.value?.name ?: "")
+        setState { copy(name = name) }
     }
 
     private fun saveGender(gender: String) {
-        stateLiveMutable.value = stateLiveMutable.value?.copy(gender = gender)
-        Log.e("aaa", stateLive.value?.gender ?: "")
+        setState { copy(gender = gender) }
     }
 
     private fun saveEmail(email: String) {
-        stateLiveMutable.value = stateLiveMutable.value?.copy(email = email)
+        setState { copy(email = email) }
     }
 
     private fun saveLogin(login: String) {
-        stateLiveMutable.value = stateLiveMutable.value?.copy(login = login)
-    }
-
-    private fun saveBirthDateWithFormat(birthDate: String) {
-        stateLiveMutable.value = stateLiveMutable.value?.copy(birthDate = formatDate(birthDate))
+        setState { copy(login = login) }
     }
 
     private fun saveBirthDate(birthDate: String) {
-        stateLiveMutable.value = stateLiveMutable.value?.copy(birthDate = birthDate)
-    }
-
-    private fun loadName() {
-
+        setState { copy(birthDate = birthDate) }
     }
 
     private fun formatDate(date: String): String {
@@ -76,5 +34,24 @@ class RegistrationViewModel: ViewModel() {
         val month = parts[1]
         val day = parts[2]
         return "$day.$month.$year"
+    }
+
+    override fun setInitialState() = RegistrationContract.State (
+        name = "",
+        gender = "male",
+        login = "",
+        email = "",
+        birthDate = ""
+    )
+
+    override fun handleEvents(event: RegistrationContract.Event) {
+        when (event) {
+            is RegistrationContract.Event.SaveNameEvent -> saveName(event.name)
+            is RegistrationContract.Event.SaveGenderEvent -> saveGender(event.gender)
+            is RegistrationContract.Event.SaveEmailEvent -> saveEmail(event.email)
+            is RegistrationContract.Event.SaveLoginEvent -> saveLogin(event.login)
+            is RegistrationContract.Event.SaveBirthDateEvent -> saveBirthDate(event.birthDate)
+            is RegistrationContract.Event.SaveBirthDateWithFormatEvent -> saveBirthDate(formatDate(event.birthDate))
+        }
     }
 }

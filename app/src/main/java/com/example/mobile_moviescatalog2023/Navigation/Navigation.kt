@@ -56,28 +56,11 @@ fun Navigation() {
         }
 
         composable(NavigationModel.MainScreens.LoginScreen.name) {
-            val viewModel = getViewModel<LoginViewModel>()
-            LoginScreen(
-                state = viewModel.state.value,
-                onEventSent = { event ->  viewModel.setEvent(event) },
-                onNavigationRequested = { navigationEffect ->
-                    when(navigationEffect) {
-                        is LoginContract.Effect.Navigation.SignIn -> {
-                            navController.navigate(NavigationModel.MainScreens.LoginScreen.name)
-                        }
-                        is LoginContract.Effect.Navigation.SignUp -> {
-                            navController.navigate(NavigationModel.MainScreens.RegistrationScreen.name)
-                        }
-                        is LoginContract.Effect.Navigation.Back -> {
-                            navController.popBackStack()
-                        }
-                    }
-                }
-            )
+            LoginScreenDestination(navController)
         }
 
         composable(NavigationModel.MainScreens.RegistrationScreen.name) {
-            RegistrationScreen(navController = navController)
+            RegistratinoScreenDestination(navController)
         }
 
         composable(NavigationModel.MainScreens.RegistrationPasswordScreen.name) {

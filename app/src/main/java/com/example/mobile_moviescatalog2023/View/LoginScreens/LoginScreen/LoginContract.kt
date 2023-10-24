@@ -24,5 +24,4 @@ class LoginContract {
             object Back : Navigation()
         }
     }
-
 }
