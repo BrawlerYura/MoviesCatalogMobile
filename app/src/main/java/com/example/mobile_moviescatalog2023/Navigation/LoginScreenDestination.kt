@@ -15,11 +15,11 @@ fun LoginScreenDestination(navController: NavHostController) {
         onEventSent = { event ->  viewModel.setEvent(event) },
         onNavigationRequested =  { navigationEffect ->
             when (navigationEffect) {
-                is LoginContract.Effect.Navigation.SignIn -> {
-                    navController.navigate(NavigationModel.MainScreens.LoginScreen.name)
+                is LoginContract.Effect.Navigation.ToMain -> {
+                    navController.navigate(NavigationModel.MainScreens.MainScreen.name)
                 }
 
-                is LoginContract.Effect.Navigation.SignUp -> {
+                is LoginContract.Effect.Navigation.ToRegistration -> {
                     navController.navigate(NavigationModel.MainScreens.RegistrationScreen.name)
                 }
 

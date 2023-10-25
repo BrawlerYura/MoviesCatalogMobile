@@ -44,7 +44,7 @@ fun Navigation() {
         startDestination = NavigationModel.MainScreens.SplashScreen.name
     ) {
         composable(NavigationModel.MainScreens.SplashScreen.name) {
-            SplashScreen(navController = navController)
+            SplashScreenDestination(navController)
         }
 
         composable(NavigationModel.MainScreens.MainScreen.name) {

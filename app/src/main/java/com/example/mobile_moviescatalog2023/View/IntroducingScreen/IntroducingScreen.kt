@@ -50,23 +50,12 @@ fun IntroducingScreenInner(navController: NavHostController) {
                     .padding(16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text(
-                    text = stringResource(R.string.app_name),
-                    style = TextStyle(
-                        fontFamily = interFamily,
-                        fontWeight = FontWeight.W600,
-                        fontSize = 17.sp,
-                        color = MaterialTheme.colorScheme.primary
-                    ),
-                    modifier = Modifier.padding(bottom = 35.dp)
-                )
-
                 Image(
                     painter = painterResource(R.drawable.screenphoto),
                     contentDescription = null,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(bottom = 35.dp),
+                        .padding(bottom = 35.dp, top = 56.dp),
                     contentScale = ContentScale.Crop
                 )
 

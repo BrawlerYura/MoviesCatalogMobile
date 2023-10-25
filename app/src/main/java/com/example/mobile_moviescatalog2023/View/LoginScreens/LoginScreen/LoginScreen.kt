@@ -36,6 +36,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
@@ -48,6 +49,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.mobile_moviescatalog2023.R
+import com.example.mobile_moviescatalog2023.View.SplashScreen.SplashContract
 import com.example.mobile_moviescatalog2023.ui.theme.FilmusTheme
 import com.example.mobile_moviescatalog2023.ui.theme.interFamily
 import kotlinx.coroutines.CoroutineScope
@@ -93,8 +95,10 @@ fun LoginScreen(
 
                 PasswordBox(state, onEventSent)
 
+                val context = LocalContext.current
                 Button(
                     onClick = {
+                        onEventSent(LoginContract.Event.SignIn(state.login, state.password, context))
                     },
                     shape = RoundedCornerShape(10.dp),
                     modifier = Modifier
@@ -138,11 +142,17 @@ fun LoginScreen(
                             color = MaterialTheme.colorScheme.primary,
                         ),
                         modifier = Modifier.clickable {
-                            onNavigationRequested(LoginContract.Effect.Navigation.SignUp)
+                            onNavigationRequested(LoginContract.Effect.Navigation.ToRegistration)
                         }
                     )
                 }
             }
+        }
+
+        if(state.isTriedToSignIn and state.isSuccess) {
+            onNavigationRequested(LoginContract.Effect.Navigation.ToMain)
+        } else if(state.isTriedToSignIn and !state.isSuccess) {
+
         }
     }
 }
