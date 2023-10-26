@@ -27,18 +27,6 @@ import org.koin.androidx.compose.getViewModel
 fun Navigation() {
     val navController = rememberNavController()
 
-    val noEnterTransition : AnimatedContentTransitionScope<NavBackStackEntry>.() -> EnterTransition = {
-        fadeIn(
-            animationSpec = tween(durationMillis = 0)
-        )
-    }
-
-    val noExitTransition : AnimatedContentTransitionScope<NavBackStackEntry>.() -> ExitTransition = {
-        fadeOut(
-            animationSpec = tween(durationMillis = 0)
-        )
-    }
-
     NavHost(
         navController = navController,
         startDestination = NavigationModel.MainScreens.SplashScreen.name

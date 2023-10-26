@@ -61,10 +61,8 @@ fun SplashScreen(
             }
         }
 
-        val context = LocalContext.current
-
         LaunchedEffect(Unit) {
-            onEventSent(SplashContract.Event.GetToken(context))
+            onEventSent(SplashContract.Event.GetToken())
         }
 
         if(!state.isTryingGetToken and state.isSuccessGetToken) {

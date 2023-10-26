@@ -95,10 +95,9 @@ fun LoginScreen(
 
                 PasswordBox(state, onEventSent)
 
-                val context = LocalContext.current
                 Button(
                     onClick = {
-                        onEventSent(LoginContract.Event.SignIn(state.login, state.password, context))
+                        onEventSent(LoginContract.Event.SignIn(state.login, state.password))
                     },
                     shape = RoundedCornerShape(10.dp),
                     modifier = Modifier

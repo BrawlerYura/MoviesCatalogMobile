@@ -8,7 +8,7 @@ import com.example.mobile_moviescatalog2023.View.Base.ViewState
 class SplashContract {
 
     sealed class Event : ViewEvent {
-        class GetToken(val context: Context) : Event()
+        class GetToken() : Event()
     }
 
     data class State(

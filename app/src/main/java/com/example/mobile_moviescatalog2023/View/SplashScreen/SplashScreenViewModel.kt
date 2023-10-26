@@ -11,10 +11,11 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-private val userRepository = UserRepository()
-
 class SplashScreenViewModel (
+    private val context: Context
 ) : BaseViewModel<SplashContract.Event, SplashContract.State, SplashContract.Effect>() {
+
+    private val userRepository = UserRepository()
     override fun setInitialState() =  SplashContract.State (
         isTryingGetToken = true,
         isSuccessGetToken = false
@@ -22,11 +23,11 @@ class SplashScreenViewModel (
 
     override fun handleEvents(event: SplashContract.Event) {
         when (event) {
-            is SplashContract.Event.GetToken -> getToken(context = event.context)
+            is SplashContract.Event.GetToken -> getToken()
         }
     }
 
-    private fun getToken(context: Context) {
+    private fun getToken() {
         Log.e("a", "1")
         viewModelScope.launch(Dispatchers.IO) {
             val dataStore = TokenManager(context)

@@ -12,7 +12,7 @@ class LoginContract {
 
         class SavePasswordEvent(val password: String) : Event()
 
-        class SignIn(val login: String, val password: String, val context: Context) : Event()
+        class SignIn(val login: String, val password: String) : Event()
     }
 
     data class State(

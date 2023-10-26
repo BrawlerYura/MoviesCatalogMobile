@@ -9,8 +9,11 @@ import com.example.mobile_moviescatalog2023.View.Base.BaseViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-private val authRepository = AuthRepository()
-class LoginViewModel: BaseViewModel<LoginContract.Event, LoginContract.State, LoginContract.Effect>() {
+class LoginViewModel(
+    private val context: Context
+): BaseViewModel<LoginContract.Event, LoginContract.State, LoginContract.Effect>() {
+
+    private val authRepository = AuthRepository()
 
     override fun setInitialState() = LoginContract.State (
         login = "",
@@ -23,7 +26,7 @@ class LoginViewModel: BaseViewModel<LoginContract.Event, LoginContract.State, Lo
         when (event) {
             is LoginContract.Event.SaveLoginEvent -> saveLogin(login = event.login)
             is LoginContract.Event.SavePasswordEvent -> savePassword(password = event.password)
-            is LoginContract.Event.SignIn -> signIn(login = event.login, password = event.password, context = event.context)
+            is LoginContract.Event.SignIn -> signIn(login = event.login, password = event.password)
         }
     }
 
@@ -35,7 +38,7 @@ class LoginViewModel: BaseViewModel<LoginContract.Event, LoginContract.State, Lo
         setState { copy(password = password) }
     }
 
-    private fun signIn(login: String, password: String, context: Context) {
+    private fun signIn(login: String, password: String) {
         val loginBody = LoginRequestBody(login, password)
 
         viewModelScope.launch(Dispatchers.IO) {
