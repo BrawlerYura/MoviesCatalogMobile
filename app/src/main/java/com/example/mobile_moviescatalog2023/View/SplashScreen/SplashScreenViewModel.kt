@@ -9,6 +9,7 @@ import com.example.mobile_moviescatalog2023.TokenManager.TokenManager
 import com.example.mobile_moviescatalog2023.View.Base.BaseViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
 class SplashScreenViewModel (
@@ -28,25 +29,18 @@ class SplashScreenViewModel (
     }
 
     private fun getToken() {
-        Log.e("a", "1")
-        viewModelScope.launch(Dispatchers.IO) {
-            val dataStore = TokenManager(context)
-            dataStore.getToken().collect { value ->
-                Network.token = value.toString()
-                Log.e("a", value.toString())
-            }
-        }
+        val dataStore = TokenManager(context)
 
-        Log.e("a", "2")
         viewModelScope.launch(Dispatchers.IO) {
-            Log.e("a", "3")
+            val tokenValue = dataStore.getToken.first()
+
+            Network.token = tokenValue.toString()
+
             userRepository.getProfile()
-                    .collect { result ->
+                .collect { result ->
                     result.onSuccess {
-                        Log.e("a", "collected")
                         setState { copy(isTryingGetToken = false, isSuccessGetToken = true) }
                     }.onFailure {
-                        Log.e("a", "collect")
                         setState { copy(isTryingGetToken = false, isSuccessGetToken = false) }
                     }
                 }

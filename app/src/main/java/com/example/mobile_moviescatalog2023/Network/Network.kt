@@ -2,14 +2,20 @@ package com.example.mobile_moviescatalog2023.Network
 
 import com.example.mobile_moviescatalog2023.Network.Auth.AuthApi
 import com.example.mobile_moviescatalog2023.Network.User.UserApi
+import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
+import kotlinx.serialization.ExperimentalSerializationApi
+import kotlinx.serialization.json.Json
+import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.converter.moshi.MoshiConverterFactory
 import java.util.concurrent.TimeUnit
 
 object Network {
     private val BASE_URL = "https://react-midterm.kreosoft.space/"
+
 
     private fun getHttpClient(): OkHttpClient {
         val client = OkHttpClient.Builder().apply {
@@ -17,6 +23,7 @@ object Network {
             readTimeout(60, TimeUnit.SECONDS)
             writeTimeout(60, TimeUnit.SECONDS)
             retryOnConnectionFailure(false)
+            addInterceptor(MyInterceptor())
             val logLevel = HttpLoggingInterceptor.Level.BODY
             addInterceptor(HttpLoggingInterceptor().setLevel(logLevel))
         }
@@ -27,7 +34,7 @@ object Network {
 
         return Retrofit.Builder()
             .baseUrl(BASE_URL)
-            .addConverterFactory(GsonConverterFactory.create())
+            .addConverterFactory(MoshiConverterFactory.create())
             .client(getHttpClient())
             .build()
     }

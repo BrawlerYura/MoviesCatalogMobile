@@ -11,15 +11,14 @@ import kotlinx.coroutines.flow.map
 
 class TokenManager(private val context: Context) {
     companion object {
-        private val Context.dataStore: DataStore<Preferences> by preferencesDataStore("jwt_token")
-        val TOKEN_KEY = stringPreferencesKey("jwt_token")
+        private val Context.dataStore: DataStore<Preferences> by preferencesDataStore("AccessToken")
+        val TOKEN_KEY = stringPreferencesKey("access_token")
     }
 
-    fun getToken(): Flow<String?> {
-        return context.dataStore.data.map { preferences ->
+    val getToken: Flow<String?> = context.dataStore.data
+        .map { preferences ->
             preferences[TOKEN_KEY] ?: ""
         }
-    }
 
     suspend fun saveToken(token: String) {
         context.dataStore.edit { preferences ->

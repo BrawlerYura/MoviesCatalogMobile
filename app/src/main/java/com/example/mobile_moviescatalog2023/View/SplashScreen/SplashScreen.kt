@@ -61,7 +61,7 @@ fun SplashScreen(
         }
 
         LaunchedEffect(Unit) {
-            onEventSent(SplashContract.Event.GetToken())
+            onEventSent(SplashContract.Event.GetToken)
         }
 
         if(!state.isTryingGetToken and state.isSuccessGetToken) {
