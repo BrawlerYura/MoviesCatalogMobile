@@ -16,11 +16,11 @@ fun LoginScreenDestination(navController: NavHostController) {
         onNavigationRequested =  { navigationEffect ->
             when (navigationEffect) {
                 is LoginContract.Effect.Navigation.ToMain -> {
-                    navController.navigate(NavigationModel.MainScreens.MainScreen.name)
+                    navController.navigate(Screen.Main.route)
                 }
 
                 is LoginContract.Effect.Navigation.ToRegistration -> {
-                    navController.navigate(NavigationModel.MainScreens.RegistrationScreen.name)
+                    navController.navigate(Screen.Registration.route)
                 }
 
                 is LoginContract.Effect.Navigation.Back -> {

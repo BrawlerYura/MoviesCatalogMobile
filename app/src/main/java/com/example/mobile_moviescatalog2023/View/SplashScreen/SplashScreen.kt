@@ -20,7 +20,6 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import com.example.mobile_moviescatalog2023.Navigation.NavigationModel
 import com.example.mobile_moviescatalog2023.R
 import com.example.mobile_moviescatalog2023.View.LoginScreens.LoginScreen.LoginContract
 import com.example.mobile_moviescatalog2023.ui.theme.FilmusTheme

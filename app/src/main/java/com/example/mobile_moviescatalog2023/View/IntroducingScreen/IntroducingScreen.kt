@@ -26,18 +26,16 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import com.example.mobile_moviescatalog2023.Navigation.NavigationModel
+import com.example.mobile_moviescatalog2023.Navigation.Screen
 import com.example.mobile_moviescatalog2023.R
+import com.example.mobile_moviescatalog2023.View.LoginScreens.LoginScreen.LoginContract
 import com.example.mobile_moviescatalog2023.ui.theme.FilmusTheme
 import com.example.mobile_moviescatalog2023.ui.theme.interFamily
 
 @Composable
-fun IntroducingScreen(navController: NavHostController) {
-    IntroducingScreenInner(navController)
-}
-
-@Composable
-fun IntroducingScreenInner(navController: NavHostController) {
+fun IntroducingScreen(
+    onNavigationRequested: (navigationEffect: IntroducingContract.Effect.Navigation) -> Unit
+) {
     FilmusTheme {
         Box(
             modifier = Modifier
@@ -83,7 +81,7 @@ fun IntroducingScreenInner(navController: NavHostController) {
 
                 Button(
                     onClick = {
-                        navController.navigate(NavigationModel.MainScreens.RegistrationScreen.name)
+                        onNavigationRequested(IntroducingContract.Effect.Navigation.ToRegistration)
                     },
                     shape = RoundedCornerShape(10.dp),
                     modifier = Modifier
@@ -104,7 +102,7 @@ fun IntroducingScreenInner(navController: NavHostController) {
 
                 Button(
                     onClick = {
-                        navController.navigate(NavigationModel.MainScreens.LoginScreen.name)
+                       onNavigationRequested(IntroducingContract.Effect.Navigation.ToLogin)
                     },
                     shape = RoundedCornerShape(10.dp),
                     modifier = Modifier

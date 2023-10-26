@@ -17,11 +17,11 @@ fun SplashScreenDestination(navController: NavHostController) {
             when (navigationEffect) {
                 is SplashContract.Effect.Navigation.ToIntroducingScreen -> {
                     navController.popBackStack()
-                    navController.navigate(NavigationModel.MainScreens.IntroducingScreen.name)
+                    navController.navigate(Screen.Introducing.route)
                 }
                 is SplashContract.Effect.Navigation.ToMain -> {
                     navController.popBackStack()
-                    navController.navigate(NavigationModel.MainScreens.MainScreen.name)
+                    navController.navigate(Screen.Main.route)
                 }
             }
         }

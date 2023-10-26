@@ -1,6 +1,5 @@
 package com.example.mobile_moviescatalog2023.Navigation
 
-import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.core.tween
@@ -29,41 +28,39 @@ fun Navigation() {
 
     NavHost(
         navController = navController,
-        startDestination = NavigationModel.MainScreens.SplashScreen.name
+        startDestination = Screen.Splash.route
     ) {
-        composable(NavigationModel.MainScreens.SplashScreen.name) {
+        composable(Screen.Splash.route) {
             SplashScreenDestination(navController)
         }
 
-        composable(NavigationModel.MainScreens.MainScreen.name) {
+        composable(Screen.Main.route) {
             MainScreen(navController = navController)
         }
 
-        composable(NavigationModel.MainScreens.IntroducingScreen.name) {
-            IntroducingScreen(navController = navController)
+        composable(Screen.Introducing.route) {
+            IntroducingScreenDestination(navController = navController)
         }
 
-        composable(NavigationModel.MainScreens.LoginScreen.name) {
+        composable(Screen.Login.route) {
             LoginScreenDestination(navController)
         }
 
-        composable(NavigationModel.MainScreens.RegistrationScreen.name) {
+        composable(Screen.Registration.route) {
             RegistratinoScreenDestination(navController)
         }
 
-        composable(NavigationModel.MainScreens.RegistrationPasswordScreen.name) {
+        composable(Screen.RegPass.route) {
             RegistrationPasswordScreenDestination(navController)
         }
     }
 }
 
-class NavigationModel : ViewModel() {
-    enum class MainScreens {
-        SplashScreen,
-        MainScreen,
-        IntroducingScreen,
-        LoginScreen,
-        RegistrationScreen,
-        RegistrationPasswordScreen;
-    }
+sealed class Screen(val route: String){
+    object Splash: Screen(route = "splash_screen")
+    object Introducing: Screen(route = "introducing_screen")
+    object Login: Screen(route = "login_screen")
+    object Registration: Screen(route = "registration_screen")
+    object RegPass: Screen(route = "reg_pass_screen")
+    object Main: Screen(route = "main_screen")
 }

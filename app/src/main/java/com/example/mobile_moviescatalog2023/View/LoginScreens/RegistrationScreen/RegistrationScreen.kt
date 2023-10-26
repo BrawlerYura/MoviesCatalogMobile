@@ -50,7 +50,6 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
-import com.example.mobile_moviescatalog2023.Navigation.NavigationModel
 import com.example.mobile_moviescatalog2023.R
 import com.example.mobile_moviescatalog2023.ui.theme.FilmusTheme
 import com.example.mobile_moviescatalog2023.ui.theme.interFamily
