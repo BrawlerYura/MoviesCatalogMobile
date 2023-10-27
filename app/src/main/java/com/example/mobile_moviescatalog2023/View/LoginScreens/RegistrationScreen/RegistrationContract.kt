@@ -9,7 +9,7 @@ class RegistrationContract {
     sealed class Event : ViewEvent {
         class SaveNameEvent(val name: String) : Event()
 
-        class SaveGenderEvent(val gender: String) : Event()
+        class SaveGenderEvent(val gender: Int) : Event()
 
         class SaveEmailEvent(val email: String) : Event()
 
@@ -18,11 +18,13 @@ class RegistrationContract {
         class SaveBirthDateEvent(val birthDate: String) : Event()
 
         class SaveBirthDateWithFormatEvent(val birthDate: String) : Event()
+
+        object TransferBody: Event()
     }
 
     data class State (
         val name: String,
-        val gender: String,
+        val gender: Int,
         val login: String,
         val email: String,
         val birthDate: String

@@ -97,7 +97,7 @@ fun LoginScreen(
 
                 Button(
                     onClick = {
-                        onEventSent(LoginContract.Event.SignIn(state.login, state.password))
+                        onEventSent(LoginContract.Event.SignIn)
                     },
                     shape = RoundedCornerShape(10.dp),
                     modifier = Modifier

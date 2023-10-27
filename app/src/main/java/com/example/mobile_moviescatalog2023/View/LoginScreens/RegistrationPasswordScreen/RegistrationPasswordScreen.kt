@@ -98,6 +98,7 @@ fun RegistrationPasswordScreen(
 
                 Button(
                     onClick = {
+                              onEventSent(RegistrationPasswordContract.Event.SignUp)
                     },
                     shape = RoundedCornerShape(10.dp),
                     modifier = Modifier
@@ -121,6 +122,10 @@ fun RegistrationPasswordScreen(
                 }
             }
             BottomRegistrationTextBox(onNavigationRequested)
+        }
+
+        if(state.isSuccess == true) {
+            onNavigationRequested(RegistrationPasswordContract.Effect.Navigation.ToMain)
         }
     }
 }

@@ -1,18 +1,38 @@
 package com.example.mobile_moviescatalog2023.View.LoginScreens.RegistrationScreen
 
-import android.util.Log
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
+import com.example.mobile_moviescatalog2023.Network.DataClasses.RequestBodies.RegisterRequestBody
 import com.example.mobile_moviescatalog2023.View.Base.BaseViewModel
-import com.example.mobile_moviescatalog2023.View.LoginScreens.LoginScreen.LoginContract
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+
+class SharedDataService {
+
+    companion object {
+        lateinit var sharedData: RegisterRequestBody
+    }
+}
 
 class RegistrationViewModel: BaseViewModel<RegistrationContract.Event, RegistrationContract.State, RegistrationContract.Effect>() {
+
+
+
+    private fun transferBody() {
+        SharedDataService.sharedData = RegisterRequestBody(
+            userName = state.value.login,
+            name = state.value.name,
+            password = "",
+            email = state.value.email,
+            birthDate = state.value.birthDate,
+            gender = state.value.gender
+        )
+    }
     private fun saveName(name: String) {
         setState { copy(name = name) }
     }
 
-    private fun saveGender(gender: String) {
+    private fun saveGender(gender: Int) {
         setState { copy(gender = gender) }
     }
 
@@ -38,7 +58,7 @@ class RegistrationViewModel: BaseViewModel<RegistrationContract.Event, Registrat
 
     override fun setInitialState() = RegistrationContract.State (
         name = "",
-        gender = "male",
+        gender = 0,
         login = "",
         email = "",
         birthDate = ""
@@ -52,6 +72,7 @@ class RegistrationViewModel: BaseViewModel<RegistrationContract.Event, Registrat
             is RegistrationContract.Event.SaveLoginEvent -> saveLogin(event.login)
             is RegistrationContract.Event.SaveBirthDateEvent -> saveBirthDate(event.birthDate)
             is RegistrationContract.Event.SaveBirthDateWithFormatEvent -> saveBirthDate(formatDate(event.birthDate))
+            is RegistrationContract.Event.TransferBody -> transferBody()
         }
     }
 }

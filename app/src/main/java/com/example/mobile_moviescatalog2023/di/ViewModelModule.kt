@@ -12,5 +12,5 @@ val ViewModelModule = module {
     viewModel { SplashScreenViewModel(androidContext()) }
     viewModel { LoginViewModel(androidContext()) }
     viewModel { RegistrationViewModel() }
-    viewModel { RegistrationPasswordViewModel() }
+    viewModel { RegistrationPasswordViewModel(androidContext()) }
 }

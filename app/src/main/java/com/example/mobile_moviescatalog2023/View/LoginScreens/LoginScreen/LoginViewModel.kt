@@ -26,7 +26,7 @@ class LoginViewModel(
         when (event) {
             is LoginContract.Event.SaveLoginEvent -> saveLogin(login = event.login)
             is LoginContract.Event.SavePasswordEvent -> savePassword(password = event.password)
-            is LoginContract.Event.SignIn -> signIn(login = event.login, password = event.password)
+            is LoginContract.Event.SignIn -> signIn()
         }
     }
 
@@ -38,8 +38,8 @@ class LoginViewModel(
         setState { copy(password = password) }
     }
 
-    private fun signIn(login: String, password: String) {
-        val loginBody = LoginRequestBody(login, password)
+    private fun signIn() {
+        val loginBody = LoginRequestBody(state.value.login, state.value.password)
 
         viewModelScope.launch(Dispatchers.IO) {
             authRepository.login(loginBody)

@@ -2,6 +2,7 @@ package com.example.mobile_moviescatalog2023.View.SplashScreen
 
 import android.util.Log
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -35,7 +36,7 @@ fun SplashScreen(
     onNavigationRequested: (navigationEffect: SplashContract.Effect.Navigation) -> Unit
 ) {
     FilmusTheme {
-        Box(modifier = Modifier.fillMaxSize()) {
+        Box(modifier = Modifier.fillMaxSize().background(Color.Black)) {
             Image(
                 painterResource(R.drawable.launch_screen_bg),
                 contentDescription = null,

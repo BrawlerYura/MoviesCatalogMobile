@@ -99,7 +99,7 @@ fun RegistrationScreen(
 
                 NameBox(state, onEventSent)
 
-                GenderBox(onEventSent)
+                GenderBox(state, onEventSent)
 
                 LoginBox(state, onEventSent)
 
@@ -109,6 +109,7 @@ fun RegistrationScreen(
 
                 Button(
                     onClick = {
+                        onEventSent(RegistrationContract.Event.TransferBody)
                         onNavigationRequested(RegistrationContract.Effect.Navigation.NextScreen)
                     },
                     shape = RoundedCornerShape(10.dp),
@@ -345,6 +346,7 @@ fun BirthDateBox(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun GenderBox(
+    state: RegistrationContract.State,
     onEventSent: (event: RegistrationContract.Event) -> Unit
 ) {
     Column(
@@ -361,7 +363,6 @@ fun GenderBox(
             ),
             modifier = Modifier.padding(bottom = 8.dp)
         )
-        val selectedIndex = remember { mutableStateOf(0) }
         val items = listOf("Мужчина", "Женщина")
             Row(
                 modifier = Modifier
@@ -377,19 +378,15 @@ fun GenderBox(
                             .weight(1f)
                             .padding(2.dp),
                         onClick = {
-                            selectedIndex.value = index
-                            onEventSent(RegistrationContract.Event.SaveGenderEvent(
-                                if(selectedIndex.value == 0) { "male" }
-                                else { "female" }
-                            ))
+                            onEventSent(RegistrationContract.Event.SaveGenderEvent(index))
                         },
                         colors = CardDefaults.cardColors(
-                            containerColor = if (selectedIndex.value == index) {
+                            containerColor = if (state.gender == index) {
                                 MaterialTheme.colorScheme.onBackground
                             } else {
                                 MaterialTheme.colorScheme.surface
                             },
-                            contentColor = if (selectedIndex.value == index)
+                            contentColor = if (state.gender == index)
                                 Color(0xFF404040)
                             else
                                 Color(0xFF909499)

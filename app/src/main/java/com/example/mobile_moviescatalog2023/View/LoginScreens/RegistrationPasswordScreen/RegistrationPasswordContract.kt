@@ -10,11 +10,19 @@ class RegistrationPasswordContract {
         class SavePasswordEvent(val password: String) : Event()
 
         class SaveRepeatedPasswordEvent(val repPassword: String) : Event()
+
+        object SignUp : Event()
     }
 
     data class State(
         val password: String,
-        val repPassword: String
+        val repPassword: String,
+        val userName: String,
+        val name: String,
+        val email: String,
+        val birthDate: String,
+        val gender: Int,
+        val isSuccess: Boolean?
     ) : ViewState
 
     sealed class Effect : ViewSideEffect {
