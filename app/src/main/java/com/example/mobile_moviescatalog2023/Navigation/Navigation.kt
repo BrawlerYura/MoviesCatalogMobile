@@ -1,58 +1,44 @@
 package com.example.mobile_moviescatalog2023.Navigation
 
-import androidx.compose.animation.EnterTransition
-import androidx.compose.animation.ExitTransition
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
 import androidx.compose.runtime.Composable
-import androidx.lifecycle.ViewModel
-import androidx.navigation.NavBackStackEntry
 import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.mobile_moviescatalog2023.View.IntroducingScreen.IntroducingScreen
-import com.example.mobile_moviescatalog2023.View.LoginScreens.LoginScreen.LoginContract
-import com.example.mobile_moviescatalog2023.View.LoginScreens.LoginScreen.LoginScreen
-import com.example.mobile_moviescatalog2023.View.LoginScreens.LoginScreen.LoginViewModel
-import com.example.mobile_moviescatalog2023.View.LoginScreens.RegistrationScreen.RegistrationPasswordScreen
-import com.example.mobile_moviescatalog2023.View.LoginScreens.RegistrationScreen.RegistrationScreen
-import com.example.mobile_moviescatalog2023.View.MainScreen.MainScreen
-import com.example.mobile_moviescatalog2023.View.SplashScreen.SplashScreen
+import com.example.mobile_moviescatalog2023.Navigation.AuthNavigation.NavGraphAuth
+import com.example.mobile_moviescatalog2023.Navigation.MovieCatalogNavigation.NavGraphMovie
+import com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.MainScreen.MovieNavigationContract
 import org.koin.androidx.compose.getViewModel
 
 
 @Composable
 fun Navigation() {
     val navController = rememberNavController()
-
     NavHost(
         navController = navController,
-        startDestination = Screen.Splash.route
-    ) {
-        composable(Screen.Splash.route) {
-            SplashScreenDestination(navController)
-        }
+        startDestination = Screen.Splash.route,
+        route = "root"
+    )
+    {
+        NavGraphAuth(navController)
+        NavGraphMovie(
+            navController,
+            onNavigationRequested = { navigationEffect ->
+            when (navigationEffect) {
+                is MovieNavigationContract.Effect.Navigation.ToFilm -> { }
 
-        composable(Screen.Main.route) {
-            MainScreen(navController = navController)
-        }
+                is MovieNavigationContract.Effect.Navigation.ToFavorite -> {
+                    navController.navigate(Screen.Favorite.route)
+                }
 
-        composable(Screen.Introducing.route) {
-            IntroducingScreenDestination(navController = navController)
-        }
+                is MovieNavigationContract.Effect.Navigation.ToProfile -> {
+                    navController.navigate(Screen.Profile.route)
+                }
 
-        composable(Screen.Login.route) {
-            LoginScreenDestination(navController)
+                is MovieNavigationContract.Effect.Navigation.ToMain -> {
+                    navController.navigate(Screen.Main.route)
+                }
+            }
         }
-
-        composable(Screen.Registration.route) {
-            RegistratinoScreenDestination(navController)
-        }
-
-        composable(Screen.RegPass.route) {
-            RegistrationPasswordScreenDestination(navController)
-        }
+        )
     }
 }
 
@@ -63,4 +49,6 @@ sealed class Screen(val route: String){
     object Registration: Screen(route = "registration_screen")
     object RegPass: Screen(route = "reg_pass_screen")
     object Main: Screen(route = "main_screen")
+    object Favorite: Screen(route = "favorite_screen")
+    object Profile: Screen(route = "profile_screen")
 }

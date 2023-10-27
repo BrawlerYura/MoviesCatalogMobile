@@ -44,7 +44,7 @@ private val DarkColorScheme = darkColorScheme(
 
 @Composable
 fun FilmusTheme(
-    content: @Composable() () -> Unit
+    content: @Composable () -> Unit
 ) {
     val colorScheme = DarkColorScheme
 
