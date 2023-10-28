@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import com.example.mobile_moviescatalog2023.R
 import com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.BottomNavigationBar
 import com.example.mobile_moviescatalog2023.ui.theme.FilmusTheme
 
@@ -23,7 +24,7 @@ fun MainScreen(
                 )
             }
         ) {
-            Text("main")
+            BuildLoginSlider()
         }
     }
 }
