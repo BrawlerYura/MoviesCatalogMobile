@@ -10,7 +10,7 @@ android {
 
     defaultConfig {
         applicationId = "com.example.mobile_moviescatalog2023"
-        minSdk = 30
+        minSdk = 33
         targetSdk = 33
         versionCode = 1
         versionName = "1.0"

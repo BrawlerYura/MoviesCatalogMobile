@@ -30,7 +30,8 @@ fun FavoriteScreen(
         Scaffold(
             bottomBar = {
                 BottomNavigationBar(
-                    onBottomNavigationRequested
+                    onBottomNavigationRequested,
+                    1
                 )
             }
         ) {

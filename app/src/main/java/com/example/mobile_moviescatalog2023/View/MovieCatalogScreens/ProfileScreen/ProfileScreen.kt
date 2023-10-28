@@ -32,7 +32,8 @@ fun ProfileScreen(
         Scaffold(
             bottomBar = {
                 BottomNavigationBar(
-                    onBottomNavigationRequested
+                    onBottomNavigationRequested,
+                    2
                 )
             }
         ) {

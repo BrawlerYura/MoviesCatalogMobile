@@ -19,9 +19,17 @@ class RegistrationViewModel: BaseViewModel<RegistrationContract.Event, Registrat
             name = state.value.name,
             password = "",
             email = state.value.email,
-            birthDate = state.value.birthDate,
+            birthDate = formatDateToApi(state.value.birthDate),
             gender = state.value.gender
         )
+    }
+
+    private fun formatDateToApi(date: String): String {
+        val parts = date.split(".")
+        val year = parts[0]
+        val month = parts[1]
+        val day = parts[2]
+        return "$year-$month-${day}T08:12:28.534Z"
     }
     private fun saveName(name: String) {
         setState { copy(name = name) }
@@ -43,7 +51,7 @@ class RegistrationViewModel: BaseViewModel<RegistrationContract.Event, Registrat
         setState { copy(birthDate = birthDate) }
     }
 
-    private fun formatDate(date: String): String {
+    private fun formatDateToTextField(date: String): String {
         val parts = date.split("-")
         val year = parts[0]
         val month = parts[1]
@@ -66,7 +74,7 @@ class RegistrationViewModel: BaseViewModel<RegistrationContract.Event, Registrat
             is RegistrationContract.Event.SaveEmailEvent -> saveEmail(event.email)
             is RegistrationContract.Event.SaveLoginEvent -> saveLogin(event.login)
             is RegistrationContract.Event.SaveBirthDateEvent -> saveBirthDate(event.birthDate)
-            is RegistrationContract.Event.SaveBirthDateWithFormatEvent -> saveBirthDate(formatDate(event.birthDate))
+            is RegistrationContract.Event.SaveBirthDateWithFormatEvent -> saveBirthDate(formatDateToTextField(event.birthDate))
             is RegistrationContract.Event.TransferBody -> transferBody()
         }
     }

@@ -3,7 +3,7 @@ package com.example.mobile_moviescatalog2023.Network.Auth
 import android.util.Log
 import com.example.mobile_moviescatalog2023.Network.DataClasses.RequestBodies.LoginRequestBody
 import com.example.mobile_moviescatalog2023.Network.DataClasses.RequestBodies.RegisterRequestBody
-import com.example.mobile_moviescatalog2023.Network.DataClasses.Responses.TokenResponse
+import com.example.mobile_moviescatalog2023.Network.DataClasses.Models.TokenModel
 import com.example.mobile_moviescatalog2023.Network.Network
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -13,7 +13,7 @@ import kotlinx.coroutines.flow.flowOn
 class AuthRepository {
     private val api: AuthApi = Network.getAuthApi()
 
-    suspend fun register(body: RegisterRequestBody): Flow<Result<TokenResponse>> = flow {
+    suspend fun register(body: RegisterRequestBody): Flow<Result<TokenModel>> = flow {
         try {
             val tokenData = api.register(body)
             Network.token = tokenData.token
@@ -24,7 +24,7 @@ class AuthRepository {
         }
     }.flowOn(Dispatchers.IO)
 
-    suspend fun login(body: LoginRequestBody): Flow<Result<TokenResponse>> = flow {
+    suspend fun login(body: LoginRequestBody): Flow<Result<TokenModel>> = flow {
         try {
             val tokenData = api.login(body)
             Network.token = tokenData.token

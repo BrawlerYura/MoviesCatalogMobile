@@ -55,24 +55,19 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.util.lerp
 import coil.compose.AsyncImage
-import coil.request.ImageRequest
-import coil.size.Scale
+import coil.compose.rememberImagePainter
 import com.example.mobile_moviescatalog2023.R
 import kotlinx.coroutines.delay
 import kotlin.math.absoluteValue
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun BuildLoginSlider() {
-    val sliderList = listOf(
-        R.drawable.media_0,
-        R.drawable.media_1,
-        R.drawable.media_2,
-        R.drawable.media_3,
-    )
-    val pagerState = rememberPagerState(initialPage = 0, pageCount = { sliderList.size })
+fun Carousel(
+    state: MainScreenContract.State
+) {
+
+    val pagerState = rememberPagerState(initialPage = 0, pageCount = { state.movieCarouselList.size })
 
     LaunchedEffect(pagerState) {
         while (true) {
@@ -94,8 +89,8 @@ fun BuildLoginSlider() {
             contentPadding = PaddingValues(horizontal = 0.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) { page ->
-            Image(
-                painter = painterResource(sliderList[page]),
+            AsyncImage(
+                model = state.movieCarouselList[page].poster,
                 contentDescription = null,
                 modifier = Modifier.fillMaxSize(),
                 contentScale = ContentScale.Crop
@@ -105,7 +100,7 @@ fun BuildLoginSlider() {
             modifier = Modifier
                 .padding(bottom = 10.dp)
                 .clip(RoundedCornerShape(28.dp))
-                .background(color = Color.Gray.copy(alpha = 0.3f))
+                .background(color = Color.Black.copy(alpha = 0.25f))
                 .align(Alignment.BottomCenter)
         ) {
             Row(
@@ -113,7 +108,7 @@ fun BuildLoginSlider() {
                     .padding(8.dp),
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
             ) {
-                repeat(sliderList.size) { pageIndex ->
+                repeat(state.movieCarouselList.size) { pageIndex ->
                     Box(
                         modifier = Modifier
                             .size(8.dp)

@@ -21,18 +21,6 @@ fun MainScreenDestination(
         onNavigationRequested = { navigationEffect ->
             when (navigationEffect) {
                 is MainScreenContract.Effect.Navigation.ToFilm -> { }
-
-                is MainScreenContract.Effect.Navigation.ToFavorite -> {
-                    navController.navigate(Screen.Favorite.route)
-                }
-
-                is MainScreenContract.Effect.Navigation.ToProfile -> {
-                    navController.navigate(Screen.Profile.route)
-                }
-
-                is MainScreenContract.Effect.Navigation.ToMain -> {
-                    navController.navigate(Screen.Main.route)
-                }
             }
         },
         onBottomNavigationRequested
