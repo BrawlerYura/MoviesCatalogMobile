@@ -17,7 +17,7 @@ class RegistrationContract {
 
         class SaveBirthDateEvent(val birthDate: String) : Event()
 
-        class SaveBirthDateWithFormatEvent(val birthDate: String) : Event()
+        class SaveBirthDateWithFormatEvent(val birthDate: Long?) : Event()
 
         object TransferBody: Event()
     }

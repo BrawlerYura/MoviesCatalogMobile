@@ -16,7 +16,7 @@ class ProfileScreenContract {
 
         class SaveBirthDateEvent(val birthDate: String) : Event()
 
-        class SaveBirthDateWithFormatEvent(val birthDate: String) : Event()
+        class SaveBirthDateWithFormatEvent(val birthDate: Long?) : Event()
 
         class SaveUserIconUrl(val userIconUrl: String) : Event()
     }

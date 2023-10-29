@@ -1,8 +1,12 @@
 package com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.ProfileScreen
 
+import android.annotation.SuppressLint
 import com.example.mobile_moviescatalog2023.Network.Auth.AuthRepository
 import com.example.mobile_moviescatalog2023.View.AuthScreens.LoginScreen.LoginContract
 import com.example.mobile_moviescatalog2023.View.Base.BaseViewModel
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.TimeZone
 
 class ProfileScreenViewModel(
 ): BaseViewModel<ProfileScreenContract.Event, ProfileScreenContract.State, ProfileScreenContract.Effect>() {
@@ -53,11 +57,16 @@ class ProfileScreenViewModel(
         setState { copy(birthDate = birthDate) }
     }
 
-    private fun formatDateToTextField(date: String): String {
-        val parts = date.split("-")
-        val year = parts[0]
-        val month = parts[1]
-        val day = parts[2]
-        return "$day.$month.$year"
+    @SuppressLint("SimpleDateFormat")
+    private fun formatDateToTextField(selectedDateMillis: Long?): String {
+        if (selectedDateMillis == null) {
+            return ""
+        }
+
+        val dateFormat = SimpleDateFormat("dd.MM.yyyy")
+        dateFormat.timeZone = TimeZone.getTimeZone("UTC")
+
+        val date = Date(selectedDateMillis)
+        return dateFormat.format(date)
     }
 }

@@ -24,14 +24,20 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.DatePicker
+import androidx.compose.material3.DatePickerDefaults
+import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -47,17 +53,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
-import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavHostController
 import com.example.mobile_moviescatalog2023.R
 import com.example.mobile_moviescatalog2023.ui.theme.FilmusTheme
 import com.example.mobile_moviescatalog2023.ui.theme.interFamily
-import com.maxkeppeker.sheets.core.models.base.UseCaseState
-import com.maxkeppeler.sheets.calendar.CalendarDialog
-import com.maxkeppeler.sheets.calendar.models.CalendarConfig
-import com.maxkeppeler.sheets.calendar.models.CalendarSelection
-import com.maxkeppeler.sheets.calendar.models.CalendarStyle
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -278,12 +276,14 @@ fun MailBox(
     }
 }
 
+@SuppressLint("UnrememberedMutableState")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BirthDateBox(
     state: RegistrationContract.State,
     onEventSent: (event: RegistrationContract.Event) -> Unit
 ) {
+    val openDialog = remember { mutableStateOf(false) }
     Column(
         modifier = Modifier.fillMaxWidth().padding(bottom = 20.dp),
         horizontalAlignment = Alignment.Start
@@ -298,20 +298,38 @@ fun BirthDateBox(
             ),
             modifier = Modifier.padding(bottom = 8.dp)
         )
-
-        val calendarState = UseCaseState()
-
-        CalendarDialog(
-            state = calendarState,
-            config = CalendarConfig(
-                monthSelection = true,
-                yearSelection = true,
-                style = CalendarStyle.MONTH
-            ),
-            selection = CalendarSelection.Date { date ->
-                onEventSent(RegistrationContract.Event.SaveBirthDateWithFormatEvent(date.toString()))
+        if (openDialog.value) {
+            val datePickerState = rememberDatePickerState()
+            val confirmEnabled = derivedStateOf { datePickerState.selectedDateMillis != null }
+            DatePickerDialog(
+                onDismissRequest = {
+                    openDialog.value = false
+                },
+                colors = DatePickerDefaults.colors(containerColor = MaterialTheme.colorScheme.surface),
+                confirmButton = {
+                    TextButton(
+                        onClick = {
+                            openDialog.value = false
+                            onEventSent(RegistrationContract.Event.SaveBirthDateWithFormatEvent(datePickerState.selectedDateMillis))
+                        },
+                        enabled = confirmEnabled.value
+                    ) {
+                        Text("OK")
+                    }
+                },
+                dismissButton = {
+                    TextButton(
+                        onClick = {
+                            openDialog.value = false
+                        }
+                    ) {
+                        Text("Cancel")
+                    }
+                }
+            ) {
+                DatePicker(state = datePickerState)
             }
-        )
+        }
 
         val maxLength = 10
         OutlinedTextField(
@@ -329,7 +347,7 @@ fun BirthDateBox(
             },
             singleLine = true,
             trailingIcon = {
-                IconButton(onClick = { calendarState.show() }) {
+                IconButton(onClick = { openDialog.value = true }) {
                     Icon(
                         imageVector = Icons.Default.DateRange,
                         contentDescription = null

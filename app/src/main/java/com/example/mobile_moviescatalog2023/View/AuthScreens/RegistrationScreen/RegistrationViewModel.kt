@@ -1,7 +1,11 @@
 package com.example.mobile_moviescatalog2023.View.AuthScreens.RegistrationScreen
 
+import android.annotation.SuppressLint
 import com.example.mobile_moviescatalog2023.Network.DataClasses.RequestBodies.RegisterRequestBody
 import com.example.mobile_moviescatalog2023.View.Base.BaseViewModel
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.TimeZone
 
 class SharedRegisterDataService {
     companion object {
@@ -26,9 +30,9 @@ class RegistrationViewModel: BaseViewModel<RegistrationContract.Event, Registrat
 
     private fun formatDateToApi(date: String): String {
         val parts = date.split(".")
-        val year = parts[0]
+        val year = parts[2]
         val month = parts[1]
-        val day = parts[2]
+        val day = parts[0]
         return "$year-$month-${day}T08:12:28.534Z"
     }
     private fun saveName(name: String) {
@@ -51,12 +55,17 @@ class RegistrationViewModel: BaseViewModel<RegistrationContract.Event, Registrat
         setState { copy(birthDate = birthDate) }
     }
 
-    private fun formatDateToTextField(date: String): String {
-        val parts = date.split("-")
-        val year = parts[0]
-        val month = parts[1]
-        val day = parts[2]
-        return "$day.$month.$year"
+    @SuppressLint("SimpleDateFormat")
+    private fun formatDateToTextField(selectedDateMillis: Long?): String {
+        if (selectedDateMillis == null) {
+            return ""
+        }
+
+        val dateFormat = SimpleDateFormat("dd.MM.yyyy")
+        dateFormat.timeZone = TimeZone.getTimeZone("UTC")
+
+        val date = Date(selectedDateMillis)
+        return dateFormat.format(date)
     }
 
     override fun setInitialState() = RegistrationContract.State(
