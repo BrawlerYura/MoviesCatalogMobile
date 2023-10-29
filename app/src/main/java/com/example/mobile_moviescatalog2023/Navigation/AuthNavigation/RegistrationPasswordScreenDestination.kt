@@ -19,8 +19,11 @@ fun RegistrationPasswordScreenDestination(navController: NavHostController) {
         onNavigationRequested = { navigationEffect ->
             when (navigationEffect) {
                 is RegistrationPasswordContract.Effect.Navigation.ToMain -> {
-                    navController.popBackStack()
-                    navController.navigate(Screen.Main.route)
+                    navController.navigate(Screen.Main.route) {
+                        popUpTo(Screen.Introducing.route) {
+                            inclusive = true
+                        }
+                    }
                 }
 
                 is RegistrationPasswordContract.Effect.Navigation.ToLogin -> {
