@@ -314,7 +314,7 @@ fun BirthDateBox(
                         },
                         enabled = confirmEnabled.value
                     ) {
-                        Text("OK")
+                        Text(stringResource(R.string.ok))
                     }
                 },
                 dismissButton = {
@@ -323,7 +323,7 @@ fun BirthDateBox(
                             openDialog.value = false
                         }
                     ) {
-                        Text("Cancel")
+                        Text(stringResource(R.string.refuse))
                     }
                 }
             ) {
@@ -381,7 +381,7 @@ fun GenderBox(
             ),
             modifier = Modifier.padding(bottom = 8.dp)
         )
-        val items = listOf("Мужчина", "Женщина")
+        val items = listOf(stringResource(R.string.male), stringResource(R.string.female))
             Row(
                 modifier = Modifier
                     .fillMaxWidth()

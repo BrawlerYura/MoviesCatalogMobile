@@ -13,7 +13,6 @@
     <string name="login_prompt">Войдите</string>
     <string name="repeat_password">Повторите пароль</string>
 
-
     <string name="name_label">Имя</string>
     <string name="gender_label">Пол</string>
     <string name="email_label">Электронная почта</string>
@@ -22,4 +21,10 @@
     <string name="password_label">Пароль</string>
     <string name="male">Мужчина</string>
     <string name="female">Женщина</string>
+
+    <string name="catalog">Каталог</string>
+    <string name="save">Сохранить</string>
+    <string name="refuse">Отмена</string>
+    <string name="url_to_profile_icon">Ссылка на аватар</string>
+    <string name="ok">Ок</string>
 </resources>

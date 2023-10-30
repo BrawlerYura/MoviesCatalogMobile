@@ -6,14 +6,19 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.outlined.Close
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DatePicker
@@ -35,16 +40,20 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.BiasAlignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
 import com.example.mobile_moviescatalog2023.R
+import com.example.mobile_moviescatalog2023.View.AuthScreens.IntroducingScreen.IntroducingContract
 import com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.BottomNavigationBar
 import com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.MainScreen.MovieNavigationContract
 import com.example.mobile_moviescatalog2023.ui.theme.FilmusTheme
@@ -68,12 +77,83 @@ fun ProfileScreen(
             }
         ) {
             Column(modifier = Modifier.padding(16.dp)) {
+                ProfileBox()
                 MailBox(state, onEventSent)
+                ProfileIconUrlBox(state, onEventSent)
                 NameBox(state, onEventSent)
                 GenderBox(state, onEventSent)
                 BirthDateBox(state, onEventSent)
+
+                Button(
+                    onClick = {
+                    },
+                    shape = RoundedCornerShape(10.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(42.dp)
+                ) {
+                    Text(
+                        text = stringResource(R.string.save),
+                        style = TextStyle(
+                            fontFamily = interFamily,
+                            fontWeight = FontWeight.W600,
+                            fontSize = 15.sp,
+                            color = MaterialTheme.colorScheme.onPrimary,
+                            textAlign = TextAlign.Center
+                        )
+                    )
+                }
+
+                Button(
+                    onClick = {
+                    },
+                    shape = RoundedCornerShape(10.dp),
+                    modifier = Modifier
+                        .padding(top = 15.dp)
+                        .fillMaxWidth()
+                        .height(42.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color(0xFF292929),
+                    ),
+                ) {
+                    Text(
+                        text = stringResource(R.string.refuse),
+                        style = TextStyle(
+                            fontFamily = interFamily,
+                            fontWeight = FontWeight.W600,
+                            fontSize = 15.sp,
+                            color = MaterialTheme.colorScheme.primary,
+                            textAlign = TextAlign.Center
+                        ),
+                    )
+                }
             }
         }
+    }
+}
+
+@Composable
+fun ProfileBox() {
+    Column(
+        modifier = Modifier.padding(bottom = 20.dp).fillMaxWidth(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(6.dp)
+        ) {
+        AsyncImage(
+            model = R.drawable.logo,
+            contentDescription = null,
+            modifier = Modifier.height(88.dp).width(88.dp).clip(CircleShape),
+            contentScale = ContentScale.Crop
+        )
+        Text(
+            text = "Name",
+            style = TextStyle(
+                fontFamily = interFamily,
+                fontWeight = FontWeight.W700,
+                fontSize = 24.sp,
+                color = MaterialTheme.colorScheme.onBackground
+            ),
+        )
     }
 }
 
@@ -89,6 +169,57 @@ fun NameBox(
     ) {
         Text(
             text = stringResource(R.string.name_label),
+            style = TextStyle(
+                fontFamily = interFamily,
+                fontWeight = FontWeight.W500,
+                fontSize = 15.sp,
+                color = MaterialTheme.colorScheme.onBackground
+            ),
+            modifier = Modifier.padding(bottom = 8.dp)
+        )
+
+        OutlinedTextField(
+            value = state.name,
+            colors = TextFieldDefaults.outlinedTextFieldColors(),
+            textStyle = TextStyle(
+                fontFamily = interFamily,
+                fontWeight = FontWeight.W400,
+                fontSize = 15.sp
+            ),
+            onValueChange = {
+                onEventSent(ProfileScreenContract.Event.SaveNameEvent(it))
+            },
+            singleLine = true,
+            trailingIcon = {
+                if (state.name.isNotEmpty()) {
+                    IconButton(onClick = {
+                        onEventSent(ProfileScreenContract.Event.SaveNameEvent(""))
+                    }) {
+                        Icon(
+                            imageVector = Icons.Outlined.Close,
+                            contentDescription = null
+                        )
+                    }
+                }
+            },
+            shape = RoundedCornerShape(10.dp),
+            modifier = Modifier.fillMaxWidth()
+        )
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun ProfileIconUrlBox(
+    state: ProfileScreenContract.State,
+    onEventSent: (event: ProfileScreenContract.Event) -> Unit
+) {
+    Column(
+        modifier = Modifier.fillMaxWidth().padding(bottom = 15.dp),
+        horizontalAlignment = Alignment.Start
+    ) {
+        Text(
+            text = stringResource(R.string.url_to_profile_icon),
             style = TextStyle(
                 fontFamily = interFamily,
                 fontWeight = FontWeight.W500,
@@ -217,7 +348,7 @@ fun BirthDateBox(
                         },
                         enabled = confirmEnabled.value
                     ) {
-                        Text("OK")
+                        Text(stringResource(R.string.ok))
                     }
                 },
                 dismissButton = {
@@ -226,7 +357,7 @@ fun BirthDateBox(
                             openDialog.value = false
                         }
                     ) {
-                        Text("Cancel")
+                        Text(stringResource(R.string.refuse))
                     }
                 }
             ) {
@@ -284,11 +415,11 @@ fun GenderBox(
             ),
             modifier = Modifier.padding(bottom = 8.dp)
         )
-        val items = listOf("Мужчина", "Женщина")
+        val items = listOf(stringResource(R.string.male), stringResource(R.string.female))
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(42.dp)
+                .height(48.dp)
                 .clip(RoundedCornerShape(8.dp))
                 .background(MaterialTheme.colorScheme.surface),
             horizontalArrangement = Arrangement.Center

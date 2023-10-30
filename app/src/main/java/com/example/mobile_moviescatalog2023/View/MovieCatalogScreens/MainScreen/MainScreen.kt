@@ -28,12 +28,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.example.mobile_moviescatalog2023.Network.DataClasses.Models.MovieElementModel
+import com.example.mobile_moviescatalog2023.R
 import com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.BottomNavigationBar
 import com.example.mobile_moviescatalog2023.ui.theme.FilmusTheme
 import com.example.mobile_moviescatalog2023.ui.theme.interFamily
@@ -90,7 +92,7 @@ fun MovieListScreen(
         }
         item {
             Text(
-                text = "Каталог",
+                text = stringResource(R.string.catalog),
                 style = TextStyle(
                     fontFamily = interFamily,
                     fontWeight = FontWeight.W700,
@@ -173,7 +175,7 @@ fun FilmCard(item: MovieElementModel) {
                                     fontFamily = interFamily,
                                     fontWeight = FontWeight.W400,
                                     fontSize = 13.sp,
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                                    color = MaterialTheme.colorScheme.onBackground
                                 ),
                                 modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp)
                             )
