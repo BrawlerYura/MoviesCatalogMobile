@@ -23,6 +23,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -38,6 +39,7 @@ import com.example.mobile_moviescatalog2023.Network.DataClasses.Models.MovieElem
 import com.example.mobile_moviescatalog2023.Network.DataClasses.Models.ReviewShortModel
 import com.example.mobile_moviescatalog2023.R
 import com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.BottomNavigationBar
+import com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.FavoriteScreen.FavoriteScreenContract
 import com.example.mobile_moviescatalog2023.ui.theme.FilmusTheme
 import com.example.mobile_moviescatalog2023.ui.theme.interFamily
 
@@ -49,7 +51,7 @@ fun MainScreen(
     onNavigationRequested: (navigationEffect: MainScreenContract.Effect.Navigation) -> Unit,
     onBottomNavigationRequested: (navigationEffect: MovieNavigationContract.Effect.Navigation) -> Unit
 ) {
-    if(state.isRequestingMoviePage) {
+    LaunchedEffect(true) {
         onEventSent(MainScreenContract.Event.GetMovies)
     }
 

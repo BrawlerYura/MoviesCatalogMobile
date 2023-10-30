@@ -28,4 +28,8 @@
     <string name="url_to_profile_icon">Ссылка на аватар</string>
     <string name="ok">Ок</string>
     <string name="logout">Выйти из аккаунта</string>
+    <string name="favorite">Любимое</string>
+
+    <string name="no_favorite_movies">У вас пока нет любимых фильмов</string>
+    <string name="choose_favorite_film">Выберите понравившийся фильм в каталоге и добавьте его в любимые</string>
 </resources>

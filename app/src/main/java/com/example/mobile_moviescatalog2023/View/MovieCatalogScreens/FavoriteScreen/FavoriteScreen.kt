@@ -2,21 +2,46 @@ package com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.FavoriteSc
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Arrangement.Absolute.spacedBy
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
+import com.example.mobile_moviescatalog2023.Network.DataClasses.Models.MovieElementModel
+import com.example.mobile_moviescatalog2023.R
 import com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.BottomNavigationBar
+import com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.MainScreen.FilmRating
 import com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.MainScreen.MovieNavigationContract
 import com.example.mobile_moviescatalog2023.ui.theme.FilmusTheme
+import com.example.mobile_moviescatalog2023.ui.theme.interFamily
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
@@ -26,6 +51,10 @@ fun FavoriteScreen(
     onNavigationRequested: (navigationEffect: FavoriteScreenContract.Effect.Navigation) -> Unit,
     onBottomNavigationRequested: (navigationEffect: MovieNavigationContract.Effect.Navigation) -> Unit
 ) {
+    LaunchedEffect(true) {
+        onEventSent(FavoriteScreenContract.Event.GetFavoriteMovies)
+    }
+
     FilmusTheme {
         Scaffold(
             bottomBar = {
@@ -35,7 +64,95 @@ fun FavoriteScreen(
                 )
             }
         ) {
-            Text("fav")
+            LazyColumn(
+                modifier = Modifier.fillMaxSize().padding(16.dp),
+                verticalArrangement = spacedBy(20.dp)
+            ) {
+                item {
+                    Box(modifier = Modifier.fillMaxWidth())
+                    {
+                        Text(
+                            text = stringResource(R.string.favorite),
+                            style = TextStyle(
+                                fontFamily = interFamily,
+                                fontWeight = FontWeight.W700,
+                                fontSize = 24.sp,
+                                color = MaterialTheme.colorScheme.onBackground
+                            ),
+                            modifier = Modifier.align(Alignment.Center)
+                        )
+                    }
+                }
+                if(state.favoriteMovieList != null) {
+                    items(state.favoriteMovieList) {
+                        FilmCard(it)
+                    }
+                } else {
+                    item {
+                        Column(modifier = Modifier.fillMaxWidth().padding(top = 100.dp)) {
+                            Text(
+                                text = stringResource(R.string.no_favorite_movies),
+                                style = TextStyle(
+                                    fontFamily = interFamily,
+                                    fontWeight = FontWeight.W700,
+                                    fontSize = 20.sp,
+                                    color = MaterialTheme.colorScheme.onBackground
+                                ),
+                                modifier = Modifier.align(Alignment.CenterHorizontally)
+                            )
+
+                            Text(
+                                text = stringResource(R.string.choose_favorite_film),
+                                style = TextStyle(
+                                    fontFamily = interFamily,
+                                    fontWeight = FontWeight.W400,
+                                    fontSize = 15.sp,
+                                    color = MaterialTheme.colorScheme.onBackground
+                                ),
+                                modifier = Modifier.align(Alignment.CenterHorizontally)
+                            )
+                        }
+                    }
+                }
+                item{
+                    Spacer(modifier = Modifier.height(67.dp))
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun FilmCard(item: MovieElementModel) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth().height(130.dp)
+    ) {
+        Box(modifier = Modifier.fillMaxHeight().width(95.dp)) {
+            AsyncImage(
+                model = item.poster,
+                contentDescription = null,
+                modifier = Modifier.fillMaxSize().clip(RoundedCornerShape(3.dp)),
+                contentScale = ContentScale.Crop
+            )
+        }
+        Column(
+            modifier = Modifier.padding(start = 10.dp),
+            horizontalAlignment = Alignment.Start
+        ) {
+            Box(
+                modifier = Modifier.padding(bottom = 4.dp)
+            ) {
+                Text(
+                    text = item.name ?: "",
+                    style = TextStyle(
+                        fontFamily = interFamily,
+                        fontWeight = FontWeight.W700,
+                        fontSize = 16.sp,
+                        color = MaterialTheme.colorScheme.onBackground
+                    )
+                )
+            }
         }
     }
 }

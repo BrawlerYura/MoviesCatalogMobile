@@ -1,6 +1,7 @@
 package com.example.mobile_moviescatalog2023.Network
 
 import com.example.mobile_moviescatalog2023.Network.Auth.AuthApi
+import com.example.mobile_moviescatalog2023.Network.FavoriteMovies.FavoriteMoviesApi
 import com.example.mobile_moviescatalog2023.Network.Movie.MovieApi
 import com.example.mobile_moviescatalog2023.Network.User.UserApi
 import okhttp3.OkHttpClient
@@ -41,4 +42,5 @@ object Network {
     fun getAuthApi(): AuthApi = retrofit.create(AuthApi::class.java)
     fun getUserApi(): UserApi = retrofit.create(UserApi::class.java)
     fun getMovieApi(): MovieApi = retrofit.create(MovieApi::class.java)
+    fun getFavoriteMoviesApi(): FavoriteMoviesApi = retrofit.create(FavoriteMoviesApi::class.java)
 }
