@@ -8,8 +8,9 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 
-class FavoriteMoviesRepository {
-    private val api: FavoriteMoviesApi = Network.getFavoriteMoviesApi()
+class FavoriteMoviesRepository(
+    private val api: FavoriteMoviesApi
+) {
 
     suspend fun getFavoriteMovies(): Flow<Result<MoviesListModel>> = flow {
         try {

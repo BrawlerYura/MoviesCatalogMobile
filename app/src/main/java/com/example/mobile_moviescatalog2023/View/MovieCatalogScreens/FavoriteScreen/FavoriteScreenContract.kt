@@ -13,7 +13,7 @@ class FavoriteScreenContract {
     }
 
     data class State(
-        val favoriteMovieList: List<MovieElementModel>?,
+        val favoriteMovieList: List<ThreeFavoriteMovies>?,
         val isSuccess: Boolean?,
     ) : ViewState
 

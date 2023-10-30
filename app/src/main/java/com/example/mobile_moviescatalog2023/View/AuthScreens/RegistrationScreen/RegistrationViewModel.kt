@@ -13,9 +13,9 @@ class SharedRegisterDataService {
     }
 }
 
-class RegistrationViewModel: BaseViewModel<RegistrationContract.Event, RegistrationContract.State, RegistrationContract.Effect>() {
+class RegistrationViewModel(
 
-
+): BaseViewModel<RegistrationContract.Event, RegistrationContract.State, RegistrationContract.Effect>() {
 
     private fun transferBody() {
         SharedRegisterDataService.sharedData = RegisterRequestBody(

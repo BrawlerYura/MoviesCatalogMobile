@@ -2,6 +2,8 @@ package com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.FavoriteSc
 
 import androidx.lifecycle.viewModelScope
 import com.example.mobile_moviescatalog2023.Network.Auth.AuthRepository
+import com.example.mobile_moviescatalog2023.Network.DataClasses.Models.MovieElementModel
+import com.example.mobile_moviescatalog2023.Network.DataClasses.Models.MoviesListModel
 import com.example.mobile_moviescatalog2023.Network.FavoriteMovies.FavoriteMoviesRepository
 import com.example.mobile_moviescatalog2023.View.AuthScreens.LoginScreen.LoginContract
 import com.example.mobile_moviescatalog2023.View.Base.BaseViewModel
@@ -10,9 +12,9 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 class FavoriteScreenViewModel(
+    val favoriteMoviesRepository: FavoriteMoviesRepository
 ): BaseViewModel<FavoriteScreenContract.Event, FavoriteScreenContract.State, FavoriteScreenContract.Effect>() {
 
-    val favoriteMoviesRepository = FavoriteMoviesRepository()
     override fun setInitialState() = FavoriteScreenContract.State(
         favoriteMovieList = null,
         isSuccess = null
@@ -30,7 +32,7 @@ class FavoriteScreenViewModel(
                 .collect { result ->
                     result.onSuccess {
                         setState { copy(
-                            favoriteMovieList = it.movies,
+                            favoriteMovieList = fromListToPartsMovies(it.movies),
                             isSuccess = true
                         ) }
                     }.onFailure {
@@ -41,4 +43,29 @@ class FavoriteScreenViewModel(
                 }
         }
     }
+
+    private fun fromListToPartsMovies(movies: List<MovieElementModel>?): List<ThreeFavoriteMovies>? {
+        var listFavoriteMovies: List<ThreeFavoriteMovies> = listOf()
+        return if(movies != null) {
+            var index = 0
+            while(index < movies.count() - 3) {
+                val threeFavoriteMovies = ThreeFavoriteMovies(
+                    firstMovie = movies[index],
+                    secondMovie = movies[index + 1],
+                    thirdMovie = movies[index + 2]
+                )
+                index += 3
+                listFavoriteMovies += threeFavoriteMovies
+            }
+            listFavoriteMovies
+        } else {
+            null
+        }
+    }
 }
+
+data class ThreeFavoriteMovies (
+    val firstMovie: MovieElementModel?,
+    val secondMovie: MovieElementModel?,
+    val thirdMovie: MovieElementModel?
+)

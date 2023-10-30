@@ -12,11 +12,11 @@ import org.koin.dsl.module
 import org.koin.androidx.viewmodel.dsl.viewModel
 
 val ViewModelModule = module {
-    viewModel { SplashScreenViewModel(androidContext()) }
-    viewModel { LoginViewModel(androidContext()) }
+    viewModel { SplashScreenViewModel(androidContext(), userRepository = get()) }
+    viewModel { LoginViewModel(androidContext(), authRepository = get()) }
     viewModel { RegistrationViewModel() }
-    viewModel { RegistrationPasswordViewModel(androidContext()) }
-    viewModel { MainScreenViewModel() }
-    viewModel { FavoriteScreenViewModel() }
-    viewModel { ProfileScreenViewModel(androidContext()) }
+    viewModel { RegistrationPasswordViewModel(androidContext(), authRepository = get()) }
+    viewModel { MainScreenViewModel(movieRepository = get()) }
+    viewModel { FavoriteScreenViewModel(favoriteMoviesRepository = get()) }
+    viewModel { ProfileScreenViewModel(androidContext(), userRepository = get(), authRepository = get()) }
 }

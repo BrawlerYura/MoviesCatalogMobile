@@ -13,10 +13,10 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
 class SplashScreenViewModel (
-    private val context: Context
+    private val context: Context,
+    private val userRepository: UserRepository
 ) : BaseViewModel<SplashContract.Event, SplashContract.State, SplashContract.Effect>() {
 
-    private val userRepository = UserRepository()
     override fun setInitialState() = SplashContract.State(
         isTryingGetToken = true,
         isSuccessGetToken = false

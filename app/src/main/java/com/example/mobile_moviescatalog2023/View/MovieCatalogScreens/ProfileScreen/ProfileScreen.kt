@@ -85,7 +85,7 @@ fun ProfileScreen(
             }
         ) {
             Column(modifier = Modifier.padding(16.dp).verticalScroll(rememberScrollState())) {
-                ProfileBox(state, onEventSent)
+                ProfileBox(state)
                 MailBox(state, onEventSent)
                 ProfileIconUrlBox(state, onEventSent)
                 NameBox(state, onEventSent)
@@ -160,8 +160,7 @@ fun ProfileScreen(
 
 @Composable
 fun ProfileBox(
-    state: ProfileScreenContract.State,
-    onEventSent: (event: ProfileScreenContract.Event) -> Unit
+    state: ProfileScreenContract.State
 ) {
     Column(
         modifier = Modifier.padding(bottom = 20.dp).fillMaxWidth(),
@@ -175,7 +174,7 @@ fun ProfileBox(
             contentScale = ContentScale.Crop
         )
         Text(
-            text = state.name,
+            text = state.nickName ?: "",
             style = TextStyle(
                 fontFamily = interFamily,
                 fontWeight = FontWeight.W700,

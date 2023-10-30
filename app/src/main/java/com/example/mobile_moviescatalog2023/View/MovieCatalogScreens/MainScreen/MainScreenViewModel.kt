@@ -12,9 +12,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class MainScreenViewModel(
+    private val movieRepository: MovieRepository
 ): BaseViewModel<MainScreenContract.Event, MainScreenContract.State, MainScreenContract.Effect>() {
-
-    private val movieRepository = MovieRepository()
     override fun setInitialState() = MainScreenContract.State(
         currentMoviePage = 1,
         isRequestingMoviePage = true,

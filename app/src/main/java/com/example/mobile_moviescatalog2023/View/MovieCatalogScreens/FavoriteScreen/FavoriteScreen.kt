@@ -1,13 +1,9 @@
 package com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.FavoriteScreen
 
 import android.annotation.SuppressLint
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Arrangement.Absolute.spacedBy
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ExperimentalLayoutApi
-import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -27,18 +23,17 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.example.mobile_moviescatalog2023.Network.DataClasses.Models.MovieElementModel
 import com.example.mobile_moviescatalog2023.R
 import com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.BottomNavigationBar
-import com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.MainScreen.FilmRating
 import com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.MainScreen.MovieNavigationContract
 import com.example.mobile_moviescatalog2023.ui.theme.FilmusTheme
 import com.example.mobile_moviescatalog2023.ui.theme.interFamily
@@ -77,15 +72,16 @@ fun FavoriteScreen(
                                 fontFamily = interFamily,
                                 fontWeight = FontWeight.W700,
                                 fontSize = 24.sp,
-                                color = MaterialTheme.colorScheme.onBackground
+                                color = MaterialTheme.colorScheme.onBackground,
+                                textAlign = TextAlign.Center
                             ),
                             modifier = Modifier.align(Alignment.Center)
                         )
                     }
                 }
-                if(state.favoriteMovieList != null) {
+                if(state.favoriteMovieList?.isEmpty() == false) {
                     items(state.favoriteMovieList) {
-                        FilmCard(it)
+                        FavoriteFilmCard(it)
                     }
                 } else {
                     item {
@@ -95,8 +91,9 @@ fun FavoriteScreen(
                                 style = TextStyle(
                                     fontFamily = interFamily,
                                     fontWeight = FontWeight.W700,
-                                    fontSize = 20.sp,
-                                    color = MaterialTheme.colorScheme.onBackground
+                                    fontSize = 23.sp,
+                                    color = MaterialTheme.colorScheme.onBackground,
+                                    textAlign = TextAlign.Center
                                 ),
                                 modifier = Modifier.align(Alignment.CenterHorizontally)
                             )
@@ -107,9 +104,10 @@ fun FavoriteScreen(
                                     fontFamily = interFamily,
                                     fontWeight = FontWeight.W400,
                                     fontSize = 15.sp,
-                                    color = MaterialTheme.colorScheme.onBackground
+                                    color = MaterialTheme.colorScheme.onBackground,
+                                    textAlign = TextAlign.Center
                                 ),
-                                modifier = Modifier.align(Alignment.CenterHorizontally)
+                                modifier = Modifier.align(Alignment.CenterHorizontally).padding(top = 5.dp)
                             )
                         }
                     }
@@ -123,33 +121,74 @@ fun FavoriteScreen(
 }
 
 @Composable
-fun FilmCard(item: MovieElementModel) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth().height(130.dp)
+fun FavoriteFilmCard(item: ThreeFavoriteMovies) {
+    Column(
+        modifier = Modifier.fillMaxWidth(),
+        verticalArrangement = spacedBy(20.dp)
     ) {
-        Box(modifier = Modifier.fillMaxHeight().width(95.dp)) {
-            AsyncImage(
-                model = item.poster,
-                contentDescription = null,
-                modifier = Modifier.fillMaxSize().clip(RoundedCornerShape(3.dp)),
-                contentScale = ContentScale.Crop
-            )
-        }
-        Column(
-            modifier = Modifier.padding(start = 10.dp),
-            horizontalAlignment = Alignment.Start
+        Row(
+            modifier = Modifier.fillMaxWidth()
         ) {
-            Box(
-                modifier = Modifier.padding(bottom = 4.dp)
-            ) {
+            if (item.firstMovie != null) {
+                Column(verticalArrangement = spacedBy(5.dp)) {
+                    AsyncImage(
+                        model = item.firstMovie.poster,
+                        contentDescription = null,
+                        modifier = Modifier.fillMaxWidth(0.5f).height(205.dp).padding(end = 15.dp)
+                            .clip(RoundedCornerShape(3.dp)),
+                        contentScale = ContentScale.Crop
+                    )
+                    Text(
+                        text = item.firstMovie.name ?: "",
+                        style = TextStyle(
+                            fontFamily = interFamily,
+                            fontWeight = FontWeight.W500,
+                            fontSize = 14.sp,
+                            color = MaterialTheme.colorScheme.onBackground,
+                            textAlign = TextAlign.Center
+                        ),
+                    )
+                }
+            }
+            Column(verticalArrangement = spacedBy(5.dp)) {
+                if (item.secondMovie != null) {
+                    AsyncImage(
+                        model = item.secondMovie.poster,
+                        contentDescription = null,
+                        modifier = Modifier.fillMaxWidth().height(205.dp)
+                            .clip(RoundedCornerShape(3.dp)),
+                        contentScale = ContentScale.Crop
+                    )
+                    Text(
+                        text = item.secondMovie.name ?: "",
+                        style = TextStyle(
+                            fontFamily = interFamily,
+                            fontWeight = FontWeight.W500,
+                            fontSize = 14.sp,
+                            color = MaterialTheme.colorScheme.onBackground,
+                            textAlign = TextAlign.Center
+                        ),
+                    )
+                }
+            }
+        }
+        Column(verticalArrangement = spacedBy(5.dp)) {
+            if (item.thirdMovie != null) {
+                AsyncImage(
+                    model = item.thirdMovie.poster,
+                    contentDescription = null,
+                    modifier = Modifier.fillMaxWidth().height(205.dp)
+                        .clip(RoundedCornerShape(3.dp)),
+                    contentScale = ContentScale.Crop
+                )
                 Text(
-                    text = item.name ?: "",
+                    text = item.thirdMovie.name ?: "",
                     style = TextStyle(
                         fontFamily = interFamily,
-                        fontWeight = FontWeight.W700,
-                        fontSize = 16.sp,
-                        color = MaterialTheme.colorScheme.onBackground
+                        fontWeight = FontWeight.W500,
+                        fontSize = 14.sp,
+                        color = MaterialTheme.colorScheme.onBackground,
+                        textAlign = TextAlign.Center
                     )
                 )
             }

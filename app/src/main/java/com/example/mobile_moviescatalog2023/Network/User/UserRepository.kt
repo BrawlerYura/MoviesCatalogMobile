@@ -7,9 +7,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 
-class UserRepository {
-    private val api: UserApi = Network.getUserApi()
-
+class UserRepository(
+    private val api: UserApi
+) {
     suspend fun getProfile() = flow {
         try {
             emit(Result.success(api.getProfile()))

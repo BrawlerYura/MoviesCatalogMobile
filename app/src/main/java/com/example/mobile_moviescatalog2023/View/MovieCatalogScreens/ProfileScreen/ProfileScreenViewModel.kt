@@ -18,11 +18,10 @@ import java.util.Date
 import java.util.TimeZone
 
 class ProfileScreenViewModel(
-    private val context: Context
+    private val context: Context,
+    private val userRepository: UserRepository,
+    private val authRepository: AuthRepository
 ): BaseViewModel<ProfileScreenContract.Event, ProfileScreenContract.State, ProfileScreenContract.Effect>() {
-
-    private val userRepository = UserRepository()
-    private val authRepository = AuthRepository()
     override fun setInitialState() = ProfileScreenContract.State(
         id = "",
         nickName = null,

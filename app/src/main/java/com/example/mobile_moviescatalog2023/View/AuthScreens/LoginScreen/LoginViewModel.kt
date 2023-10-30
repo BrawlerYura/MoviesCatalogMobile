@@ -10,10 +10,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class LoginViewModel(
-    private val context: Context
+    private val context: Context,
+    private val authRepository: AuthRepository
 ): BaseViewModel<LoginContract.Event, LoginContract.State, LoginContract.Effect>() {
-
-    private val authRepository = AuthRepository()
 
     override fun setInitialState() = LoginContract.State(
         login = "",

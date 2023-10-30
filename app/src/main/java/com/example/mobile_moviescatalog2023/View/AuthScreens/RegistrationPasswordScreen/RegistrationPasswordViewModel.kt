@@ -11,15 +11,13 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class RegistrationPasswordViewModel(
-    private val context: Context
+    private val context: Context,
+    private val authRepository: AuthRepository
 ): BaseViewModel<
         RegistrationPasswordContract.Event,
         RegistrationPasswordContract.State,
         RegistrationPasswordContract.Effect
         >() {
-
-
-    private val authRepository = AuthRepository()
 
     private fun savePassword(password: String) {
         setState { copy(password = password) }

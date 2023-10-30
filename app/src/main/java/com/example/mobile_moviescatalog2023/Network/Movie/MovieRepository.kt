@@ -9,8 +9,9 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 
-class MovieRepository {
-    private val api: MovieApi = Network.getMovieApi()
+class MovieRepository(
+    private val api: MovieApi
+) {
 
     suspend fun getMovies(page: Int): Flow<Result<MoviesModel>> = flow {
         try {

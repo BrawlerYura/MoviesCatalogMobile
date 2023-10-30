@@ -10,8 +10,9 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 
-class AuthRepository {
-    private val api: AuthApi = Network.getAuthApi()
+class AuthRepository(
+    private val api: AuthApi
+) {
 
     suspend fun register(body: RegisterRequestBody): Flow<Result<TokenModel>> = flow {
         try {
