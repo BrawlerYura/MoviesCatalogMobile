@@ -21,6 +21,7 @@ class ProfileScreenContract {
         class SaveUserIconUrl(val userIconUrl: String) : Event()
 
         object LoadUserDetails : Event()
+        object Logout : Event()
     }
 
     data class State(
@@ -36,7 +37,7 @@ class ProfileScreenContract {
 
     sealed class Effect : ViewSideEffect {
         sealed class Navigation : Effect() {
-            object ToMain : Navigation()
+            object ToIntroducing : Navigation()
             object ToFilm : Navigation()
             object ToFavorite : Navigation()
             object ToProfile : Navigation()

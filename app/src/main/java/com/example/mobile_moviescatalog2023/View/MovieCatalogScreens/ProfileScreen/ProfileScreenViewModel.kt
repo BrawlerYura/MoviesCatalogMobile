@@ -22,6 +22,7 @@ class ProfileScreenViewModel(
 ): BaseViewModel<ProfileScreenContract.Event, ProfileScreenContract.State, ProfileScreenContract.Effect>() {
 
     private val userRepository = UserRepository()
+    private val authRepository = AuthRepository()
     override fun setInitialState() = ProfileScreenContract.State(
         id = "",
         nickName = null,
@@ -42,6 +43,7 @@ class ProfileScreenViewModel(
             is ProfileScreenContract.Event.SaveBirthDateEvent -> saveBirthDate(birthDate = event.birthDate)
             is ProfileScreenContract.Event.SaveBirthDateWithFormatEvent -> saveBirthDate(formatDateToTextField(event.birthDate))
             is ProfileScreenContract.Event.LoadUserDetails -> loadUserDetails()
+            is ProfileScreenContract.Event.Logout -> logout()
         }
     }
 
@@ -146,6 +148,13 @@ class ProfileScreenViewModel(
                         setState { copy(isSuccess = false) }
                     }
                 }
+        }
+    }
+
+    private fun logout() {
+        viewModelScope.launch(Dispatchers.IO) {
+            authRepository.logout()
+            TokenManager(context).deleteToken()
         }
     }
 }

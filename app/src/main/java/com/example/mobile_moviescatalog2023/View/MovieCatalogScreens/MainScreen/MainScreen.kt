@@ -217,11 +217,14 @@ private fun calculateFilmRating(reviews: List<ReviewShortModel>?): FilmRating? {
     if(reviews == null) {
         return null
     } else {
+
         var sumScore: Int = 0
         reviews.forEach {
             sumScore += it.rating
         }
+
         val rating = (sumScore.toDouble() / reviews.count())
+
         val color = when {
             rating >= 1.0 && rating < 2.0 -> {
                 Color(0xFFE64646)
@@ -251,8 +254,11 @@ private fun calculateFilmRating(reviews: List<ReviewShortModel>?): FilmRating? {
                 Color(0xFF4BB34B)
             }
         }
+
         return FilmRating(
-            rating = rating.toString().substring(startIndex = 0, endIndex = 3),
+            rating = if (rating != 10.0)
+            { rating.toString().substring(startIndex = 0, endIndex = 3) }
+            else { rating.toString().substring(startIndex = 0, endIndex = 4) },
             color = color
         )
     }

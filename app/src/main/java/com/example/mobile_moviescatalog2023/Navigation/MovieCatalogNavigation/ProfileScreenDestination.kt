@@ -33,8 +33,12 @@ fun ProfileScreenDestination(
                     navController.navigate(Screen.Profile.route)
                 }
 
-                is ProfileScreenContract.Effect.Navigation.ToMain -> {
-                    navController.navigate(Screen.Main.route)
+                is ProfileScreenContract.Effect.Navigation.ToIntroducing -> {
+                    navController.navigate(Screen.Introducing.route) {
+                        popUpTo(Screen.Main.route) {
+                            inclusive = true
+                        }
+                    }
                 }
             }
         },

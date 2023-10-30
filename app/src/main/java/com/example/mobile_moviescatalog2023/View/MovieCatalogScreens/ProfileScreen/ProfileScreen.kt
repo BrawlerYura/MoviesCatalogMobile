@@ -2,6 +2,7 @@ package com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.ProfileScr
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -54,6 +55,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.example.mobile_moviescatalog2023.R
+import com.example.mobile_moviescatalog2023.View.AuthScreens.RegistrationScreen.RegistrationContract
 import com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.BottomNavigationBar
 import com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.MainScreen.MovieNavigationContract
 import com.example.mobile_moviescatalog2023.ui.theme.FilmusTheme
@@ -131,6 +133,23 @@ fun ProfileScreen(
                         ),
                     )
                 }
+
+                Text(
+                    text = stringResource(R.string.logout),
+                    style = TextStyle(
+                        fontFamily = interFamily,
+                        fontWeight = FontWeight.W600,
+                        fontSize = 14.sp,
+                        color = MaterialTheme.colorScheme.primary,
+                    ),
+                    modifier = Modifier
+                        .padding(top = 24.dp)
+                        .clickable {
+                        onEventSent(ProfileScreenContract.Event.Logout)
+                        onNavigationRequested(ProfileScreenContract.Effect.Navigation.ToIntroducing)
+                    }
+                        .align(Alignment.CenterHorizontally)
+                )
                 Spacer(modifier = Modifier.height(67.dp))
             }
         }
