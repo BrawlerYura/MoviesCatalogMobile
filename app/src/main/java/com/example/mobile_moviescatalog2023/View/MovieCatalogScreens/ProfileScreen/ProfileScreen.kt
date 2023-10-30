@@ -2,18 +2,21 @@ package com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.ProfileScr
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.outlined.Close
@@ -22,7 +25,6 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DatePicker
-import androidx.compose.material3.DatePickerColors
 import androidx.compose.material3.DatePickerDefaults
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -40,7 +42,6 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.BiasAlignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -53,7 +54,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.example.mobile_moviescatalog2023.R
-import com.example.mobile_moviescatalog2023.View.AuthScreens.IntroducingScreen.IntroducingContract
 import com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.BottomNavigationBar
 import com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.MainScreen.MovieNavigationContract
 import com.example.mobile_moviescatalog2023.ui.theme.FilmusTheme
@@ -80,8 +80,8 @@ fun ProfileScreen(
                 )
             }
         ) {
-            Column(modifier = Modifier.padding(16.dp)) {
-                ProfileBox()
+            Column(modifier = Modifier.padding(16.dp).verticalScroll(rememberScrollState())) {
+                ProfileBox(state, onEventSent)
                 MailBox(state, onEventSent)
                 ProfileIconUrlBox(state, onEventSent)
                 NameBox(state, onEventSent)
@@ -131,26 +131,30 @@ fun ProfileScreen(
                         ),
                     )
                 }
+                Spacer(modifier = Modifier.height(67.dp))
             }
         }
     }
 }
 
 @Composable
-fun ProfileBox() {
+fun ProfileBox(
+    state: ProfileScreenContract.State,
+    onEventSent: (event: ProfileScreenContract.Event) -> Unit
+) {
     Column(
         modifier = Modifier.padding(bottom = 20.dp).fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(6.dp)
-        ) {
+    ) {
         AsyncImage(
-            model = R.drawable.logo,
+            model = state.userIconUrl ?: R.drawable.logo,
             contentDescription = null,
             modifier = Modifier.height(88.dp).width(88.dp).clip(CircleShape),
             contentScale = ContentScale.Crop
         )
         Text(
-            text = "Name",
+            text = state.name,
             style = TextStyle(
                 fontFamily = interFamily,
                 fontWeight = FontWeight.W700,
@@ -234,7 +238,7 @@ fun ProfileIconUrlBox(
         )
 
         OutlinedTextField(
-            value = state.name,
+            value = state.userIconUrl ?: "",
             colors = TextFieldDefaults.outlinedTextFieldColors(),
             textStyle = TextStyle(
                 fontFamily = interFamily,
@@ -242,13 +246,13 @@ fun ProfileIconUrlBox(
                 fontSize = 15.sp
             ),
             onValueChange = {
-                onEventSent(ProfileScreenContract.Event.SaveNameEvent(it))
+                onEventSent(ProfileScreenContract.Event.SaveUserIconUrl(it))
             },
             singleLine = true,
             trailingIcon = {
                 if (state.name.isNotEmpty()) {
                     IconButton(onClick = {
-                        onEventSent(ProfileScreenContract.Event.SaveNameEvent(""))
+                        onEventSent(ProfileScreenContract.Event.SaveUserIconUrl(""))
                     }) {
                         Icon(
                             imageVector = Icons.Outlined.Close,

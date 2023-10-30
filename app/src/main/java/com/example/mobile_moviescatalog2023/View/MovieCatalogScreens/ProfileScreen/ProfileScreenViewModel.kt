@@ -58,7 +58,7 @@ class ProfileScreenViewModel(
         val year = parts[0]
         val month = parts[1]
         val day = parts[2]
-        return "${day[0]}${day[1]}.$month.$year"
+        return "${day.substring(startIndex = 0, endIndex = 2)}.$month.$year"
     }
 
     private fun saveName(name: String) {

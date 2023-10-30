@@ -4,6 +4,8 @@ import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.example.mobile_moviescatalog2023.Network.DataClasses.Models.MovieElementModel
 import com.example.mobile_moviescatalog2023.Network.DataClasses.Models.MoviesModel
+import com.example.mobile_moviescatalog2023.Network.DataClasses.Models.ReviewModel
+import com.example.mobile_moviescatalog2023.Network.DataClasses.Models.ReviewShortModel
 import com.example.mobile_moviescatalog2023.Network.Movie.MovieRepository
 import com.example.mobile_moviescatalog2023.View.Base.BaseViewModel
 import kotlinx.coroutines.Dispatchers
@@ -27,6 +29,7 @@ class MainScreenViewModel(
         when (event) {
             is MainScreenContract.Event.UpdateMoviesList -> updateMoviesList()
             is MainScreenContract.Event.GetMovies -> getMovies()
+            is MainScreenContract.Event.CalculateFilmScore -> calculateFilmScore(reviews = event.reviews)
         }
     }
 
@@ -72,5 +75,19 @@ class MainScreenViewModel(
                     }
                 }
         }
+    }
+
+    private fun calculateFilmScore(reviews: List<ReviewShortModel>?): String {
+        val _reviews: List<ReviewShortModel>
+        if(reviews == null) {
+            return ""
+        } else {
+            _reviews = reviews
+        }
+        var sumScore: Int = 0
+        _reviews.forEach {
+            sumScore += it.rating
+        }
+        return (sumScore / _reviews.count()).toString()
     }
 }

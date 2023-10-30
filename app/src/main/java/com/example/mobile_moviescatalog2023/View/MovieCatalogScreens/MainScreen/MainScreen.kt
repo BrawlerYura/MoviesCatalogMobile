@@ -1,7 +1,6 @@
 package com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.MainScreen
 
 import android.annotation.SuppressLint
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -27,6 +26,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -35,6 +35,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.example.mobile_moviescatalog2023.Network.DataClasses.Models.MovieElementModel
+import com.example.mobile_moviescatalog2023.Network.DataClasses.Models.ReviewShortModel
 import com.example.mobile_moviescatalog2023.R
 import com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.BottomNavigationBar
 import com.example.mobile_moviescatalog2023.ui.theme.FilmusTheme
@@ -123,12 +124,37 @@ fun FilmCard(item: MovieElementModel) {
         modifier = Modifier
         .padding(bottom = 16.dp, start = 16.dp, end = 16.dp).fillMaxWidth().height(130.dp)
     ) {
-        AsyncImage(
-            model = item.poster,
-            contentDescription = null,
-            modifier = Modifier.fillMaxHeight().width(95.dp).clip(RoundedCornerShape(3.dp)),
-            contentScale = ContentScale.Crop
-        )
+        Box(modifier = Modifier.fillMaxHeight().width(95.dp)) {
+            AsyncImage(
+                model = item.poster,
+                contentDescription = null,
+                modifier = Modifier.fillMaxSize().clip(RoundedCornerShape(3.dp)),
+                contentScale = ContentScale.Crop
+            )
+            val filmRating: FilmRating? = calculateFilmRating(item.reviews)
+            if(filmRating != null) {
+                Box(
+                    modifier = Modifier
+                        .padding(2.dp)
+                        .align(Alignment.TopStart)
+                        .height(20.dp)
+                        .width(37.dp)
+                        .clip(RoundedCornerShape(5.dp))
+                        .background(color = filmRating.color)
+                ) {
+                    Text(
+                        text = filmRating.rating,
+                        style = TextStyle(
+                            fontFamily = interFamily,
+                            fontWeight = FontWeight.W700,
+                            fontSize = 13.sp,
+                            color = Color(0xFF1D1D1D)
+                        ),
+                        modifier = Modifier.align(Alignment.Center)
+                    )
+                }
+            }
+        }
         Column(
             modifier = Modifier.padding(start = 10.dp),
             horizontalAlignment = Alignment.Start
@@ -186,3 +212,53 @@ fun FilmCard(item: MovieElementModel) {
         }
     }
 }
+
+private fun calculateFilmRating(reviews: List<ReviewShortModel>?): FilmRating? {
+    if(reviews == null) {
+        return null
+    } else {
+        var sumScore: Int = 0
+        reviews.forEach {
+            sumScore += it.rating
+        }
+        val rating = (sumScore.toDouble() / reviews.count())
+        val color = when {
+            rating >= 1.0 && rating < 2.0 -> {
+                Color(0xFFE64646)
+            }
+            rating >= 2.0 && rating < 3.0 -> {
+                Color(0xFFE64646)
+            }
+            rating >= 3.0 && rating < 4.0 -> {
+                Color(0xFFF05C44)
+            }
+            rating >= 4.0 && rating < 5.0 -> {
+                Color(0xFFFFA000)
+            }
+            rating >= 5.0 && rating < 6.0 -> {
+                Color(0xFFFFD54F)
+            }
+            rating >= 6.0 && rating < 7.0 -> {
+                Color(0xFFFFD54F)
+            }
+            rating >= 7.0 && rating < 8.0 -> {
+                Color(0xFFA3CD4A)
+            }
+            rating >= 8.0 && rating < 9.0 -> {
+                Color(0xFFA3CD4A)
+            }
+            else -> {
+                Color(0xFF4BB34B)
+            }
+        }
+        return FilmRating(
+            rating = rating.toString().substring(startIndex = 0, endIndex = 3),
+            color = color
+        )
+    }
+}
+
+data class FilmRating (
+    val rating: String,
+    val color: Color
+)

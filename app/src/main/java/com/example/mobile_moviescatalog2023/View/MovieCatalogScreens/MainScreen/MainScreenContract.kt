@@ -3,6 +3,7 @@ package com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.MainScreen
 import coil.compose.AsyncImagePainter
 import com.example.mobile_moviescatalog2023.Network.DataClasses.Models.MovieElementModel
 import com.example.mobile_moviescatalog2023.Network.DataClasses.Models.MoviesModel
+import com.example.mobile_moviescatalog2023.Network.DataClasses.Models.ReviewShortModel
 import com.example.mobile_moviescatalog2023.View.AuthScreens.LoginScreen.LoginContract
 import com.example.mobile_moviescatalog2023.View.Base.ViewEvent
 import com.example.mobile_moviescatalog2023.View.Base.ViewSideEffect
@@ -13,6 +14,7 @@ class MainScreenContract {
     sealed class Event : ViewEvent {
         object UpdateMoviesList : Event()
         object GetMovies : Event()
+        class CalculateFilmScore(val reviews: List<ReviewShortModel>?) : Event()
     }
 
     data class State(
