@@ -1,22 +1,36 @@
 package com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.ProfileScreen
 
 import android.annotation.SuppressLint
+import android.content.Context
+import androidx.lifecycle.viewModelScope
 import com.example.mobile_moviescatalog2023.Network.Auth.AuthRepository
+import com.example.mobile_moviescatalog2023.Network.DataClasses.Models.ProfileModel
+import com.example.mobile_moviescatalog2023.Network.Network
+import com.example.mobile_moviescatalog2023.Network.User.UserRepository
+import com.example.mobile_moviescatalog2023.TokenManager.TokenManager
 import com.example.mobile_moviescatalog2023.View.AuthScreens.LoginScreen.LoginContract
 import com.example.mobile_moviescatalog2023.View.Base.BaseViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.TimeZone
 
 class ProfileScreenViewModel(
+    private val context: Context
 ): BaseViewModel<ProfileScreenContract.Event, ProfileScreenContract.State, ProfileScreenContract.Effect>() {
 
+    private val userRepository = UserRepository()
     override fun setInitialState() = ProfileScreenContract.State(
+        id = "",
+        nickName = null,
         email = "",
-        userIconUrl = "",
+        userIconUrl = null,
         name = "",
         gender = 0,
-        birthDate = ""
+        birthDate = "",
+        isSuccess = null
     )
 
     override fun handleEvents(event: ProfileScreenContract.Event) {
@@ -27,6 +41,7 @@ class ProfileScreenViewModel(
             is ProfileScreenContract.Event.SaveGenderEvent -> saveGender(gender = event.gender)
             is ProfileScreenContract.Event.SaveBirthDateEvent -> saveBirthDate(birthDate = event.birthDate)
             is ProfileScreenContract.Event.SaveBirthDateWithFormatEvent -> saveBirthDate(formatDateToTextField(event.birthDate))
+            is ProfileScreenContract.Event.LoadUserDetails -> loadUserDetails()
         }
     }
 
@@ -37,6 +52,15 @@ class ProfileScreenViewModel(
         val day = parts[2]
         return "$year-$month-${day}T08:12:28.534Z"
     }
+
+    private fun formatDateFromApi(date: String): String {
+        val parts = date.split("-")
+        val year = parts[0]
+        val month = parts[1]
+        val day = parts[2]
+        return "${day[0]}${day[1]}.$month.$year"
+    }
+
     private fun saveName(name: String) {
         setState { copy(name = name) }
     }
@@ -68,5 +92,60 @@ class ProfileScreenViewModel(
 
         val date = Date(selectedDateMillis)
         return dateFormat.format(date)
+    }
+
+    private fun loadUserDetails()
+    {
+        val dataStore = TokenManager(context)
+
+        viewModelScope.launch(Dispatchers.IO) {
+            val tokenValue = dataStore.getToken.first()
+
+            Network.token = tokenValue.toString()
+
+            userRepository.getProfile()
+                .collect { result ->
+                    result.onSuccess {
+                        setState {copy(
+                                id = it.id,
+                                nickName = it.nickName,
+                                email = it.email,
+                                userIconUrl = it.avatarLink,
+                                name = it.name,
+                                gender = it.gender,
+                                birthDate = formatDateFromApi(it.birthDate),
+                                isSuccess = true
+                            )
+                        }
+                    }.onFailure {
+                        setState { copy(isSuccess = false) }
+                    }
+                }
+        }
+    }
+
+    private fun putUserDetails() {
+        val profileModel = ProfileModel (
+            id = state.value.id,
+            nickName = state.value.nickName,
+            email = state.value.email,
+            avatarLink = state.value.userIconUrl,
+            name = state.value.name,
+            gender = state.value.gender,
+            birthDate = state.value.birthDate
+        )
+        viewModelScope.launch(Dispatchers.IO) {
+            userRepository.putProfile(profileModel)
+                .collect { result ->
+                    result.onSuccess {
+                        setState {copy(
+                            isSuccess = true
+                            )
+                        }
+                    }.onFailure {
+                        setState { copy(isSuccess = false) }
+                    }
+                }
+        }
     }
 }

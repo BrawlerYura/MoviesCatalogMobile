@@ -18,5 +18,5 @@ val ViewModelModule = module {
     viewModel { RegistrationPasswordViewModel(androidContext()) }
     viewModel { MainScreenViewModel() }
     viewModel { FavoriteScreenViewModel() }
-    viewModel { ProfileScreenViewModel() }
+    viewModel { ProfileScreenViewModel(androidContext()) }
 }

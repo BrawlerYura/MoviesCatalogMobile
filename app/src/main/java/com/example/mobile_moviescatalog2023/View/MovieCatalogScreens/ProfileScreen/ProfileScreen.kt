@@ -67,6 +67,10 @@ fun ProfileScreen(
     onNavigationRequested: (navigationEffect: ProfileScreenContract.Effect.Navigation) -> Unit,
     onBottomNavigationRequested: (navigationEffect: MovieNavigationContract.Effect.Navigation) -> Unit
 ) {
+    if(state.isSuccess == null) {
+        onEventSent(ProfileScreenContract.Event.LoadUserDetails)
+    }
+
     FilmusTheme {
         Scaffold(
             bottomBar = {

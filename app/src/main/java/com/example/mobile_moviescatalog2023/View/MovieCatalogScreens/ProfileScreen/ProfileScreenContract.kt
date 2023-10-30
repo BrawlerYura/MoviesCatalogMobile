@@ -19,14 +19,19 @@ class ProfileScreenContract {
         class SaveBirthDateWithFormatEvent(val birthDate: Long?) : Event()
 
         class SaveUserIconUrl(val userIconUrl: String) : Event()
+
+        object LoadUserDetails : Event()
     }
 
     data class State(
+        val id: String,
+        val nickName: String?,
         val email: String,
-        val userIconUrl: String,
+        val userIconUrl: String?,
         val name: String,
         val gender: Int,
-        val birthDate: String
+        val birthDate: String,
+        val isSuccess: Boolean?
     ) : ViewState
 
     sealed class Effect : ViewSideEffect {
