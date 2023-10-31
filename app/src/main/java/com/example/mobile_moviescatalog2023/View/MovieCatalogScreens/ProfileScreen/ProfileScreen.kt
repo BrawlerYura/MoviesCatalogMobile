@@ -33,6 +33,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -63,7 +64,6 @@ import com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.MainScreen.
 import com.example.mobile_moviescatalog2023.ui.theme.FilmusTheme
 import com.example.mobile_moviescatalog2023.ui.theme.interFamily
 
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun ProfileScreen(
     state: ProfileScreenContract.State,
@@ -84,75 +84,81 @@ fun ProfileScreen(
                 )
             }
         ) {
-            Column(modifier = Modifier.padding(16.dp).verticalScroll(rememberScrollState())) {
-                ProfileBox(state)
-                MailBox(state, onEventSent)
-                ProfileIconUrlBox(state, onEventSent)
-                NameBox(state, onEventSent)
-                GenderBox(state, onEventSent)
-                BirthDateBox(state, onEventSent)
-
-                Button(
-                    onClick = {
-                    },
-                    shape = RoundedCornerShape(10.dp),
+            Box(modifier = Modifier.padding(it)) {
+                Column(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .height(42.dp)
+                        .fillMaxSize()
+                        .padding(top = 16.dp, start = 16.dp, end = 16.dp)
+                        .verticalScroll(rememberScrollState())
                 ) {
-                    Text(
-                        text = stringResource(R.string.save),
-                        style = TextStyle(
-                            fontFamily = interFamily,
-                            fontWeight = FontWeight.W600,
-                            fontSize = 15.sp,
-                            color = MaterialTheme.colorScheme.onPrimary,
-                            textAlign = TextAlign.Center
+                    ProfileBox(state)
+                    MailBox(state, onEventSent)
+                    ProfileIconUrlBox(state, onEventSent)
+                    NameBox(state, onEventSent)
+                    GenderBox(state, onEventSent)
+                    BirthDateBox(state, onEventSent)
+
+                    Button(
+                        onClick = {
+                        },
+                        shape = RoundedCornerShape(10.dp),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(42.dp)
+                    ) {
+                        Text(
+                            text = stringResource(R.string.save),
+                            style = TextStyle(
+                                fontFamily = interFamily,
+                                fontWeight = FontWeight.W600,
+                                fontSize = 15.sp,
+                                color = MaterialTheme.colorScheme.onPrimary,
+                                textAlign = TextAlign.Center
+                            )
                         )
-                    )
-                }
+                    }
 
-                Button(
-                    onClick = {
-                    },
-                    shape = RoundedCornerShape(10.dp),
-                    modifier = Modifier
-                        .padding(top = 15.dp)
-                        .fillMaxWidth()
-                        .height(42.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = Color(0xFF292929),
-                    ),
-                ) {
+                    Button(
+                        onClick = {
+                        },
+                        shape = RoundedCornerShape(10.dp),
+                        modifier = Modifier
+                            .padding(top = 15.dp)
+                            .fillMaxWidth()
+                            .height(42.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color(0xFF292929),
+                        ),
+                    ) {
+                        Text(
+                            text = stringResource(R.string.refuse),
+                            style = TextStyle(
+                                fontFamily = interFamily,
+                                fontWeight = FontWeight.W600,
+                                fontSize = 15.sp,
+                                color = MaterialTheme.colorScheme.primary,
+                                textAlign = TextAlign.Center
+                            ),
+                        )
+                    }
+
                     Text(
-                        text = stringResource(R.string.refuse),
+                        text = stringResource(R.string.logout),
                         style = TextStyle(
                             fontFamily = interFamily,
                             fontWeight = FontWeight.W600,
-                            fontSize = 15.sp,
+                            fontSize = 14.sp,
                             color = MaterialTheme.colorScheme.primary,
-                            textAlign = TextAlign.Center
                         ),
+                        modifier = Modifier
+                            .padding(top = 24.dp, bottom = 10.dp)
+                            .clickable {
+                                onEventSent(ProfileScreenContract.Event.Logout)
+                                onNavigationRequested(ProfileScreenContract.Effect.Navigation.ToIntroducing)
+                            }
+                            .align(Alignment.CenterHorizontally)
                     )
                 }
-
-                Text(
-                    text = stringResource(R.string.logout),
-                    style = TextStyle(
-                        fontFamily = interFamily,
-                        fontWeight = FontWeight.W600,
-                        fontSize = 14.sp,
-                        color = MaterialTheme.colorScheme.primary,
-                    ),
-                    modifier = Modifier
-                        .padding(top = 24.dp)
-                        .clickable {
-                        onEventSent(ProfileScreenContract.Event.Logout)
-                        onNavigationRequested(ProfileScreenContract.Effect.Navigation.ToIntroducing)
-                    }
-                        .align(Alignment.CenterHorizontally)
-                )
-                Spacer(modifier = Modifier.height(67.dp))
             }
         }
     }
@@ -185,7 +191,6 @@ fun ProfileBox(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NameBox(
     state: ProfileScreenContract.State,
@@ -208,7 +213,8 @@ fun NameBox(
 
         OutlinedTextField(
             value = state.name,
-            colors = TextFieldDefaults.outlinedTextFieldColors(),
+            colors = OutlinedTextFieldDefaults.colors(
+            ),
             textStyle = TextStyle(
                 fontFamily = interFamily,
                 fontWeight = FontWeight.W400,
@@ -236,7 +242,6 @@ fun NameBox(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProfileIconUrlBox(
     state: ProfileScreenContract.State,
@@ -259,7 +264,8 @@ fun ProfileIconUrlBox(
 
         OutlinedTextField(
             value = state.userIconUrl ?: "",
-            colors = TextFieldDefaults.outlinedTextFieldColors(),
+            colors = OutlinedTextFieldDefaults.colors(
+            ),
             textStyle = TextStyle(
                 fontFamily = interFamily,
                 fontWeight = FontWeight.W400,
@@ -288,7 +294,6 @@ fun ProfileIconUrlBox(
 }
 
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MailBox(
     state: ProfileScreenContract.State,
@@ -310,7 +315,8 @@ fun MailBox(
         )
         OutlinedTextField(
             value = state.email,
-            colors = TextFieldDefaults.outlinedTextFieldColors(),
+            colors = OutlinedTextFieldDefaults.colors(
+            ),
             textStyle = TextStyle(
                 fontFamily = interFamily,
                 fontWeight = FontWeight.W400,

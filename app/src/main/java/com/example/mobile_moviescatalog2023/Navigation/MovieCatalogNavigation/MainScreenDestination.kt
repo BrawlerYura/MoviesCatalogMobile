@@ -20,7 +20,9 @@ fun MainScreenDestination(
         onEventSent = { event ->  viewModel.setEvent(event) },
         onNavigationRequested = { navigationEffect ->
             when (navigationEffect) {
-                is MainScreenContract.Effect.Navigation.ToFilm -> { }
+                is MainScreenContract.Effect.Navigation.ToFilm -> {
+                    navController.navigate(Screen.Film.route)
+                }
             }
         },
         onBottomNavigationRequested

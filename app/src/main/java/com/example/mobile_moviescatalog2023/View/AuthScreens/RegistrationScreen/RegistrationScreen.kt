@@ -32,6 +32,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextFieldDefaults
@@ -174,7 +175,6 @@ fun LoginHeader(onNavigationRequested: (navigationEffect: RegistrationContract.E
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NameBox(
     state: RegistrationContract.State,
@@ -197,7 +197,8 @@ fun NameBox(
 
         OutlinedTextField(
             value = state.name,
-            colors = TextFieldDefaults.outlinedTextFieldColors(),
+            colors = OutlinedTextFieldDefaults.colors(
+            ),
             textStyle = TextStyle(
                 fontFamily = interFamily,
                 fontWeight = FontWeight.W400,
@@ -226,7 +227,6 @@ fun NameBox(
 }
 
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MailBox(
     state: RegistrationContract.State,
@@ -248,7 +248,8 @@ fun MailBox(
         )
         OutlinedTextField(
             value = state.email,
-            colors = TextFieldDefaults.outlinedTextFieldColors(),
+            colors = OutlinedTextFieldDefaults.colors(
+            ),
             textStyle = TextStyle(
                 fontFamily = interFamily,
                 fontWeight = FontWeight.W400,
@@ -426,7 +427,6 @@ fun GenderBox(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LoginBox(
     state: RegistrationContract.State,
@@ -449,7 +449,8 @@ fun LoginBox(
 
         OutlinedTextField(
             value = state.login,
-            colors = TextFieldDefaults.outlinedTextFieldColors(),
+            colors = OutlinedTextFieldDefaults.colors(
+            ),
             textStyle = TextStyle(
                 fontFamily = interFamily,
                 fontWeight = FontWeight.W400,

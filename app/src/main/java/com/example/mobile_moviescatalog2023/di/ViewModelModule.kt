@@ -5,6 +5,7 @@ import com.example.mobile_moviescatalog2023.View.AuthScreens.RegistrationPasswor
 import com.example.mobile_moviescatalog2023.View.AuthScreens.RegistrationScreen.RegistrationViewModel
 import com.example.mobile_moviescatalog2023.View.AuthScreens.SplashScreen.SplashScreenViewModel
 import com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.FavoriteScreen.FavoriteScreenViewModel
+import com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.FilmScreen.FilmScreenViewModel
 import com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.MainScreen.MainScreenViewModel
 import com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.ProfileScreen.ProfileScreenViewModel
 import org.koin.android.ext.koin.androidContext
@@ -19,4 +20,5 @@ val ViewModelModule = module {
     viewModel { MainScreenViewModel(movieRepository = get()) }
     viewModel { FavoriteScreenViewModel(favoriteMoviesRepository = get()) }
     viewModel { ProfileScreenViewModel(androidContext(), userRepository = get(), authRepository = get()) }
+    viewModel { FilmScreenViewModel(movieRepository = get()) }
 }

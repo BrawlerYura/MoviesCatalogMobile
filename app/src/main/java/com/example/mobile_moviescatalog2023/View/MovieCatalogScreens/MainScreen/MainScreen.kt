@@ -2,6 +2,7 @@ package com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.MainScreen
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -43,7 +44,6 @@ import com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.FavoriteScr
 import com.example.mobile_moviescatalog2023.ui.theme.FilmusTheme
 import com.example.mobile_moviescatalog2023.ui.theme.interFamily
 
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun MainScreen(
     state: MainScreenContract.State,
@@ -52,7 +52,9 @@ fun MainScreen(
     onBottomNavigationRequested: (navigationEffect: MovieNavigationContract.Effect.Navigation) -> Unit
 ) {
     LaunchedEffect(true) {
-        onEventSent(MainScreenContract.Event.GetMovies)
+        if(state.movieList.isEmpty()) {
+            onEventSent(MainScreenContract.Event.GetMovies)
+        }
     }
 
     FilmusTheme {
@@ -64,8 +66,10 @@ fun MainScreen(
                 )
             }
         ) {
-            if(!state.isRequestingMoviePage) {
-                MovieListScreen(state, onEventSent)
+            Box(modifier = Modifier.padding(it)) {
+                if (!state.isRequestingMoviePage) {
+                    MovieListScreen(state, onEventSent, onNavigationRequested)
+                }
             }
         }
     }
@@ -74,7 +78,8 @@ fun MainScreen(
 @Composable
 fun MovieListScreen(
     state: MainScreenContract.State,
-    onEventSent: (event: MainScreenContract.Event) -> Unit
+    onEventSent: (event: MainScreenContract.Event) -> Unit,
+    onNavigationRequested: (navigationEffect: MainScreenContract.Effect.Navigation) -> Unit
 ) {
     val lazyListState = rememberLazyListState()
 
@@ -111,20 +116,23 @@ fun MovieListScreen(
             )
         }
         items(state.movieList) {
-            FilmCard(it)
-        }
-        item {
-            Spacer(modifier = Modifier.height(68.dp))
+            FilmCard(it, onNavigationRequested)
         }
     }
 }
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-fun FilmCard(item: MovieElementModel) {
+fun FilmCard(
+    item: MovieElementModel,
+    onNavigationRequested: (navigationEffect: MainScreenContract.Effect.Navigation) -> Unit
+    ) {
     Row(
         modifier = Modifier
         .padding(bottom = 16.dp, start = 16.dp, end = 16.dp).fillMaxWidth().height(130.dp)
+            .clickable {
+                onNavigationRequested(MainScreenContract.Effect.Navigation.ToFilm)
+            }
     ) {
         Box(modifier = Modifier.fillMaxHeight().width(95.dp)) {
             AsyncImage(

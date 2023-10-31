@@ -26,6 +26,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
@@ -35,6 +36,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -166,9 +168,10 @@ fun LoginHeader(onNavigationRequested: (navigationEffect: LoginContract.Effect.N
     ) {
         var isClickable by remember { mutableStateOf(true) }
 
-        Image(
+        Icon(
             painter = painterResource(R.drawable.back_icon),
             contentDescription = null,
+            tint = Color.White,
             modifier = Modifier.height(12.dp).width(12.dp).align(Alignment.CenterStart)
                 .clickable {
                     if (isClickable) {
@@ -195,7 +198,6 @@ fun LoginHeader(onNavigationRequested: (navigationEffect: LoginContract.Effect.N
 }
 
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LoginBox(state: LoginContract.State, onEventSent: (event: LoginContract.Event) -> Unit) {
     Column(
@@ -215,7 +217,8 @@ fun LoginBox(state: LoginContract.State, onEventSent: (event: LoginContract.Even
 
         OutlinedTextField(
             value = state.login,
-            colors = TextFieldDefaults.outlinedTextFieldColors(),
+            colors = OutlinedTextFieldDefaults.colors(
+            ),
             textStyle = TextStyle(
                 fontFamily = interFamily,
                 fontWeight = FontWeight.W400,
@@ -243,7 +246,6 @@ fun LoginBox(state: LoginContract.State, onEventSent: (event: LoginContract.Even
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PasswordBox(state: LoginContract.State, onEventSent: (event: LoginContract.Event) -> Unit) {
     Column(
@@ -266,7 +268,8 @@ fun PasswordBox(state: LoginContract.State, onEventSent: (event: LoginContract.E
             value = state.password,
             keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Password),
             visualTransformation =  if (isTextHidden) PasswordVisualTransformation() else VisualTransformation.None,
-            colors = TextFieldDefaults.outlinedTextFieldColors(),
+            colors = OutlinedTextFieldDefaults.colors(
+            ),
             textStyle = TextStyle(
                 fontFamily = interFamily,
                 fontWeight = FontWeight.W400,

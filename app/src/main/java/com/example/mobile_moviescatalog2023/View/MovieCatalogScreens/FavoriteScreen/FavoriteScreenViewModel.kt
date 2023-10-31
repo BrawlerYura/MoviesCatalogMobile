@@ -1,5 +1,6 @@
 package com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.FavoriteScreen
 
+import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.example.mobile_moviescatalog2023.Network.Auth.AuthRepository
 import com.example.mobile_moviescatalog2023.Network.DataClasses.Models.MovieElementModel
@@ -31,6 +32,9 @@ class FavoriteScreenViewModel(
             favoriteMoviesRepository.getFavoriteMovies()
                 .collect { result ->
                     result.onSuccess {
+                        it.movies?.forEach {
+                            Log.e("a", it.name ?: "")
+                        }
                         setState { copy(
                             favoriteMovieList = fromListToPartsMovies(it.movies),
                             isSuccess = true
@@ -48,12 +52,30 @@ class FavoriteScreenViewModel(
         var listFavoriteMovies: List<ThreeFavoriteMovies> = listOf()
         return if(movies != null) {
             var index = 0
-            while(index < movies.count() - 3) {
-                val threeFavoriteMovies = ThreeFavoriteMovies(
-                    firstMovie = movies[index],
-                    secondMovie = movies[index + 1],
-                    thirdMovie = movies[index + 2]
-                )
+            while(index < movies.count()) {
+                val threeFavoriteMovies = when(movies.count() - index) {
+                    2 -> {
+                        ThreeFavoriteMovies(
+                            firstMovie = movies[index],
+                            secondMovie = movies[index + 1],
+                            thirdMovie = null
+                        )
+                    }
+                    1 -> {
+                        ThreeFavoriteMovies(
+                            firstMovie = null,
+                            secondMovie = null,
+                            thirdMovie = movies[index]
+                        )
+                    }
+                    else -> {
+                        ThreeFavoriteMovies(
+                            firstMovie = movies[index],
+                            secondMovie = movies[index + 1],
+                            thirdMovie = movies[index + 2]
+                        )
+                    }
+                }
                 index += 3
                 listFavoriteMovies += threeFavoriteMovies
             }

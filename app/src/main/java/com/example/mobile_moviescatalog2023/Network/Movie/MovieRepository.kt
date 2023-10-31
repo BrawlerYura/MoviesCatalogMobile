@@ -12,7 +12,6 @@ import kotlinx.coroutines.flow.flowOn
 class MovieRepository(
     private val api: MovieApi
 ) {
-
     suspend fun getMovies(page: Int): Flow<Result<MoviesModel>> = flow {
         try {
             emit(Result.success(api.getMovies(page)))

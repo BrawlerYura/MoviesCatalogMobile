@@ -30,7 +30,6 @@ fun BottomNavigationBar(
     )
     Box(
         modifier = Modifier
-            .height(68.dp)
             .background(Color(0xFF545458).copy(0.65f))
     ) {
         NavigationBar(containerColor = Color(0xFF161616), modifier = Modifier.padding(top = 1.dp)) {

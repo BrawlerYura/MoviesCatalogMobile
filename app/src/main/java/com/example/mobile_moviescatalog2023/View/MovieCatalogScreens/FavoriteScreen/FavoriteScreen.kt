@@ -1,6 +1,7 @@
 package com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.FavoriteScreen
 
 import android.annotation.SuppressLint
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement.Absolute.spacedBy
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -38,7 +39,6 @@ import com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.MainScreen.
 import com.example.mobile_moviescatalog2023.ui.theme.FilmusTheme
 import com.example.mobile_moviescatalog2023.ui.theme.interFamily
 
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun FavoriteScreen(
     state: FavoriteScreenContract.State,
@@ -59,61 +59,61 @@ fun FavoriteScreen(
                 )
             }
         ) {
-            LazyColumn(
-                modifier = Modifier.fillMaxSize().padding(16.dp),
-                verticalArrangement = spacedBy(20.dp)
-            ) {
-                item {
-                    Box(modifier = Modifier.fillMaxWidth())
-                    {
-                        Text(
-                            text = stringResource(R.string.favorite),
-                            style = TextStyle(
-                                fontFamily = interFamily,
-                                fontWeight = FontWeight.W700,
-                                fontSize = 24.sp,
-                                color = MaterialTheme.colorScheme.onBackground,
-                                textAlign = TextAlign.Center
-                            ),
-                            modifier = Modifier.align(Alignment.Center)
-                        )
-                    }
-                }
-                if(state.favoriteMovieList?.isEmpty() == false) {
-                    items(state.favoriteMovieList) {
-                        FavoriteFilmCard(it)
-                    }
-                } else {
+            Box(modifier = Modifier.padding(it)) {
+                LazyColumn(
+                    modifier = Modifier.fillMaxSize().padding(16.dp),
+                    verticalArrangement = spacedBy(20.dp)
+                ) {
                     item {
-                        Column(modifier = Modifier.fillMaxWidth().padding(top = 100.dp)) {
+                        Box(modifier = Modifier.fillMaxWidth())
+                        {
                             Text(
-                                text = stringResource(R.string.no_favorite_movies),
+                                text = stringResource(R.string.favorite),
                                 style = TextStyle(
                                     fontFamily = interFamily,
                                     fontWeight = FontWeight.W700,
-                                    fontSize = 23.sp,
+                                    fontSize = 24.sp,
                                     color = MaterialTheme.colorScheme.onBackground,
                                     textAlign = TextAlign.Center
                                 ),
-                                modifier = Modifier.align(Alignment.CenterHorizontally)
-                            )
-
-                            Text(
-                                text = stringResource(R.string.choose_favorite_film),
-                                style = TextStyle(
-                                    fontFamily = interFamily,
-                                    fontWeight = FontWeight.W400,
-                                    fontSize = 15.sp,
-                                    color = MaterialTheme.colorScheme.onBackground,
-                                    textAlign = TextAlign.Center
-                                ),
-                                modifier = Modifier.align(Alignment.CenterHorizontally).padding(top = 5.dp)
+                                modifier = Modifier.align(Alignment.Center)
                             )
                         }
                     }
-                }
-                item{
-                    Spacer(modifier = Modifier.height(67.dp))
+                    if (state.favoriteMovieList?.isEmpty() == false) {
+                        items(state.favoriteMovieList) {
+                            FavoriteFilmCard(it, onNavigationRequested)
+                        }
+                    } else {
+                        item {
+                            Column(modifier = Modifier.fillMaxWidth().padding(top = 100.dp)) {
+                                Text(
+                                    text = stringResource(R.string.no_favorite_movies),
+                                    style = TextStyle(
+                                        fontFamily = interFamily,
+                                        fontWeight = FontWeight.W700,
+                                        fontSize = 23.sp,
+                                        color = MaterialTheme.colorScheme.onBackground,
+                                        textAlign = TextAlign.Center
+                                    ),
+                                    modifier = Modifier.align(Alignment.CenterHorizontally)
+                                )
+
+                                Text(
+                                    text = stringResource(R.string.choose_favorite_film),
+                                    style = TextStyle(
+                                        fontFamily = interFamily,
+                                        fontWeight = FontWeight.W400,
+                                        fontSize = 15.sp,
+                                        color = MaterialTheme.colorScheme.onBackground,
+                                        textAlign = TextAlign.Center
+                                    ),
+                                    modifier = Modifier.align(Alignment.CenterHorizontally)
+                                        .padding(top = 5.dp)
+                                )
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -121,20 +121,29 @@ fun FavoriteScreen(
 }
 
 @Composable
-fun FavoriteFilmCard(item: ThreeFavoriteMovies) {
+fun FavoriteFilmCard(
+    item: ThreeFavoriteMovies,
+    onNavigationRequested: (navigationEffect: FavoriteScreenContract.Effect.Navigation) -> Unit
+    ) {
     Column(
         modifier = Modifier.fillMaxWidth(),
         verticalArrangement = spacedBy(20.dp)
     ) {
-        Row(
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            if (item.firstMovie != null) {
-                Column(verticalArrangement = spacedBy(5.dp)) {
+        if(item.firstMovie != null) {
+            Row(
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Column(
+                    verticalArrangement = spacedBy(5.dp),
+                    modifier = Modifier.clickable {
+                        onNavigationRequested(FavoriteScreenContract.Effect.Navigation.ToFilm)
+                    }
+                ) {
                     AsyncImage(
                         model = item.firstMovie.poster,
                         contentDescription = null,
-                        modifier = Modifier.fillMaxWidth(0.5f).height(205.dp).padding(end = 15.dp)
+                        modifier = Modifier.fillMaxWidth(0.5f).height(205.dp)
+                            .padding(end = 15.dp)
                             .clip(RoundedCornerShape(3.dp)),
                         contentScale = ContentScale.Crop
                     )
@@ -149,30 +158,40 @@ fun FavoriteFilmCard(item: ThreeFavoriteMovies) {
                         ),
                     )
                 }
-            }
-            Column(verticalArrangement = spacedBy(5.dp)) {
-                if (item.secondMovie != null) {
-                    AsyncImage(
-                        model = item.secondMovie.poster,
-                        contentDescription = null,
-                        modifier = Modifier.fillMaxWidth().height(205.dp)
-                            .clip(RoundedCornerShape(3.dp)),
-                        contentScale = ContentScale.Crop
-                    )
-                    Text(
-                        text = item.secondMovie.name ?: "",
-                        style = TextStyle(
-                            fontFamily = interFamily,
-                            fontWeight = FontWeight.W500,
-                            fontSize = 14.sp,
-                            color = MaterialTheme.colorScheme.onBackground,
-                            textAlign = TextAlign.Center
-                        ),
-                    )
+                Column(
+                    verticalArrangement = spacedBy(5.dp),
+                    modifier = Modifier.clickable {
+                        onNavigationRequested(FavoriteScreenContract.Effect.Navigation.ToFilm)
+                    }
+                ) {
+                    if (item.secondMovie != null) {
+                        AsyncImage(
+                            model = item.secondMovie.poster,
+                            contentDescription = null,
+                            modifier = Modifier.fillMaxWidth().height(205.dp)
+                                .clip(RoundedCornerShape(3.dp)),
+                            contentScale = ContentScale.Crop
+                        )
+                        Text(
+                            text = item.secondMovie.name ?: "",
+                            style = TextStyle(
+                                fontFamily = interFamily,
+                                fontWeight = FontWeight.W500,
+                                fontSize = 14.sp,
+                                color = MaterialTheme.colorScheme.onBackground,
+                                textAlign = TextAlign.Center
+                            ),
+                        )
+                    }
                 }
             }
         }
-        Column(verticalArrangement = spacedBy(5.dp)) {
+        Column(
+            verticalArrangement = spacedBy(5.dp),
+            modifier = Modifier.clickable {
+                onNavigationRequested(FavoriteScreenContract.Effect.Navigation.ToFilm)
+            }
+        ) {
             if (item.thirdMovie != null) {
                 AsyncImage(
                     model = item.thirdMovie.poster,

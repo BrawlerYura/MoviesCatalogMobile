@@ -24,6 +24,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
@@ -168,7 +169,6 @@ fun LoginHeader(onNavigationRequested: (navigationEffect: RegistrationPasswordCo
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RepeatPassword(
     state: RegistrationPasswordContract.State,
@@ -194,7 +194,8 @@ fun RepeatPassword(
             value = state.password,
             keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Password),
             visualTransformation =  if (isTextHidden) PasswordVisualTransformation() else VisualTransformation.None,
-            colors = TextFieldDefaults.outlinedTextFieldColors(),
+            colors = OutlinedTextFieldDefaults.colors(
+            ),
             textStyle = TextStyle(
                 fontFamily = interFamily,
                 fontWeight = FontWeight.W400,
@@ -221,7 +222,6 @@ fun RepeatPassword(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PasswordBox(
     state: RegistrationPasswordContract.State,
@@ -247,7 +247,8 @@ fun PasswordBox(
             value = state.repPassword,
             keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Password),
             visualTransformation =  if (isTextHidden) PasswordVisualTransformation() else VisualTransformation.None,
-            colors = TextFieldDefaults.outlinedTextFieldColors(),
+            colors = OutlinedTextFieldDefaults.colors(
+            ),
             textStyle = TextStyle(
                 fontFamily = interFamily,
                 fontWeight = FontWeight.W400,

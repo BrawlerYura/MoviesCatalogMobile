@@ -36,5 +36,11 @@ fun NavGraphBuilder.NavGraphMovie(
                 onNavigationRequested
             )
         }
+
+        composable(Screen.Film.route) {
+            FilmScreenDestination(
+                navController
+            )
+        }
     }
 }
