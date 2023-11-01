@@ -26,7 +26,6 @@ fun FilmScreenDestination(
                     navController.navigateUp()
                 }
             }
-        },
-        filmId = "27e0d4f4-6e31-4053-a2be-08d9b9f3d2a2"
+        }
     )
 }

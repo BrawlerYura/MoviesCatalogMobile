@@ -8,6 +8,7 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -64,7 +65,8 @@ import kotlin.math.absoluteValue
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun Carousel(
-    state: MainScreenContract.State
+    state: MainScreenContract.State,
+    onNavigationRequested: (navigationEffect: MainScreenContract.Effect.Navigation) -> Unit
 ) {
 
     val pagerState = rememberPagerState(initialPage = 0, pageCount = { state.movieCarouselList.size })
@@ -92,7 +94,10 @@ fun Carousel(
             AsyncImage(
                 model = state.movieCarouselList[page].poster,
                 contentDescription = null,
-                modifier = Modifier.fillMaxSize(),
+                modifier = Modifier.fillMaxSize()
+                    .clickable {
+                        onNavigationRequested(MainScreenContract.Effect.Navigation.ToFilm)
+                    },
                 contentScale = ContentScale.Crop
             )
         }

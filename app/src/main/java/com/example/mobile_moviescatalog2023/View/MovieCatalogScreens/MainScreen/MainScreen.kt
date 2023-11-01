@@ -96,7 +96,7 @@ fun MovieListScreen(
         modifier = Modifier.fillMaxWidth()
     ) {
         item {
-            Carousel(state)
+            Carousel(state, onNavigationRequested)
         }
         item {
             Text(

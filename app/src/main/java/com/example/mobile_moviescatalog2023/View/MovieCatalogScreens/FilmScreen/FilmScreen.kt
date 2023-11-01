@@ -1,6 +1,6 @@
 package com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.FilmScreen
 
-import android.annotation.SuppressLint
+import android.content.res.Resources
 import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -11,7 +11,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -21,9 +21,22 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.outlined.Close
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Checkbox
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -44,31 +57,30 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
 import coil.compose.AsyncImage
 import com.example.mobile_moviescatalog2023.Network.DataClasses.Models.GenreModel
 import com.example.mobile_moviescatalog2023.Network.DataClasses.Models.MovieDetailsModel
 import com.example.mobile_moviescatalog2023.Network.DataClasses.Models.ReviewModel
-import com.example.mobile_moviescatalog2023.Network.DataClasses.Models.ReviewShortModel
 import com.example.mobile_moviescatalog2023.R
+import com.example.mobile_moviescatalog2023.View.AuthScreens.LoginScreen.LoginContract
 import com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.MainScreen.FilmRating
 import com.example.mobile_moviescatalog2023.ui.theme.interFamily
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.TimeZone
 
 @Composable
 fun FilmScreen(
     state: FilmScreenContract.State,
     onEventSent: (event: FilmScreenContract.Event) -> Unit,
     onNavigationRequested: (navigationEffect: FilmScreenContract.Effect.Navigation) -> Unit,
-    filmId: String
+    filmId: String = "5765a388-7ccd-4560-a2b6-08d9b9f3d2a2"
 ) {
     LaunchedEffect(true) {
         onEventSent(FilmScreenContract.Event.LoadFilmDetails(filmId))
@@ -79,7 +91,6 @@ fun FilmScreen(
         ) }
     ) {
         if(state.movieDetails != null) {
-            Log.e("a", state.movieDetails.toString())
             LazyColumn(
                 modifier = Modifier.padding(it)
             ) {
@@ -99,7 +110,7 @@ fun FilmScreen(
                     FilmAbout(state.movieDetails)
                 }
                 item {
-                    FilmReview(state.movieDetails.reviews)
+                    FilmReviews(state.movieDetails.reviews)
                 }
             }
         }
@@ -135,12 +146,23 @@ fun TopBar(
 fun FilmPoster(
     poster: String?
 ) {
-    AsyncImage(
-        model = poster,
-        contentDescription = null,
-        modifier = Modifier.fillMaxWidth().height(497.dp),
-        contentScale = ContentScale.Crop
-    )
+    Box(modifier = Modifier.fillMaxWidth().height(497.dp)) {
+        AsyncImage(
+            model = poster,
+            contentDescription = null,
+            modifier = Modifier.fillMaxWidth().height(497.dp),
+            contentScale = ContentScale.Crop
+        )
+        Box(
+            modifier = Modifier.fillMaxSize()
+                .background(
+                    brush = Brush.verticalGradient(
+                        0.4f to Color.Transparent,
+                        0.95f to MaterialTheme.colorScheme.background
+                    )
+                )
+        )
+    }
 }
 
 @Composable
@@ -252,7 +274,7 @@ private fun calculateFilmRating(reviews: List<ReviewModel>?): FilmRating? {
 fun FilmDescription(
     movieDescription: String?
 ) {
-    if(movieDescription != null) {
+    if (movieDescription != null) {
         var expanded by remember { mutableStateOf(false) }
         var boxHeight by remember { mutableStateOf(0.dp) }
         val localDensity = LocalDensity.current
@@ -279,7 +301,7 @@ fun FilmDescription(
                         .fillMaxWidth()
                         .padding(top = 20.dp, end = 15.dp, start = 15.dp)
                         .clickable { expanded = !expanded }
-                    )
+                )
 
                 if (!expanded) {
                     Box(
@@ -297,10 +319,10 @@ fun FilmDescription(
             }
             Row(
                 modifier = Modifier.padding(top = 5.dp, start = 15.dp, end = 15.dp)
-                        .clickable { expanded = !expanded },
+                    .clickable { expanded = !expanded },
                 horizontalArrangement = spacedBy(5.dp),
                 verticalAlignment = Alignment.CenterVertically
-                ) {
+            ) {
                 Text(
                     text = if (expanded) {
                         "Скрыть"
@@ -601,23 +623,43 @@ fun FilmAbout(
 }
 
 @Composable
-fun FilmReview(
+fun FilmReviews(
     reviews: List<ReviewModel>?
 ) {
+    var showDialog by remember { mutableStateOf(false) }
+
+    MyDialog(showDialog, onDismiss = { showDialog = !showDialog })
+
     Column(
-        modifier = Modifier.padding(start = 15.dp, end = 15.dp, top = 25.dp),
-        verticalArrangement = spacedBy(20.dp)
+        modifier = Modifier.padding(start = 15.dp, end = 15.dp, top = 25.dp)
     ) {
-        Text(
-            text = "Отзывы",
-            style = TextStyle(
-                fontFamily = interFamily,
-                fontWeight = FontWeight.W700,
-                fontSize = 16.sp,
-                color = MaterialTheme.colorScheme.onBackground,
-                textAlign = TextAlign.Center
+        Box(modifier = Modifier.fillMaxWidth().padding(bottom = 10.dp)) {
+            Text(
+                text = "Отзывы",
+                style = TextStyle(
+                    fontFamily = interFamily,
+                    fontWeight = FontWeight.W700,
+                    fontSize = 16.sp,
+                    color = MaterialTheme.colorScheme.onBackground,
+                    textAlign = TextAlign.Center
+                ),
+                modifier = Modifier.align(Alignment.CenterStart)
             )
-        )
+
+            if(true) {
+                Box(
+                    modifier = Modifier.size(32.dp).clip(CircleShape).align(Alignment.CenterEnd)
+                        .background(MaterialTheme.colorScheme.primary)
+                        .clickable { showDialog = true }
+                ) {
+                    Icon(
+                        painter = painterResource(R.drawable.ic_plus),
+                        contentDescription = null,
+                        modifier = Modifier.align(Alignment.Center)
+                    )
+                }
+            }
+        }
         reviews?.forEach {
             Column(
                 verticalArrangement = spacedBy(8.dp)
@@ -698,11 +740,17 @@ fun FilmReview(
                                 }
                             }
 
+                            var expanded by remember { mutableStateOf(false) }
+                            Menu( expanded = expanded, onDismiss = { expanded = !expanded }, onEditRequested = { showDialog = !showDialog })
+
                             Box(
                                 modifier = Modifier
-                                .height(26.dp).width(26.dp)
-                                .clip(CircleShape)
-                                .background(MaterialTheme.colorScheme.onSurface)
+                                    .height(26.dp).width(26.dp)
+                                    .clip(CircleShape)
+                                    .background(MaterialTheme.colorScheme.onSurface)
+                                    .clickable {
+                                        expanded = !expanded
+                                    }
                             ) {
                                 Icon(
                                     painterResource(R.drawable.dots),
@@ -796,8 +844,210 @@ fun FilmReview(
                         fontSize = 12.sp,
                         color = MaterialTheme.colorScheme.onSurface,
                         textAlign = TextAlign.Start
-                    )
+                    ),
+                    modifier = Modifier.padding(bottom = 20.dp)
                 )
+            }
+        }
+    }
+}
+
+@Composable
+fun Menu(
+    expanded: Boolean,
+    onDismiss: () -> Unit,
+    onEditRequested: () -> Unit
+) {
+    DropdownMenu(
+        expanded = expanded,
+        onDismissRequest = { onDismiss() },
+        offset = DpOffset(0.dp, 5.dp),
+        modifier = Modifier
+            .background(MaterialTheme.colorScheme.surfaceVariant)
+    ) {
+        DropdownMenuItem(
+            text = {
+                Text(
+                    text = "Редактировать",
+                    style = TextStyle(
+                        fontFamily = interFamily,
+                        fontWeight = FontWeight.W700,
+                        fontSize = 16.sp,
+                        color = MaterialTheme.colorScheme.onBackground,
+                        textAlign = TextAlign.Center
+                    ),
+                    modifier = Modifier.align(Alignment.Start)
+                )
+            },
+            onClick = {
+                onDismiss()
+                onEditRequested()
+                      },
+            trailingIcon = {
+                Icon(
+                    painterResource(R.drawable.ic_pen),
+                    null,
+                    tint = MaterialTheme.colorScheme.onBackground
+                )
+            }
+        )
+
+        DropdownMenuItem(
+            text = {
+                Text(
+                    text = "Удалить",
+                    style = TextStyle(
+                        fontFamily = interFamily,
+                        fontWeight = FontWeight.W700,
+                        fontSize = 16.sp,
+                        color =  MaterialTheme.colorScheme.error,
+                        textAlign = TextAlign.Center
+                    ),
+                    modifier = Modifier.align(Alignment.Start)
+                )
+            },
+            onClick = { },
+            trailingIcon = {
+                Icon(
+                    painterResource(R.drawable.ic_trash_can),
+                    null,
+                    tint = MaterialTheme.colorScheme.error
+                )
+            }
+        )
+    }
+}
+
+@Composable
+fun MyDialog(
+    showDialog: Boolean,
+    onDismiss: () -> Unit
+) {
+
+    var checked by remember { mutableStateOf(false) }
+
+    if (showDialog) {
+        Dialog(
+            onDismissRequest = { onDismiss() }
+        ) {
+            Surface(
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
+                shape = RoundedCornerShape(5.dp),
+                color = MaterialTheme.colorScheme.background
+            ) {
+                Column(
+                    modifier = Modifier.padding(10.dp),
+                    verticalArrangement = spacedBy(10.dp)
+                ) {
+                    Text(
+                        text = "Оставить отзыв",
+                        style = TextStyle(
+                            fontFamily = interFamily,
+                            fontWeight = FontWeight.W700,
+                            fontSize = 20.sp,
+                            color =  MaterialTheme.colorScheme.onBackground,
+                            textAlign = TextAlign.Center
+                        ),
+                    )
+                    Spacer(modifier = Modifier.height(5.dp))
+                    Row() {
+                        Text(
+                            text = "Тут звёздочки",
+                            style = TextStyle(
+                                fontFamily = interFamily,
+                                fontWeight = FontWeight.W700,
+                                fontSize = 16.sp,
+                                color =  MaterialTheme.colorScheme.onBackground,
+                                textAlign = TextAlign.Center
+                            ),
+                        )
+                    }
+                    Spacer(modifier = Modifier.height(16.dp))
+                    OutlinedTextField(
+                        value = "",
+                        colors = OutlinedTextFieldDefaults.colors(
+                        ),
+                        textStyle = TextStyle(
+                            fontFamily = interFamily,
+                            fontWeight = FontWeight.W400,
+                            fontSize = 15.sp
+                        ),
+                        onValueChange = {
+
+                        },
+                        shape = RoundedCornerShape(5.dp),
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                    Row(
+                        modifier = Modifier.clickable {
+                            checked = !checked
+                        },
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+
+                        Checkbox(
+                            checked = checked,
+                            onCheckedChange = null
+                        )
+
+                        Spacer(modifier = Modifier.width(8.dp))
+
+                        Text(
+                            text = "Анонимный отзыв",
+                            style = TextStyle(
+                                fontFamily = interFamily,
+                                fontWeight = FontWeight.W500,
+                                fontSize = 15.sp,
+                                color =  MaterialTheme.colorScheme.onBackground,
+                                textAlign = TextAlign.Center
+                            )
+                        )
+                    }
+                    Spacer(modifier = Modifier.height(15.dp))
+                    Button(
+                        onClick = { },
+                        shape = RoundedCornerShape(10.dp),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(42.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.primary,
+                        ),
+                    ) {
+                        Text(
+                            text = "Сохранить",
+                            style = TextStyle(
+                                fontFamily = interFamily,
+                                fontWeight = FontWeight.W600,
+                                fontSize = 15.sp,
+                                color = MaterialTheme.colorScheme.onPrimary,
+                                textAlign = TextAlign.Center
+                            ),
+                        )
+                    }
+
+                    Button(
+                        onClick = { },
+                        shape = RoundedCornerShape(10.dp),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(42.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.surface,
+                        ),
+                    ) {
+                        Text(
+                            text = "Отмена",
+                            style = TextStyle(
+                                fontFamily = interFamily,
+                                fontWeight = FontWeight.W600,
+                                fontSize = 15.sp,
+                                color = MaterialTheme.colorScheme.primary,
+                                textAlign = TextAlign.Center
+                            ),
+                        )
+                    }
+                }
             }
         }
     }
