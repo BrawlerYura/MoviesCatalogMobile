@@ -302,7 +302,7 @@ private fun calculateFilmRating(reviews: List<ReviewModel>?): FilmRating? {
 fun FilmDescription(
     movieDescription: String?
 ) {
-    if (movieDescription != null) {
+    if (movieDescription != null && movieDescription != "-") {
         var expanded by remember { mutableStateOf(false) }
         var boxHeight by remember { mutableStateOf(0.dp) }
         val localDensity = LocalDensity.current
@@ -721,25 +721,14 @@ fun FilmReviews(
                                 modifier = Modifier.size(40.dp).clip(CircleShape),
                                 contentScale = ContentScale.Crop
                             )
-
-                            Column(
-                                verticalArrangement = spacedBy(2.dp),
-                                horizontalAlignment = Alignment.Start
-                            ) {
-                                Text(
-                                    text = it.author.nickName ?: "",
-                                    style = TextStyle(
-                                        fontFamily = interFamily,
-                                        fontWeight = FontWeight.W500,
-                                        fontSize = 14.sp,
-                                        color = MaterialTheme.colorScheme.onBackground,
-                                        textAlign = TextAlign.Start
-                                    ),
-                                    modifier = Modifier.fillMaxWidth()
-                                )
-                                if(it.author.userId == Network.userId) {
+                            Box(modifier = Modifier.fillMaxWidth()) {
+                                Column(
+                                    verticalArrangement = spacedBy(2.dp),
+                                    horizontalAlignment = Alignment.Start,
+                                    modifier = Modifier.align(Alignment.TopStart).padding(end = 100.dp)
+                                ) {
                                     Text(
-                                        text = "мой отзыв",
+                                        text = it.author.nickName ?: "",
                                         style = TextStyle(
                                             fontFamily = interFamily,
                                             fontWeight = FontWeight.W500,
@@ -749,62 +738,75 @@ fun FilmReviews(
                                         ),
                                         modifier = Modifier.fillMaxWidth()
                                     )
-                                }
-                            }
-                        }
-
-                        Row(
-                            modifier = Modifier.align(Alignment.CenterEnd),
-                            horizontalArrangement = spacedBy(10.dp)
-                        ) {
-                            Box(
-                                modifier = Modifier
-                                    .height(26.dp)
-                                    .clip(RoundedCornerShape(35.dp))
-                                    .background(Color.Green)
-                            ) {
-                                Row(
-                                    horizontalArrangement = spacedBy(4.dp),
-                                    modifier = Modifier.padding(4.dp),
-                                    verticalAlignment = Alignment.CenterVertically
-                                ) {
-                                    Icon(
-                                        painterResource(R.drawable.small_star),
-                                        null
-                                    )
-                                    Text(
-                                        text = it.rating.toString(),
-                                        style = TextStyle(
-                                            fontFamily = interFamily,
-                                            fontWeight = FontWeight.W500,
-                                            fontSize = 15.sp,
-                                            color = MaterialTheme.colorScheme.onBackground,
-                                            textAlign = TextAlign.Center
+                                    if (it.author.userId == Network.userId) {
+                                        Text(
+                                            text = "мой отзыв",
+                                            style = TextStyle(
+                                                fontFamily = interFamily,
+                                                fontWeight = FontWeight.W500,
+                                                fontSize = 14.sp,
+                                                color = MaterialTheme.colorScheme.onBackground,
+                                                textAlign = TextAlign.Start
+                                            ),
+                                            modifier = Modifier.fillMaxWidth()
                                         )
-                                    )
+                                    }
                                 }
-                            }
-                            if(it.author.userId == Network.userId) {
-                                var expanded by remember { mutableStateOf(false) }
-                                Menu(
-                                    expanded = expanded,
-                                    onDismiss = { expanded = !expanded },
-                                    onEditRequested = { showDialog = !showDialog })
-
-                                Box(
-                                    modifier = Modifier
-                                        .height(26.dp).width(26.dp)
-                                        .clip(CircleShape)
-                                        .background(MaterialTheme.colorScheme.onSurface)
-                                        .clickable {
-                                            expanded = !expanded
-                                        }
+                                Row(
+                                    horizontalArrangement = spacedBy(10.dp),
+                                    modifier = Modifier.align(Alignment.TopEnd)
                                 ) {
-                                    Icon(
-                                        painterResource(R.drawable.dots),
-                                        null,
-                                        Modifier.align(Alignment.Center)
-                                    )
+                                    Box(
+                                        modifier = Modifier
+                                            .height(26.dp)
+                                            .clip(RoundedCornerShape(35.dp))
+                                            .background(Color.Green)
+                                    ) {
+                                        Row(
+                                            horizontalArrangement = spacedBy(4.dp),
+                                            modifier = Modifier.padding(4.dp),
+                                            verticalAlignment = Alignment.CenterVertically
+                                        ) {
+                                            Icon(
+                                                painterResource(R.drawable.small_star),
+                                                null
+                                            )
+                                            Text(
+                                                text = it.rating.toString(),
+                                                style = TextStyle(
+                                                    fontFamily = interFamily,
+                                                    fontWeight = FontWeight.W500,
+                                                    fontSize = 15.sp,
+                                                    color = MaterialTheme.colorScheme.onBackground,
+                                                    textAlign = TextAlign.Center
+                                                )
+                                            )
+                                        }
+                                    }
+                                    if (it.author.userId == Network.userId) {
+                                        var expanded by remember { mutableStateOf(false) }
+                                        Menu(
+                                            expanded = expanded,
+                                            onDismiss = { expanded = !expanded },
+                                            onEditRequested = { showDialog = !showDialog }
+                                        )
+
+                                        Box(
+                                            modifier = Modifier
+                                                .height(26.dp).width(26.dp)
+                                                .clip(CircleShape)
+                                                .background(MaterialTheme.colorScheme.onSurface)
+                                                .clickable {
+                                                    expanded = !expanded
+                                                }
+                                        ) {
+                                            Icon(
+                                                painterResource(R.drawable.dots),
+                                                null,
+                                                Modifier.align(Alignment.Center)
+                                            )
+                                        }
+                                    }
                                 }
                             }
                         }

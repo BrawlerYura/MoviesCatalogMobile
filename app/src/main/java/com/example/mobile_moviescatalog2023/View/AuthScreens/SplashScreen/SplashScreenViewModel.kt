@@ -39,7 +39,7 @@ class SplashScreenViewModel (
             userRepository.getProfile()
                 .collect { result ->
                     result.onSuccess {
-                        Network.token = it.id
+                        Network.userId = it.id
                         setState { copy(isTryingGetToken = false, isSuccessGetToken = true) }
                     }.onFailure {
                         setState { copy(isTryingGetToken = false, isSuccessGetToken = false) }

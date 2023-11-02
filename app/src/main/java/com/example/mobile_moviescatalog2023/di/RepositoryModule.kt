@@ -4,6 +4,7 @@ import com.example.mobile_moviescatalog2023.Network.Auth.AuthRepository
 import com.example.mobile_moviescatalog2023.Network.FavoriteMovies.FavoriteMoviesRepository
 import com.example.mobile_moviescatalog2023.Network.Movie.MovieRepository
 import com.example.mobile_moviescatalog2023.Network.Network
+import com.example.mobile_moviescatalog2023.Network.Review.ReviewRepository
 import com.example.mobile_moviescatalog2023.Network.User.UserRepository
 import org.koin.dsl.module
 
@@ -19,4 +20,7 @@ val RepositoryModule = module {
 
     single { Network.getMovieApi() }
     single { MovieRepository(get()) }
+
+    single { Network.getReviewApi() }
+    single { ReviewRepository(get()) }
 }

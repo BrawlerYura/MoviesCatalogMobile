@@ -31,9 +31,9 @@ class ReviewRepository(
         }
     }.flowOn(Dispatchers.IO)
 
-    suspend fun deleteReview(reviewModifyModel: ReviewModifyModel, movieId: String, id: String) = flow {
+    suspend fun deleteReview(movieId: String, id: String) = flow {
         try {
-            emit(Result.success(api.deleteReview(reviewModifyModel, movieId, id)))
+            emit(Result.success(api.deleteReview(movieId, id)))
         } catch (e: Exception) {
             Log.e("a", e.message.toString())
             emit(Result.failure(Throwable(e)))
