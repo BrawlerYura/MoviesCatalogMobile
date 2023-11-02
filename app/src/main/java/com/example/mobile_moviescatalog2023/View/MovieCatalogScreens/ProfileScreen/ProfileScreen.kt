@@ -100,6 +100,7 @@ fun ProfileScreen(
 
                     Button(
                         onClick = {
+                            onEventSent(ProfileScreenContract.Event.PutNewUserDetails)
                         },
                         shape = RoundedCornerShape(10.dp),
                         modifier = Modifier
@@ -120,6 +121,7 @@ fun ProfileScreen(
 
                     Button(
                         onClick = {
+                            onEventSent(ProfileScreenContract.Event.LoadUserDetails)
                         },
                         shape = RoundedCornerShape(10.dp),
                         modifier = Modifier

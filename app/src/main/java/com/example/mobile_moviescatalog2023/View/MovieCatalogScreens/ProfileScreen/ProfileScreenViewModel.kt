@@ -2,6 +2,7 @@ package com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.ProfileScr
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.example.mobile_moviescatalog2023.Network.Auth.AuthRepository
 import com.example.mobile_moviescatalog2023.Network.DataClasses.Models.ProfileModel
@@ -41,6 +42,7 @@ class ProfileScreenViewModel(
             is ProfileScreenContract.Event.SaveGenderEvent -> saveGender(gender = event.gender)
             is ProfileScreenContract.Event.SaveBirthDateEvent -> saveBirthDate(birthDate = event.birthDate)
             is ProfileScreenContract.Event.SaveBirthDateWithFormatEvent -> saveBirthDate(formatDateToTextField(event.birthDate))
+            is ProfileScreenContract.Event.PutNewUserDetails -> putUserDetails()
             is ProfileScreenContract.Event.LoadUserDetails -> loadUserDetails()
             is ProfileScreenContract.Event.Logout -> logout()
         }
@@ -48,9 +50,10 @@ class ProfileScreenViewModel(
 
     private fun formatDateToApi(date: String): String {
         val parts = date.split(".")
-        val year = parts[0]
+        val day = parts[0]
         val month = parts[1]
-        val day = parts[2]
+        val year = parts[2]
+        Log.e("a", "$year-$month-${day}T08:12:28.534Z")
         return "$year-$month-${day}T08:12:28.534Z"
     }
 
@@ -119,7 +122,11 @@ class ProfileScreenViewModel(
                             )
                         }
                     }.onFailure {
-                        setState { copy(isSuccess = false) }
+                        setState {
+                            copy(
+                                isSuccess = false
+                            )
+                        }
                     }
                 }
         }
@@ -133,18 +140,22 @@ class ProfileScreenViewModel(
             avatarLink = state.value.userIconUrl,
             name = state.value.name,
             gender = state.value.gender,
-            birthDate = state.value.birthDate
+            birthDate = formatDateToApi(state.value.birthDate)
         )
         viewModelScope.launch(Dispatchers.IO) {
             userRepository.putProfile(profileModel)
                 .collect { result ->
                     result.onSuccess {
                         setState {copy(
-                            isSuccess = true
+                                isSuccess = true
                             )
                         }
                     }.onFailure {
-                        setState { copy(isSuccess = false) }
+                        setState {
+                            copy(
+                                isSuccess = false
+                            )
+                        }
                     }
                 }
         }
