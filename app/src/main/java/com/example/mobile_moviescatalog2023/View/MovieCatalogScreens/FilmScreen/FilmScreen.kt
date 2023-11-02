@@ -98,7 +98,13 @@ fun FilmScreen(
                     FilmPoster(state.movieDetails.poster)
                 }
                 item {
-                    FilmShortDetails(state.movieDetails.reviews, state.movieDetails.name ?: "")
+                    FilmShortDetails(
+                        state.movieDetails.reviews,
+                        state.movieDetails.name ?: "",
+                        state,
+                        onEventSent,
+                        filmId
+                    )
                 }
                 item {
                     FilmDescription(state.movieDetails.description)
@@ -168,7 +174,10 @@ fun FilmPoster(
 @Composable
 fun FilmShortDetails(
     movieReviews: List<ReviewModel>?,
-    name: String
+    name: String,
+    state: FilmScreenContract.State,
+    onEventSent: (event: FilmScreenContract.Event) -> Unit,
+    id: String
 ) {
     Box(
         modifier = Modifier.fillMaxWidth().padding(top = 15.dp, start = 15.dp, end = 15.dp)
@@ -211,11 +220,27 @@ fun FilmShortDetails(
             modifier = Modifier.height(40.dp).width(40.dp)
                 .clip(CircleShape).align(Alignment.CenterEnd)
                 .background(MaterialTheme.colorScheme.surfaceVariant)
+                .clickable {
+                    if(state.isMyFavorite) {
+                        onEventSent(FilmScreenContract.Event.DeleteFavorite(id))
+                    } else {
+                        onEventSent(FilmScreenContract.Event.AddToFavorite(id))
+                    }
+                },
         ) {
             Icon(
-                painter = painterResource(R.drawable.heart_disabled),
+                painter = if(state.isMyFavorite) {
+                    painterResource(R.drawable.heart_enabled)
+                } else {
+                    painterResource(R.drawable.heart_disabled)
+                },
                 contentDescription = null,
-                modifier = Modifier.align(Alignment.Center)
+                modifier = Modifier.align(Alignment.Center),
+                tint = if(state.isMyFavorite) {
+                    MaterialTheme.colorScheme.primary
+                } else {
+                    MaterialTheme.colorScheme.onBackground
+                }
             )
         }
     }

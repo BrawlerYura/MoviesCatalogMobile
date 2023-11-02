@@ -138,11 +138,12 @@ fun FavoriteFilmCard(
                     modifier = Modifier.clickable {
                         onNavigationRequested(FavoriteScreenContract.Effect.Navigation.ToFilm(item.firstMovie.id))
                     }
+                        .fillMaxWidth(0.5f)
                 ) {
                     AsyncImage(
                         model = item.firstMovie.poster,
                         contentDescription = null,
-                        modifier = Modifier.fillMaxWidth(0.5f).height(205.dp)
+                        modifier = Modifier.fillMaxWidth().height(205.dp)
                             .padding(end = 15.dp)
                             .clip(RoundedCornerShape(3.dp)),
                         contentScale = ContentScale.Crop
@@ -154,8 +155,9 @@ fun FavoriteFilmCard(
                             fontWeight = FontWeight.W500,
                             fontSize = 14.sp,
                             color = MaterialTheme.colorScheme.onBackground,
-                            textAlign = TextAlign.Center
+                            textAlign = TextAlign.Start
                         ),
+                        modifier = Modifier.fillMaxWidth()
                     )
                 }
                 if (item.secondMovie != null) {
@@ -164,6 +166,7 @@ fun FavoriteFilmCard(
                         modifier = Modifier.clickable {
                             onNavigationRequested(FavoriteScreenContract.Effect.Navigation.ToFilm(item.secondMovie.id))
                         }
+                            .fillMaxWidth()
                     ) {
                         AsyncImage(
                             model = item.secondMovie.poster,
@@ -179,8 +182,9 @@ fun FavoriteFilmCard(
                                 fontWeight = FontWeight.W500,
                                 fontSize = 14.sp,
                                 color = MaterialTheme.colorScheme.onBackground,
-                                textAlign = TextAlign.Center
+                                textAlign = TextAlign.Start
                             ),
+                            modifier = Modifier.fillMaxWidth()
                         )
                     }
                 }
@@ -192,6 +196,7 @@ fun FavoriteFilmCard(
                 modifier = Modifier.clickable {
                     onNavigationRequested(FavoriteScreenContract.Effect.Navigation.ToFilm(item.thirdMovie.id))
                 }
+                    .fillMaxWidth()
             ) {
                 AsyncImage(
                     model = item.thirdMovie.poster,
@@ -207,8 +212,9 @@ fun FavoriteFilmCard(
                         fontWeight = FontWeight.W500,
                         fontSize = 14.sp,
                         color = MaterialTheme.colorScheme.onBackground,
-                        textAlign = TextAlign.Center
-                    )
+                        textAlign = TextAlign.Start
+                    ),
+                    modifier = Modifier.fillMaxWidth()
                 )
             }
         }

@@ -9,11 +9,16 @@ class FilmScreenContract {
 
     sealed class Event : ViewEvent {
         class LoadFilmDetails(val id: String) : Event()
+        class AddToFavorite(val id: String) : Event()
+        class DeleteFavorite(val id: String) : Event()
     }
 
     data class State(
         val isSuccess: Boolean?,
-        val movieDetails: MovieDetailsModel?
+        val movieDetails: MovieDetailsModel?,
+        val isAddingSuccess: Boolean?,
+        val isDeletingSuccess: Boolean?,
+        val isMyFavorite: Boolean
     ) : ViewState
 
     sealed class Effect : ViewSideEffect {
