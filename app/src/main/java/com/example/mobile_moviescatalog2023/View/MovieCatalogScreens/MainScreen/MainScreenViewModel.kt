@@ -7,12 +7,15 @@ import com.example.mobile_moviescatalog2023.Network.DataClasses.Models.MoviesMod
 import com.example.mobile_moviescatalog2023.Network.DataClasses.Models.ReviewModel
 import com.example.mobile_moviescatalog2023.Network.DataClasses.Models.ReviewShortModel
 import com.example.mobile_moviescatalog2023.Network.Movie.MovieRepository
+import com.example.mobile_moviescatalog2023.Network.Network
+import com.example.mobile_moviescatalog2023.Network.User.UserRepository
 import com.example.mobile_moviescatalog2023.View.Base.BaseViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class MainScreenViewModel(
-    private val movieRepository: MovieRepository
+    private val movieRepository: MovieRepository,
+    private val userRepository: UserRepository
 ): BaseViewModel<MainScreenContract.Event, MainScreenContract.State, MainScreenContract.Effect>() {
     override fun setInitialState() = MainScreenContract.State(
         currentMoviePage = 1,
@@ -69,8 +72,23 @@ class MainScreenViewModel(
                             currentMoviePage = state.value.currentMoviePage + 1,
                             pageCount = it.pageInfo.pageCount
                         ) }
+                        getMyId()
                     }.onFailure {
                         setState { copy(isRequestingMoviePage = true, isSuccess = false) }
+                    }
+                }
+        }
+    }
+
+    private fun getMyId()
+    {
+        viewModelScope.launch(Dispatchers.IO) {
+            userRepository.getProfile()
+                .collect { result ->
+                    result.onSuccess {
+                        Network.userId = it.id
+                    }.onFailure {
+
                     }
                 }
         }

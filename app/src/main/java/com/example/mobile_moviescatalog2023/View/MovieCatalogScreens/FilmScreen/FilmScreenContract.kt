@@ -18,7 +18,8 @@ class FilmScreenContract {
         val movieDetails: MovieDetailsModel?,
         val isAddingSuccess: Boolean?,
         val isDeletingSuccess: Boolean?,
-        val isMyFavorite: Boolean
+        val isMyFavorite: Boolean,
+        val isWithMyReview: Boolean
     ) : ViewState
 
     sealed class Effect : ViewSideEffect {

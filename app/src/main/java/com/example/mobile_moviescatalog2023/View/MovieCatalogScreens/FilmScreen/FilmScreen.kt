@@ -66,6 +66,7 @@ import coil.compose.AsyncImage
 import com.example.mobile_moviescatalog2023.Network.DataClasses.Models.GenreModel
 import com.example.mobile_moviescatalog2023.Network.DataClasses.Models.MovieDetailsModel
 import com.example.mobile_moviescatalog2023.Network.DataClasses.Models.ReviewModel
+import com.example.mobile_moviescatalog2023.Network.Network
 import com.example.mobile_moviescatalog2023.R
 import com.example.mobile_moviescatalog2023.View.AuthScreens.LoginScreen.LoginContract
 import com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.MainScreen.FilmRating
@@ -116,7 +117,7 @@ fun FilmScreen(
                     FilmAbout(state.movieDetails)
                 }
                 item {
-                    FilmReviews(state.movieDetails.reviews)
+                    FilmReviews(state.movieDetails.reviews, state)
                 }
             }
         }
@@ -666,7 +667,8 @@ fun FilmAbout(
 
 @Composable
 fun FilmReviews(
-    reviews: List<ReviewModel>?
+    reviews: List<ReviewModel>?,
+    state: FilmScreenContract.State
 ) {
     var showDialog by remember { mutableStateOf(false) }
 
@@ -688,7 +690,7 @@ fun FilmReviews(
                 modifier = Modifier.align(Alignment.CenterStart)
             )
 
-            if(true) {
+            if(!state.isWithMyReview) {
                 Box(
                     modifier = Modifier.size(32.dp).clip(CircleShape).align(Alignment.CenterEnd)
                         .background(MaterialTheme.colorScheme.primary)
@@ -705,7 +707,7 @@ fun FilmReviews(
         reviews?.forEach {
             Column(
                 verticalArrangement = spacedBy(8.dp)
-            ){
+            ) {
                 if(!it.isAnonymous) {
                     Box(
                         modifier = Modifier.fillMaxWidth()
@@ -735,18 +737,19 @@ fun FilmReviews(
                                     ),
                                     modifier = Modifier.fillMaxWidth()
                                 )
-
-                                Text(
-                                    text = "мой отзыв",
-                                    style = TextStyle(
-                                        fontFamily = interFamily,
-                                        fontWeight = FontWeight.W500,
-                                        fontSize = 14.sp,
-                                        color = MaterialTheme.colorScheme.onBackground,
-                                        textAlign = TextAlign.Start
-                                    ),
-                                    modifier = Modifier.fillMaxWidth()
-                                )
+                                if(it.author.userId == Network.userId) {
+                                    Text(
+                                        text = "мой отзыв",
+                                        style = TextStyle(
+                                            fontFamily = interFamily,
+                                            fontWeight = FontWeight.W500,
+                                            fontSize = 14.sp,
+                                            color = MaterialTheme.colorScheme.onBackground,
+                                            textAlign = TextAlign.Start
+                                        ),
+                                        modifier = Modifier.fillMaxWidth()
+                                    )
+                                }
                             }
                         }
 
@@ -770,7 +773,7 @@ fun FilmReviews(
                                         null
                                     )
                                     Text(
-                                        text = "9",
+                                        text = it.rating.toString(),
                                         style = TextStyle(
                                             fontFamily = interFamily,
                                             fontWeight = FontWeight.W500,
@@ -781,24 +784,28 @@ fun FilmReviews(
                                     )
                                 }
                             }
+                            if(it.author.userId == Network.userId) {
+                                var expanded by remember { mutableStateOf(false) }
+                                Menu(
+                                    expanded = expanded,
+                                    onDismiss = { expanded = !expanded },
+                                    onEditRequested = { showDialog = !showDialog })
 
-                            var expanded by remember { mutableStateOf(false) }
-                            Menu( expanded = expanded, onDismiss = { expanded = !expanded }, onEditRequested = { showDialog = !showDialog })
-
-                            Box(
-                                modifier = Modifier
-                                    .height(26.dp).width(26.dp)
-                                    .clip(CircleShape)
-                                    .background(MaterialTheme.colorScheme.onSurface)
-                                    .clickable {
-                                        expanded = !expanded
-                                    }
-                            ) {
-                                Icon(
-                                    painterResource(R.drawable.dots),
-                                    null,
-                                    Modifier.align(Alignment.Center)
-                                )
+                                Box(
+                                    modifier = Modifier
+                                        .height(26.dp).width(26.dp)
+                                        .clip(CircleShape)
+                                        .background(MaterialTheme.colorScheme.onSurface)
+                                        .clickable {
+                                            expanded = !expanded
+                                        }
+                                ) {
+                                    Icon(
+                                        painterResource(R.drawable.dots),
+                                        null,
+                                        Modifier.align(Alignment.Center)
+                                    )
+                                }
                             }
                         }
                     }

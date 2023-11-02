@@ -69,7 +69,7 @@ fun RegistrationPasswordScreen(
     registerRequestBody: RegisterRequestBody
 ) {
     LaunchedEffect(true) {
-
+        onEventSent(RegistrationPasswordContract.Event.LoadRegisterRequestBody(registerRequestBody))
     }
 
     FilmusTheme {

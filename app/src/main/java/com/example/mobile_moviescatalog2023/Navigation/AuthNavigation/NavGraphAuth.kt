@@ -44,7 +44,7 @@ fun NavGraphBuilder.NavGraphAuth(
         ) {entry ->
             val registerRequestBody = RegisterRequestBody(
                 userName = (entry.arguments?.getString("userName") ?: ""),
-                name = (entry.arguments?.getString("userName") ?: ""),
+                name = (entry.arguments?.getString("name") ?: ""),
                 password = "",
                 email = (entry.arguments?.getString("email") ?: ""),
                 birthDate = (entry.arguments?.getString("birthDate") ?: ""),

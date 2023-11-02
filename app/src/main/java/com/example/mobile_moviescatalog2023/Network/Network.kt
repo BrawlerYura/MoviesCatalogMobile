@@ -38,6 +38,7 @@ object Network {
     private val retrofit: Retrofit = getRetrofit()
 
     var token: String = ""
+    var userId: String = ""
 
     fun getAuthApi(): AuthApi = retrofit.create(AuthApi::class.java)
     fun getUserApi(): UserApi = retrofit.create(UserApi::class.java)

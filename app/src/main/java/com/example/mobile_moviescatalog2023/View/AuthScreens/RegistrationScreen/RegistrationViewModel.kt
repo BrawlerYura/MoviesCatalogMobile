@@ -11,21 +11,6 @@ class RegistrationViewModel(
 
 ): BaseViewModel<RegistrationContract.Event, RegistrationContract.State, RegistrationContract.Effect>() {
 
-    private fun transferBody() {
-        setState {
-            copy(
-                registerRequestBody = RegisterRequestBody(
-                    userName = state.value.login,
-                    name = state.value.name,
-                    password = "",
-                    email = state.value.email,
-                    birthDate = formatDateToApi(state.value.birthDate),
-                    gender = state.value.gender
-                )
-            )
-        }
-    }
-
     private fun formatDateToApi(date: String): String {
         val parts = date.split(".")
         val year = parts[2]
@@ -50,7 +35,7 @@ class RegistrationViewModel(
     }
 
     private fun saveBirthDate(birthDate: String) {
-        setState { copy(birthDate = birthDate) }
+        setState { copy(birthDate = birthDate, apiBirthDate = formatDateToApi(birthDate)) }
     }
 
     @SuppressLint("SimpleDateFormat")
@@ -72,14 +57,7 @@ class RegistrationViewModel(
         login = "",
         email = "",
         birthDate = "",
-        registerRequestBody = RegisterRequestBody(
-                name = "",
-                gender = 0,
-                userName = "",
-                email = "",
-                birthDate = "",
-                password = ""
-                )
+        apiBirthDate = ""
     )
 
     override fun handleEvents(event: RegistrationContract.Event) {
@@ -90,7 +68,6 @@ class RegistrationViewModel(
             is RegistrationContract.Event.SaveLoginEvent -> saveLogin(event.login)
             is RegistrationContract.Event.SaveBirthDateEvent -> saveBirthDate(event.birthDate)
             is RegistrationContract.Event.SaveBirthDateWithFormatEvent -> saveBirthDate(formatDateToTextField(event.birthDate))
-            is RegistrationContract.Event.TransferBody -> transferBody()
         }
     }
 }

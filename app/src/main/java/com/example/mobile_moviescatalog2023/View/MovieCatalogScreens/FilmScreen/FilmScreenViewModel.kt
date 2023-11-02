@@ -3,9 +3,11 @@ package com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.FilmScreen
 import android.annotation.SuppressLint
 import android.util.Log
 import androidx.lifecycle.viewModelScope
+import com.example.mobile_moviescatalog2023.Network.DataClasses.Models.MovieDetailsModel
 import com.example.mobile_moviescatalog2023.Network.DataClasses.Models.MovieElementModel
 import com.example.mobile_moviescatalog2023.Network.FavoriteMovies.FavoriteMoviesRepository
 import com.example.mobile_moviescatalog2023.Network.Movie.MovieRepository
+import com.example.mobile_moviescatalog2023.Network.Network
 import com.example.mobile_moviescatalog2023.View.Base.BaseViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
@@ -24,7 +26,8 @@ class FilmScreenViewModel(
         movieDetails = null,
         isAddingSuccess = null,
         isDeletingSuccess = null,
-        isMyFavorite = false
+        isMyFavorite = false,
+        isWithMyReview = false
     )
 
     override fun handleEvents(event: FilmScreenContract.Event) {
@@ -46,6 +49,7 @@ class FilmScreenViewModel(
                                 movieDetails = it
                             )
                         }
+                        checkIfWithMyReview(it)
                         checkIfFavorite(id = it.id)
                     }.onFailure {
                         setState {
@@ -55,6 +59,18 @@ class FilmScreenViewModel(
                         }
                     }
                 }
+        }
+    }
+
+    private fun checkIfWithMyReview(it: MovieDetailsModel) {
+        it.reviews?.forEach {
+            if(!it.isAnonymous && it.author.userId == Network.userId) {
+                setState {
+                    copy(
+                        isWithMyReview = true
+                    )
+                }
+            }
         }
     }
 

@@ -109,14 +109,13 @@ fun RegistrationScreen(
 
                 Button(
                     onClick = {
-//                        onEventSent(RegistrationContract.Event.TransferBody)
                         onNavigationRequested(RegistrationContract.Effect.Navigation.NextScreen(
                             registerRequestBody = RegisterRequestBody(
                                 userName = state.login,
                                 name = state.name,
                                 password = "",
                                 email = state.email,
-                                birthDate = state.birthDate,
+                                birthDate = state.apiBirthDate,
                                 gender = state.gender
                             )
                         ))

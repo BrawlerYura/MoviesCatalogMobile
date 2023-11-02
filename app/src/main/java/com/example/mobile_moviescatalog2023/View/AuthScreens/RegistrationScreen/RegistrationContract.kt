@@ -19,8 +19,6 @@ class RegistrationContract {
         class SaveBirthDateEvent(val birthDate: String) : Event()
 
         class SaveBirthDateWithFormatEvent(val birthDate: Long?) : Event()
-
-        object TransferBody: Event()
     }
 
     data class State (
@@ -29,7 +27,7 @@ class RegistrationContract {
         val login: String,
         val email: String,
         val birthDate: String,
-        val registerRequestBody: RegisterRequestBody
+        val apiBirthDate: String
     ) : ViewState
 
     sealed class Effect : ViewSideEffect {
