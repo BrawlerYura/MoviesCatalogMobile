@@ -80,7 +80,7 @@ fun FilmScreen(
     state: FilmScreenContract.State,
     onEventSent: (event: FilmScreenContract.Event) -> Unit,
     onNavigationRequested: (navigationEffect: FilmScreenContract.Effect.Navigation) -> Unit,
-    filmId: String = "5765a388-7ccd-4560-a2b6-08d9b9f3d2a2"
+    filmId: String
 ) {
     LaunchedEffect(true) {
         onEventSent(FilmScreenContract.Event.LoadFilmDetails(filmId))
@@ -98,7 +98,7 @@ fun FilmScreen(
                     FilmPoster(state.movieDetails.poster)
                 }
                 item {
-                    FilmShortDetails(state.movieDetails.reviews)
+                    FilmShortDetails(state.movieDetails.reviews, state.movieDetails.name ?: "")
                 }
                 item {
                     FilmDescription(state.movieDetails.description)
@@ -167,7 +167,8 @@ fun FilmPoster(
 
 @Composable
 fun FilmShortDetails(
-    movieReviews: List<ReviewModel>?
+    movieReviews: List<ReviewModel>?,
+    name: String
 ) {
     Box(
         modifier = Modifier.fillMaxWidth().padding(top = 15.dp, start = 15.dp, end = 15.dp)
@@ -195,14 +196,15 @@ fun FilmShortDetails(
             }
         }
         Text(
-            text = stringResource(R.string.favorite),
+            text = name,
             style = TextStyle(
                 fontFamily = interFamily,
                 fontWeight = FontWeight.W700,
                 fontSize = 24.sp,
-                color = MaterialTheme.colorScheme.onBackground
+                color = MaterialTheme.colorScheme.onBackground,
+                textAlign = TextAlign.Center
             ),
-            modifier = Modifier.align(Alignment.Center)
+            modifier = Modifier.align(Alignment.Center).fillMaxWidth().padding(horizontal = 60.dp)
         )
 
         Box(
@@ -458,7 +460,7 @@ fun FilmAbout(
                 modifier = Modifier.fillMaxWidth(0.25f)
             )
             Text(
-                text = movieDetails.country ?: "",
+                text = movieDetails.country ?: "-",
                 style = TextStyle(
                     fontFamily = interFamily,
                     fontWeight = FontWeight.W400,
@@ -483,7 +485,12 @@ fun FilmAbout(
                 modifier = Modifier.fillMaxWidth(0.25f)
             )
             Text(
-                text = "\"" + movieDetails.tagline + "\"",
+                text =
+                if(movieDetails.tagline != null && movieDetails.tagline != "-") {
+                    "\"" + movieDetails.tagline + "\""
+                } else {
+                    "-"
+                },
                 style = TextStyle(
                     fontFamily = interFamily,
                     fontWeight = FontWeight.W400,
@@ -533,7 +540,12 @@ fun FilmAbout(
                 modifier = Modifier.fillMaxWidth(0.25f)
             )
             Text(
-                text = "$" + movieDetails.budget?.toString(),
+                text =
+                if(movieDetails.budget != null) {
+                    "$" + movieDetails.budget.toString()
+                } else {
+                        "-"
+                       },
                 style = TextStyle(
                     fontFamily = interFamily,
                     fontWeight = FontWeight.W400,
@@ -558,7 +570,12 @@ fun FilmAbout(
                 modifier = Modifier.fillMaxWidth(0.25f)
             )
             Text(
-                text = "$" + movieDetails.fees?.toString(),
+                text =
+                if(movieDetails.fees != null) {
+                    "$" + movieDetails.fees.toString()
+                } else {
+                    "-"
+                },
                 style = TextStyle(
                     fontFamily = interFamily,
                     fontWeight = FontWeight.W400,
@@ -664,7 +681,7 @@ fun FilmReviews(
             Column(
                 verticalArrangement = spacedBy(8.dp)
             ){
-                if(true) {
+                if(!it.isAnonymous) {
                     Box(
                         modifier = Modifier.fillMaxWidth()
                     ){
@@ -672,7 +689,7 @@ fun FilmReviews(
                             horizontalArrangement = spacedBy(10.dp)
                         ) {
                             AsyncImage(
-                                model = it.author.avatar,
+                                model = it.author.avatar ?: "",
                                 contentDescription = null,
                                 modifier = Modifier.size(40.dp).clip(CircleShape),
                                 contentScale = ContentScale.Crop
@@ -760,7 +777,7 @@ fun FilmReviews(
                             }
                         }
                     }
-                } else if (!it.isAnonymous) {
+                } else if (it.isAnonymous) {
                     Box(
                         modifier = Modifier.fillMaxWidth()
                     ){
@@ -768,7 +785,7 @@ fun FilmReviews(
                             horizontalArrangement = spacedBy(10.dp)
                         ) {
                             AsyncImage(
-                                model = it.author.avatar,
+                                model = R.drawable.logo,
                                 contentDescription = null,
                                 modifier = Modifier.size(40.dp).clip(CircleShape),
                                 contentScale = ContentScale.Crop
@@ -779,7 +796,7 @@ fun FilmReviews(
                                 horizontalAlignment = Alignment.Start
                             ) {
                                 Text(
-                                    text = it.author.nickName ?: "",
+                                    text = "Аноним",
                                     style = TextStyle(
                                         fontFamily = interFamily,
                                         fontWeight = FontWeight.W500,

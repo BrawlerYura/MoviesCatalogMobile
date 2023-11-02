@@ -23,8 +23,6 @@ fun Navigation() {
             navController,
             onNavigationRequested = { navigationEffect ->
             when (navigationEffect) {
-                is MovieNavigationContract.Effect.Navigation.ToFilm -> { }
-
                 is MovieNavigationContract.Effect.Navigation.ToFavorite -> {
                     navController.navigate(Screen.Favorite.route)
                 }

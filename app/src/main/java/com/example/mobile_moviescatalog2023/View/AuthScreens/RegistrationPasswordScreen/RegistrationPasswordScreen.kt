@@ -28,6 +28,7 @@ import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -48,6 +49,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.mobile_moviescatalog2023.Network.DataClasses.RequestBodies.RegisterRequestBody
 import com.example.mobile_moviescatalog2023.R
 import com.example.mobile_moviescatalog2023.View.AuthScreens.LoginScreen.LoginContract
 import com.example.mobile_moviescatalog2023.View.AuthScreens.RegistrationPasswordScreen.RegistrationPasswordContract
@@ -63,8 +65,13 @@ import kotlinx.coroutines.launch
 fun RegistrationPasswordScreen(
     state: RegistrationPasswordContract.State,
     onEventSent: (event: RegistrationPasswordContract.Event) -> Unit,
-    onNavigationRequested: (navigation: RegistrationPasswordContract.Effect.Navigation) -> Unit
+    onNavigationRequested: (navigation: RegistrationPasswordContract.Effect.Navigation) -> Unit,
+    registerRequestBody: RegisterRequestBody
 ) {
+    LaunchedEffect(true) {
+
+    }
+
     FilmusTheme {
         Box(
             modifier = Modifier

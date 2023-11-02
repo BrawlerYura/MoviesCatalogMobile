@@ -7,25 +7,23 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.TimeZone
 
-class SharedRegisterDataService {
-    companion object {
-        lateinit var sharedData: RegisterRequestBody
-    }
-}
-
 class RegistrationViewModel(
 
 ): BaseViewModel<RegistrationContract.Event, RegistrationContract.State, RegistrationContract.Effect>() {
 
     private fun transferBody() {
-        SharedRegisterDataService.sharedData = RegisterRequestBody(
-            userName = state.value.login,
-            name = state.value.name,
-            password = "",
-            email = state.value.email,
-            birthDate = formatDateToApi(state.value.birthDate),
-            gender = state.value.gender
-        )
+        setState {
+            copy(
+                registerRequestBody = RegisterRequestBody(
+                    userName = state.value.login,
+                    name = state.value.name,
+                    password = "",
+                    email = state.value.email,
+                    birthDate = formatDateToApi(state.value.birthDate),
+                    gender = state.value.gender
+                )
+            )
+        }
     }
 
     private fun formatDateToApi(date: String): String {
@@ -73,7 +71,15 @@ class RegistrationViewModel(
         gender = 0,
         login = "",
         email = "",
-        birthDate = ""
+        birthDate = "",
+        registerRequestBody = RegisterRequestBody(
+                name = "",
+                gender = 0,
+                userName = "",
+                email = "",
+                birthDate = "",
+                password = ""
+                )
     )
 
     override fun handleEvents(event: RegistrationContract.Event) {

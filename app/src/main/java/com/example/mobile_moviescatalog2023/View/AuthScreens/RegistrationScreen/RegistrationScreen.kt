@@ -54,6 +54,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.mobile_moviescatalog2023.Network.DataClasses.RequestBodies.RegisterRequestBody
 import com.example.mobile_moviescatalog2023.R
 import com.example.mobile_moviescatalog2023.ui.theme.FilmusTheme
 import com.example.mobile_moviescatalog2023.ui.theme.interFamily
@@ -108,8 +109,17 @@ fun RegistrationScreen(
 
                 Button(
                     onClick = {
-                        onEventSent(RegistrationContract.Event.TransferBody)
-                        onNavigationRequested(RegistrationContract.Effect.Navigation.NextScreen)
+//                        onEventSent(RegistrationContract.Event.TransferBody)
+                        onNavigationRequested(RegistrationContract.Effect.Navigation.NextScreen(
+                            registerRequestBody = RegisterRequestBody(
+                                userName = state.login,
+                                name = state.name,
+                                password = "",
+                                email = state.email,
+                                birthDate = state.birthDate,
+                                gender = state.gender
+                            )
+                        ))
                     },
                     shape = RoundedCornerShape(10.dp),
                     modifier = Modifier

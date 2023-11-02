@@ -21,7 +21,7 @@ fun MainScreenDestination(
         onNavigationRequested = { navigationEffect ->
             when (navigationEffect) {
                 is MainScreenContract.Effect.Navigation.ToFilm -> {
-                    navController.navigate(Screen.Film.route)
+                    navController.navigate(Screen.Film.route + "/${navigationEffect.id}")
                 }
             }
         },

@@ -14,7 +14,8 @@ import org.koin.androidx.compose.getViewModel
 
 @Composable
 fun FilmScreenDestination(
-    navController: NavHostController
+    navController: NavHostController,
+    id: String
     ) {
     val viewModel = getViewModel<FilmScreenViewModel>()
     FilmScreen(
@@ -26,6 +27,7 @@ fun FilmScreenDestination(
                     navController.navigateUp()
                 }
             }
-        }
+        },
+        filmId = id
     )
 }

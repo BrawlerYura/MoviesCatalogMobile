@@ -1,17 +1,16 @@
 package com.example.mobile_moviescatalog2023.Navigation.AuthNavigation
 
-import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.mobile_moviescatalog2023.Navigation.Screen
+import com.example.mobile_moviescatalog2023.Network.DataClasses.RequestBodies.RegisterRequestBody
 import com.example.mobile_moviescatalog2023.View.AuthScreens.RegistrationPasswordScreen.RegistrationPasswordContract
 import com.example.mobile_moviescatalog2023.View.AuthScreens.RegistrationPasswordScreen.RegistrationPasswordViewModel
 import com.example.mobile_moviescatalog2023.View.LoginScreens.RegistrationScreen.RegistrationPasswordScreen
 import org.koin.androidx.compose.getViewModel
 
 @Composable
-fun RegistrationPasswordScreenDestination(navController: NavHostController) {
+fun RegistrationPasswordScreenDestination(navController: NavHostController, registerRequestBody: RegisterRequestBody) {
     val viewModel = getViewModel<RegistrationPasswordViewModel>()
     RegistrationPasswordScreen(
         state = viewModel.state.value,
@@ -34,6 +33,7 @@ fun RegistrationPasswordScreenDestination(navController: NavHostController) {
                     navController.navigateUp()
                 }
             }
-        }
+        },
+        registerRequestBody
     )
 }

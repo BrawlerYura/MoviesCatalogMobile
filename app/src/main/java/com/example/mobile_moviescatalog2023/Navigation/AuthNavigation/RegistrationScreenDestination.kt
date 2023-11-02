@@ -17,7 +17,13 @@ fun RegistratinoScreenDestination(navController: NavHostController) {
         onNavigationRequested = { navigationEffect ->
             when (navigationEffect) {
                 is RegistrationContract.Effect.Navigation.NextScreen -> {
-                    navController.navigate(Screen.RegPass.route)
+                    navController.navigate(
+                        Screen.RegPass.route + "/${navigationEffect.registerRequestBody.userName}" +
+                                "/${navigationEffect.registerRequestBody.name}" +
+                                "/${navigationEffect.registerRequestBody.email}" +
+                                "/${navigationEffect.registerRequestBody.birthDate}" +
+                                "/${navigationEffect.registerRequestBody.gender}"
+                    )
                 }
 
                 is RegistrationContract.Effect.Navigation.ToLogin -> {

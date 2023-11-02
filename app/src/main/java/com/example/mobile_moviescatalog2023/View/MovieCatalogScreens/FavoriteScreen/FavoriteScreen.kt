@@ -136,7 +136,7 @@ fun FavoriteFilmCard(
                 Column(
                     verticalArrangement = spacedBy(5.dp),
                     modifier = Modifier.clickable {
-                        onNavigationRequested(FavoriteScreenContract.Effect.Navigation.ToFilm)
+                        onNavigationRequested(FavoriteScreenContract.Effect.Navigation.ToFilm(item.firstMovie.id))
                     }
                 ) {
                     AsyncImage(
@@ -158,13 +158,13 @@ fun FavoriteFilmCard(
                         ),
                     )
                 }
-                Column(
-                    verticalArrangement = spacedBy(5.dp),
-                    modifier = Modifier.clickable {
-                        onNavigationRequested(FavoriteScreenContract.Effect.Navigation.ToFilm)
-                    }
-                ) {
-                    if (item.secondMovie != null) {
+                if (item.secondMovie != null) {
+                    Column(
+                        verticalArrangement = spacedBy(5.dp),
+                        modifier = Modifier.clickable {
+                            onNavigationRequested(FavoriteScreenContract.Effect.Navigation.ToFilm(item.secondMovie.id))
+                        }
+                    ) {
                         AsyncImage(
                             model = item.secondMovie.poster,
                             contentDescription = null,
@@ -186,13 +186,13 @@ fun FavoriteFilmCard(
                 }
             }
         }
-        Column(
-            verticalArrangement = spacedBy(5.dp),
-            modifier = Modifier.clickable {
-                onNavigationRequested(FavoriteScreenContract.Effect.Navigation.ToFilm)
-            }
-        ) {
-            if (item.thirdMovie != null) {
+        if (item.thirdMovie != null) {
+            Column(
+                verticalArrangement = spacedBy(5.dp),
+                modifier = Modifier.clickable {
+                    onNavigationRequested(FavoriteScreenContract.Effect.Navigation.ToFilm(item.thirdMovie.id))
+                }
+            ) {
                 AsyncImage(
                     model = item.thirdMovie.poster,
                     contentDescription = null,

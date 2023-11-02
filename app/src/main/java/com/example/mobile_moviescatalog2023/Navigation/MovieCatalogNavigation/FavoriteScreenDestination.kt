@@ -21,19 +21,7 @@ fun FavoriteScreenDestination(
         onNavigationRequested = { navigationEffect ->
             when (navigationEffect) {
                 is FavoriteScreenContract.Effect.Navigation.ToFilm -> {
-                    navController.navigate(Screen.Film.route)
-                }
-
-                is FavoriteScreenContract.Effect.Navigation.ToFavorite -> {
-                    navController.navigate(Screen.Favorite.route)
-                }
-
-                is FavoriteScreenContract.Effect.Navigation.ToProfile -> {
-                    navController.navigate(Screen.Profile.route)
-                }
-
-                is FavoriteScreenContract.Effect.Navigation.ToMain -> {
-                    navController.navigate(Screen.Main.route)
+                    navController.navigate(Screen.Film.route + "/${navigationEffect.id}")
                 }
             }
         },

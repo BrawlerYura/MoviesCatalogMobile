@@ -19,10 +19,7 @@ class FavoriteScreenContract {
 
     sealed class Effect : ViewSideEffect {
         sealed class Navigation : Effect() {
-            object ToMain : Navigation()
-            object ToFilm : Navigation()
-            object ToFavorite : Navigation()
-            object ToProfile : Navigation()
+            class ToFilm(val id: String) : Navigation()
         }
     }
 }

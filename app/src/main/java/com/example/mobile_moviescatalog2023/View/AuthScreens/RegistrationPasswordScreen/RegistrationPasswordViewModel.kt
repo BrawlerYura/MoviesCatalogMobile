@@ -6,7 +6,6 @@ import com.example.mobile_moviescatalog2023.Network.Auth.AuthRepository
 import com.example.mobile_moviescatalog2023.Network.DataClasses.RequestBodies.RegisterRequestBody
 import com.example.mobile_moviescatalog2023.TokenManager.TokenManager
 import com.example.mobile_moviescatalog2023.View.Base.BaseViewModel
-import com.example.mobile_moviescatalog2023.View.AuthScreens.RegistrationScreen.SharedRegisterDataService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -27,14 +26,26 @@ class RegistrationPasswordViewModel(
         setState { copy(repPassword = repeatedPassword) }
     }
 
+    private fun loadRegisterRequestBody(registerRequestBody: RegisterRequestBody) {
+        setState {
+            copy(
+                userName = registerRequestBody.userName,
+                name = registerRequestBody.name,
+                email = registerRequestBody.email,
+                birthDate = registerRequestBody.birthDate,
+                gender = registerRequestBody.gender,
+            )
+        }
+    }
+
     override fun setInitialState() = RegistrationPasswordContract.State(
         password = "",
         repPassword = "",
-        userName = SharedRegisterDataService.sharedData.userName,
-        name = SharedRegisterDataService.sharedData.name,
-        email = SharedRegisterDataService.sharedData.email,
-        birthDate = SharedRegisterDataService.sharedData.birthDate,
-        gender = SharedRegisterDataService.sharedData.gender,
+        userName = "",
+        name = "",
+        email = "",
+        birthDate = "",
+        gender = 0,
         isSuccess = null
     )
 
@@ -43,6 +54,7 @@ class RegistrationPasswordViewModel(
             is RegistrationPasswordContract.Event.SavePasswordEvent -> savePassword(event.password)
             is RegistrationPasswordContract.Event.SaveRepeatedPasswordEvent -> saveRepeatedPassword(event.repPassword)
             is RegistrationPasswordContract.Event.SignUp -> signUp()
+            is RegistrationPasswordContract.Event.LoadRegisterRequestBody -> loadRegisterRequestBody(event.registerRequestBody)
         }
     }
 

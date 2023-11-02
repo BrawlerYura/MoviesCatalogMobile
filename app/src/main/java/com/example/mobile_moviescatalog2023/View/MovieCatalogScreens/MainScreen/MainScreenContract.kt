@@ -29,7 +29,7 @@ class MainScreenContract {
 
     sealed class Effect : ViewSideEffect {
         sealed class Navigation : Effect() {
-            object ToFilm : Navigation()
+            class ToFilm(val id: String) : Navigation()
         }
     }
 }
@@ -38,7 +38,6 @@ class MovieNavigationContract {
     sealed class Effect : ViewSideEffect {
         sealed class Navigation : Effect() {
             object ToMain : Navigation()
-            object ToFilm : Navigation()
             object ToFavorite : Navigation()
             object ToProfile : Navigation()
         }

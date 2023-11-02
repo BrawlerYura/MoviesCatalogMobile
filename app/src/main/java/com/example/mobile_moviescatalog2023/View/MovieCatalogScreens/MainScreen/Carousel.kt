@@ -96,7 +96,7 @@ fun Carousel(
                 contentDescription = null,
                 modifier = Modifier.fillMaxSize()
                     .clickable {
-                        onNavigationRequested(MainScreenContract.Effect.Navigation.ToFilm)
+                        onNavigationRequested(MainScreenContract.Effect.Navigation.ToFilm(state.movieCarouselList[page].id))
                     },
                 contentScale = ContentScale.Crop
             )

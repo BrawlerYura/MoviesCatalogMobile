@@ -1,5 +1,6 @@
 package com.example.mobile_moviescatalog2023.View.AuthScreens.RegistrationPasswordScreen
 
+import com.example.mobile_moviescatalog2023.Network.DataClasses.RequestBodies.RegisterRequestBody
 import com.example.mobile_moviescatalog2023.View.Base.ViewEvent
 import com.example.mobile_moviescatalog2023.View.Base.ViewSideEffect
 import com.example.mobile_moviescatalog2023.View.Base.ViewState
@@ -8,10 +9,9 @@ class RegistrationPasswordContract {
 
     sealed class Event : ViewEvent {
         class SavePasswordEvent(val password: String) : Event()
-
         class SaveRepeatedPasswordEvent(val repPassword: String) : Event()
-
         object SignUp : Event()
+        class LoadRegisterRequestBody(val registerRequestBody: RegisterRequestBody) : Event()
     }
 
     data class State(

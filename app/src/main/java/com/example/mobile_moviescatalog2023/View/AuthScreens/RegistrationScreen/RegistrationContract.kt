@@ -1,5 +1,6 @@
 package com.example.mobile_moviescatalog2023.View.AuthScreens.RegistrationScreen
 
+import com.example.mobile_moviescatalog2023.Network.DataClasses.RequestBodies.RegisterRequestBody
 import com.example.mobile_moviescatalog2023.View.Base.ViewEvent
 import com.example.mobile_moviescatalog2023.View.Base.ViewSideEffect
 import com.example.mobile_moviescatalog2023.View.Base.ViewState
@@ -27,12 +28,13 @@ class RegistrationContract {
         val gender: Int,
         val login: String,
         val email: String,
-        val birthDate: String
+        val birthDate: String,
+        val registerRequestBody: RegisterRequestBody
     ) : ViewState
 
     sealed class Effect : ViewSideEffect {
         sealed class Navigation : Effect() {
-            object NextScreen : Navigation()
+            class NextScreen(val registerRequestBody: RegisterRequestBody) : Navigation()
             object ToLogin : Navigation()
             object Back : Navigation()
         }

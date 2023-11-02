@@ -131,7 +131,7 @@ fun FilmCard(
         modifier = Modifier
         .padding(bottom = 16.dp, start = 16.dp, end = 16.dp).fillMaxWidth().height(130.dp)
             .clickable {
-                onNavigationRequested(MainScreenContract.Effect.Navigation.ToFilm)
+                onNavigationRequested(MainScreenContract.Effect.Navigation.ToFilm(item.id))
             }
     ) {
         Box(modifier = Modifier.fillMaxHeight().width(95.dp)) {
