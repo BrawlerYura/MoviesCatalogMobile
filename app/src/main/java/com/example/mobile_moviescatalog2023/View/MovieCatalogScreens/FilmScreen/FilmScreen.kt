@@ -47,6 +47,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -337,9 +338,9 @@ fun FilmDescription(
             ) {
                 Text(
                     text = if (expanded) {
-                        "Скрыть"
+                        stringResource(R.string.hide)
                     } else {
-                        "Подробнее"
+                        stringResource(R.string.more)
                     },
                     style = TextStyle(
                         fontFamily = interFamily,
@@ -374,7 +375,7 @@ fun FilmGenres(
             verticalArrangement = spacedBy(10.dp)
         ) {
             Text(
-                text = "Жанры",
+                text = stringResource(R.string.genres),
                 style = TextStyle(
                     fontFamily = interFamily,
                     fontWeight = FontWeight.W700,
@@ -422,7 +423,7 @@ fun FilmAbout(
         verticalArrangement = spacedBy(10.dp)
     ) {
         Text(
-            text = "О фильме",
+            text = stringResource(R.string.about_film),
             style = TextStyle(
                 fontFamily = interFamily,
                 fontWeight = FontWeight.W700,
@@ -434,7 +435,7 @@ fun FilmAbout(
 
         Row(horizontalArrangement = spacedBy(5.dp)) {
             Text(
-                text = "Год",
+                text = stringResource(R.string.year),
                 style = TextStyle(
                     fontFamily = interFamily,
                     fontWeight = FontWeight.W400,
@@ -459,7 +460,7 @@ fun FilmAbout(
 
         Row(horizontalArrangement = spacedBy(5.dp)) {
             Text(
-                text = "Страна",
+                text = stringResource(R.string.country),
                 style = TextStyle(
                     fontFamily = interFamily,
                     fontWeight = FontWeight.W400,
@@ -484,7 +485,7 @@ fun FilmAbout(
 
         Row(horizontalArrangement = spacedBy(5.dp)) {
             Text(
-                text = "Слоган",
+                text = stringResource(R.string.tagline),
                 style = TextStyle(
                     fontFamily = interFamily,
                     fontWeight = FontWeight.W400,
@@ -514,7 +515,7 @@ fun FilmAbout(
 
         Row(horizontalArrangement = spacedBy(5.dp)) {
             Text(
-                text = "Режиссёр",
+                text = stringResource(R.string.director),
                 style = TextStyle(
                     fontFamily = interFamily,
                     fontWeight = FontWeight.W400,
@@ -539,7 +540,7 @@ fun FilmAbout(
 
         Row(horizontalArrangement = spacedBy(5.dp)) {
             Text(
-                text = "Бюджет",
+                text = stringResource(R.string.budget),
                 style = TextStyle(
                     fontFamily = interFamily,
                     fontWeight = FontWeight.W400,
@@ -569,7 +570,7 @@ fun FilmAbout(
 
         Row(horizontalArrangement = spacedBy(5.dp)) {
             Text(
-                text = "Сборы в мире",
+                text = stringResource(R.string.fees),
                 style = TextStyle(
                     fontFamily = interFamily,
                     fontWeight = FontWeight.W400,
@@ -599,7 +600,7 @@ fun FilmAbout(
 
         Row(horizontalArrangement = spacedBy(5.dp)) {
             Text(
-                text = "Возраст",
+                text = stringResource(R.string.age),
                 style = TextStyle(
                     fontFamily = interFamily,
                     fontWeight = FontWeight.W400,
@@ -624,7 +625,7 @@ fun FilmAbout(
 
         Row(horizontalArrangement = spacedBy(5.dp)) {
             Text(
-                text = "Время",
+                text = stringResource(R.string.time),
                 style = TextStyle(
                     fontFamily = interFamily,
                     fontWeight = FontWeight.W400,
@@ -635,7 +636,7 @@ fun FilmAbout(
                 modifier = Modifier.fillMaxWidth(0.25f)
             )
             Text(
-                text = movieDetails.time.toString() + " мин.",
+                text = movieDetails.time.toString() + " " + stringResource(R.string.minutes),
                 style = TextStyle(
                     fontFamily = interFamily,
                     fontWeight = FontWeight.W400,
@@ -661,7 +662,7 @@ fun FilmReviews(
     ) {
         Box(modifier = Modifier.fillMaxWidth().padding(bottom = 10.dp)) {
             Text(
-                text = "Отзывы",
+                text = stringResource(R.string.reviews),
                 style = TextStyle(
                     fontFamily = interFamily,
                     fontWeight = FontWeight.W700,
@@ -739,7 +740,11 @@ fun FilmReviews(
                                     )
                                     if (it.author.userId == Network.userId) {
                                         Text(
-                                            text = "мой отзыв",
+                                            text = if(!it.isAnonymous) {
+                                                stringResource(R.string.my_review)
+                                            } else {
+                                                   stringResource(R.string.my_anonymous_review)
+                                            },
                                             style = TextStyle(
                                                 fontFamily = interFamily,
                                                 fontWeight = FontWeight.W500,
@@ -855,7 +860,7 @@ fun FilmReviews(
                                 horizontalAlignment = Alignment.Start
                             ) {
                                 Text(
-                                    text = "Аноним",
+                                    text = stringResource(R.string.anonymous_name),
                                     style = TextStyle(
                                         fontFamily = interFamily,
                                         fontWeight = FontWeight.W500,
@@ -964,7 +969,7 @@ fun Menu(
         DropdownMenuItem(
             text = {
                 Text(
-                    text = "Редактировать",
+                    text = stringResource(R.string.edit),
                     style = TextStyle(
                         fontFamily = interFamily,
                         fontWeight = FontWeight.W700,
@@ -991,7 +996,7 @@ fun Menu(
         DropdownMenuItem(
             text = {
                 Text(
-                    text = "Удалить",
+                    text = stringResource(R.string.delete),
                     style = TextStyle(
                         fontFamily = interFamily,
                         fontWeight = FontWeight.W700,
@@ -1030,13 +1035,10 @@ fun ReviewDialog(
     isAnonymous: Boolean? = null
 ) {
     val isEditing: Boolean = !(rating == null && reviewText == null)
-    Log.e("a", isEditing.toString())
     LaunchedEffect(isEditing) {
-//        if (isEditing) {
             onEventSent(FilmScreenContract.Event.SaveReviewRating(rating ?: 1))
             onEventSent(FilmScreenContract.Event.SaveReviewText(reviewText ?: ""))
             onEventSent(FilmScreenContract.Event.SaveIsAnonymous(isAnonymous ?: false))
-//        }
     }
 
     if (showDialog) {
@@ -1058,7 +1060,7 @@ fun ReviewDialog(
                     verticalArrangement = spacedBy(10.dp)
                 ) {
                     Text(
-                        text = "Оставить отзыв",
+                        text = stringResource(R.string.make_review),
                         style = TextStyle(
                             fontFamily = interFamily,
                             fontWeight = FontWeight.W700,
@@ -1124,7 +1126,7 @@ fun ReviewDialog(
                         Spacer(modifier = Modifier.width(8.dp))
 
                         Text(
-                            text = "Анонимный отзыв",
+                            text = stringResource(R.string.anonymous_check_box),
                             style = TextStyle(
                                 fontFamily = interFamily,
                                 fontWeight = FontWeight.W500,
@@ -1173,7 +1175,7 @@ fun ReviewDialog(
                         ),
                     ) {
                         Text(
-                            text = "Сохранить",
+                            text = stringResource(R.string.save),
                             style = TextStyle(
                                 fontFamily = interFamily,
                                 fontWeight = FontWeight.W600,
@@ -1195,7 +1197,7 @@ fun ReviewDialog(
                         ),
                     ) {
                         Text(
-                            text = "Отмена",
+                            text = stringResource(R.string.refuse),
                             style = TextStyle(
                                 fontFamily = interFamily,
                                 fontWeight = FontWeight.W600,
