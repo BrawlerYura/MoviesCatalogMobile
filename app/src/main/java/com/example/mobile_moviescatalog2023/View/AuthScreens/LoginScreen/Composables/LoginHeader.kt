@@ -5,8 +5,10 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -42,21 +44,26 @@ fun LoginHeader(onNavigationRequested: () -> Unit) {
     ) {
         var isClickable by remember { mutableStateOf(true) }
 
-        Icon(
-            painter = painterResource(R.drawable.back_icon),
-            contentDescription = null,
-            tint = Color.White,
-            modifier = Modifier.height(12.dp).width(12.dp).align(Alignment.CenterStart)
-                .clickable {
-                    if (isClickable) {
-                        isClickable = false
-                        onNavigationRequested()
-                        CoroutineScope(Dispatchers.Main).launch {
-                            delay(1000L)
-                            isClickable = true
-                        }
+        IconButton(
+            onClick = {
+                if (isClickable) {
+                    isClickable = false
+                    onNavigationRequested()
+                    CoroutineScope(Dispatchers.Main).launch {
+                        delay(1000L)
+                        isClickable = true
                     }
                 }
+            },
+            modifier = Modifier.size(20.dp).align(Alignment.CenterStart),
+            content = {
+                Icon(
+                    painter = painterResource(R.drawable.back_icon),
+                    contentDescription = null,
+                    modifier = Modifier.height(12.dp).width(12.dp).align(Alignment.Center),
+                    tint = MaterialTheme.colorScheme.onBackground
+                )
+            }
         )
         Text(
             text = stringResource(R.string.app_name),
