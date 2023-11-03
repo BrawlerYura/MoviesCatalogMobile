@@ -19,6 +19,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.mobile_moviescatalog2023.R
@@ -53,6 +54,7 @@ fun SplashScreen(
         val systemUiController = rememberSystemUiController()
         val statusBarColor = MaterialTheme.colorScheme.background
         val navigationBarColor = Color(0xFF161616)
+
         DisposableEffect(statusBarColor, navigationBarColor) {
             systemUiController.setStatusBarColor(Color.Black)
             systemUiController.setNavigationBarColor(Color.Black)
@@ -72,4 +74,17 @@ fun SplashScreen(
             onNavigationRequested(SplashContract.Effect.Navigation.ToIntroducingScreen)
         }
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun SplashScreenPreview() {
+    SplashScreen(
+        state = SplashContract.State (
+            isTryingGetToken = true,
+            isSuccessGetToken = false
+        ),
+        onEventSent = { },
+        onNavigationRequested = { }
+    )
 }

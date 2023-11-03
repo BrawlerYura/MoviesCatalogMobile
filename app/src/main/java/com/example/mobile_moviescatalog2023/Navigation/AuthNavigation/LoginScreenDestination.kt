@@ -1,12 +1,10 @@
 package com.example.mobile_moviescatalog2023.Navigation.AuthNavigation
 
-import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.mobile_moviescatalog2023.Navigation.Screen
 import com.example.mobile_moviescatalog2023.View.AuthScreens.LoginScreen.LoginContract
-import com.example.mobile_moviescatalog2023.View.AuthScreens.LoginScreen.LoginScreen
+import com.example.mobile_moviescatalog2023.View.AuthScreens.LoginScreen.Composables.LoginScreen
 import com.example.mobile_moviescatalog2023.View.AuthScreens.LoginScreen.LoginViewModel
 import org.koin.androidx.compose.getViewModel
 

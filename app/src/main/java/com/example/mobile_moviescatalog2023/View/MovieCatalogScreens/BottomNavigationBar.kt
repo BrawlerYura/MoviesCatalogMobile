@@ -14,6 +14,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.mobile_moviescatalog2023.R
 import com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.MainScreen.MovieNavigationContract
@@ -32,7 +33,10 @@ fun BottomNavigationBar(
         modifier = Modifier
             .background(Color(0xFF545458).copy(0.65f))
     ) {
-        NavigationBar(containerColor = Color(0xFF161616), modifier = Modifier.padding(top = 1.dp)) {
+        NavigationBar(
+            containerColor = Color(0xFF161616),
+            modifier = Modifier.padding(top = 1.dp)
+        ) {
             screens.forEachIndexed { index, item ->
                 NavigationBarItem(
                     selected = false,
@@ -63,21 +67,27 @@ fun BottomNavigationBar(
                                 Icon(
                                     painter = painterResource(R.drawable.ic_home_enabled),
                                     contentDescription = item,
-                                    tint = if(index == currentScreen) { Color(0xFFFC315E) } else { Color(0xFF909499) }
+                                    tint =
+                                    if(index == currentScreen) { Color(0xFFFC315E) }
+                                    else { Color(0xFF909499) }
                                 )
                             }
                             1 -> {
                                 Icon(
                                     painter = painterResource(R.drawable.ic_favorite_enabled),
                                     contentDescription = item,
-                                    tint = if(index == currentScreen) { Color(0xFFFC315E) } else { Color(0xFF909499) }
+                                    tint =
+                                    if(index == currentScreen) { Color(0xFFFC315E) }
+                                    else { Color(0xFF909499) }
                                 )
                             }
                             else -> {
                                 Icon(
                                     painter = painterResource(R.drawable.ic_profile_enabled),
                                     contentDescription = item,
-                                    tint = if(index == currentScreen) { Color(0xFFFC315E) } else { Color(0xFF909499) }
+                                    tint =
+                                    if(index == currentScreen) { Color(0xFFFC315E) }
+                                    else { Color(0xFF909499) }
                                 )
                             }
                         }
@@ -86,4 +96,13 @@ fun BottomNavigationBar(
             }
         }
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun BottomNavigationBarPreview() {
+    BottomNavigationBar(
+        onNavigationRequested = { },
+        currentScreen = 1
+    )
 }

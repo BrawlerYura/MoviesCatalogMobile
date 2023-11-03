@@ -19,7 +19,22 @@ class FilmScreenViewModel(
 
     override fun setInitialState() = FilmScreenContract.State(
         isSuccess = null,
-        movieDetails = null,
+        movieDetails = MovieDetailsModel(
+                id = "",
+                name = null,
+                poster = null,
+                year = 0,
+                country = null,
+                genres = null,
+                reviews = null,
+                time = 0,
+                tagline = null,
+                description = null,
+                director = null,
+                budget = null,
+                fees = null,
+                ageLimit = 0
+                ),
         isAddingSuccess = null,
         isDeletingSuccess = null,
         isMyFavorite = false,

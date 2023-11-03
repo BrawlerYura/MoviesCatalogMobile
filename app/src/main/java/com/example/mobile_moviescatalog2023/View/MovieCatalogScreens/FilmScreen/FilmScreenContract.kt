@@ -22,7 +22,7 @@ class FilmScreenContract {
 
     data class State(
         val isSuccess: Boolean?,
-        val movieDetails: MovieDetailsModel?,
+        val movieDetails: MovieDetailsModel,
         val isAddingSuccess: Boolean?,
         val isDeletingSuccess: Boolean?,
         val isMyFavorite: Boolean,
