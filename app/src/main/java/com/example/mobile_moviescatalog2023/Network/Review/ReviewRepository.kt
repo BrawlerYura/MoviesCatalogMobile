@@ -31,12 +31,11 @@ class ReviewRepository(
         }
     }.flowOn(Dispatchers.IO)
 
-    suspend fun deleteReview(movieId: String, id: String) = flow {
+    suspend fun deleteReview(movieId: String, id: String) {
         try {
-            emit(Result.success(api.deleteReview(movieId, id)))
+           api.deleteReview(movieId, id)
         } catch (e: Exception) {
             Log.e("a", e.message.toString())
-            emit(Result.failure(Throwable(e)))
         }
-    }.flowOn(Dispatchers.IO)
+    }
 }

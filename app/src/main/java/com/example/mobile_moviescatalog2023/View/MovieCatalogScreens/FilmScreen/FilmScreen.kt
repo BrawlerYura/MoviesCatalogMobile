@@ -1,6 +1,5 @@
 package com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.FilmScreen
 
-import android.content.res.Resources
 import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -21,17 +20,12 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.BasicTextField
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
@@ -53,22 +47,21 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import coil.compose.AsyncImage
 import com.example.mobile_moviescatalog2023.Network.DataClasses.Models.GenreModel
 import com.example.mobile_moviescatalog2023.Network.DataClasses.Models.MovieDetailsModel
 import com.example.mobile_moviescatalog2023.Network.DataClasses.Models.ReviewModel
+import com.example.mobile_moviescatalog2023.Network.DataClasses.Models.ReviewModifyModel
 import com.example.mobile_moviescatalog2023.Network.Network
 import com.example.mobile_moviescatalog2023.R
-import com.example.mobile_moviescatalog2023.View.AuthScreens.LoginScreen.LoginContract
 import com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.MainScreen.FilmRating
 import com.example.mobile_moviescatalog2023.ui.theme.interFamily
 import kotlinx.coroutines.CoroutineScope
@@ -117,7 +110,7 @@ fun FilmScreen(
                     FilmAbout(state.movieDetails)
                 }
                 item {
-                    FilmReviews(state.movieDetails.reviews, state)
+                    FilmReviews(state.movieDetails.reviews, state, onEventSent, filmId)
                 }
             }
         }
@@ -260,10 +253,7 @@ private fun calculateFilmRating(reviews: List<ReviewModel>?): FilmRating? {
         val rating = (sumScore.toDouble() / reviews.count())
 
         val color = when {
-            rating >= 1.0 && rating < 2.0 -> {
-                Color(0xFFE64646)
-            }
-            rating >= 2.0 && rating < 3.0 -> {
+            rating >= 0.0 && rating < 3.0 -> {
                 Color(0xFFE64646)
             }
             rating >= 3.0 && rating < 4.0 -> {
@@ -272,16 +262,10 @@ private fun calculateFilmRating(reviews: List<ReviewModel>?): FilmRating? {
             rating >= 4.0 && rating < 5.0 -> {
                 Color(0xFFFFA000)
             }
-            rating >= 5.0 && rating < 6.0 -> {
+            rating >= 5.0 && rating < 7.0 -> {
                 Color(0xFFFFD54F)
             }
-            rating >= 6.0 && rating < 7.0 -> {
-                Color(0xFFFFD54F)
-            }
-            rating >= 7.0 && rating < 8.0 -> {
-                Color(0xFFA3CD4A)
-            }
-            rating >= 8.0 && rating < 9.0 -> {
+            rating >= 7.0 && rating < 9.0 -> {
                 Color(0xFFA3CD4A)
             }
             else -> {
@@ -324,7 +308,7 @@ fun FilmDescription(
                         fontSize = 14.sp,
                         color = MaterialTheme.colorScheme.onBackground
                     ),
-                    maxLines = if (expanded) Int.MAX_VALUE else 3,
+                    maxLines = if (expanded) Int.MAX_VALUE else 2,
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(top = 20.dp, end = 15.dp, start = 15.dp)
@@ -668,12 +652,10 @@ fun FilmAbout(
 @Composable
 fun FilmReviews(
     reviews: List<ReviewModel>?,
-    state: FilmScreenContract.State
+    state: FilmScreenContract.State,
+    onEventSent: (event: FilmScreenContract.Event) -> Unit,
+    filmId: String
 ) {
-    var showDialog by remember { mutableStateOf(false) }
-
-    MyDialog(showDialog, onDismiss = { showDialog = !showDialog })
-
     Column(
         modifier = Modifier.padding(start = 15.dp, end = 15.dp, top = 25.dp)
     ) {
@@ -691,6 +673,15 @@ fun FilmReviews(
             )
 
             if(!state.isWithMyReview) {
+                var showDialog by remember { mutableStateOf(false) }
+
+                ReviewDialog(
+                    showDialog,
+                    onDismiss = { showDialog = !showDialog },
+                    state,
+                    onEventSent,
+                    filmId
+                )
                 Box(
                     modifier = Modifier.size(32.dp).clip(CircleShape).align(Alignment.CenterEnd)
                         .background(MaterialTheme.colorScheme.primary)
@@ -708,7 +699,15 @@ fun FilmReviews(
             Column(
                 verticalArrangement = spacedBy(8.dp)
             ) {
-                if(!it.isAnonymous) {
+                val isMyReview = remember {
+                    mutableStateOf(
+                        try { it.author.userId == Network.userId }
+                        catch (e: Exception) {
+                            false
+                        }
+                    )
+                }
+                if(!it.isAnonymous || isMyReview.value ) {
                     Box(
                         modifier = Modifier.fillMaxWidth()
                     ){
@@ -752,15 +751,22 @@ fun FilmReviews(
                                         )
                                     }
                                 }
-                                Row(
-                                    horizontalArrangement = spacedBy(10.dp),
+                                Box(
                                     modifier = Modifier.align(Alignment.TopEnd)
                                 ) {
                                     Box(
                                         modifier = Modifier
+                                            .padding(
+                                                end = if (it.author.userId == Network.userId) {
+                                                    36.dp
+                                                } else {
+                                                    0.dp
+                                                }
+                                            )
                                             .height(26.dp)
                                             .clip(RoundedCornerShape(35.dp))
-                                            .background(Color.Green)
+                                            .background(calculateRatingColor(it.rating))
+                                            .align(Alignment.TopEnd)
                                     ) {
                                         Row(
                                             horizontalArrangement = spacedBy(4.dp),
@@ -783,12 +789,29 @@ fun FilmReviews(
                                             )
                                         }
                                     }
-                                    if (it.author.userId == Network.userId) {
+                                    if (isMyReview.value) {
+                                        var showDialog by remember { mutableStateOf(false) }
+
+                                        ReviewDialog(
+                                            showDialog,
+                                            onDismiss = { showDialog = !showDialog },
+                                            state,
+                                            onEventSent,
+                                            filmId,
+                                            reviewId = it.id,
+                                            rating = it.rating,
+                                            reviewText = it.reviewText,
+                                            isAnonymous = it.isAnonymous
+                                            )
+
                                         var expanded by remember { mutableStateOf(false) }
                                         Menu(
                                             expanded = expanded,
                                             onDismiss = { expanded = !expanded },
-                                            onEditRequested = { showDialog = !showDialog }
+                                            onEditRequested = { showDialog = !showDialog },
+                                            onDeleteRequested = {
+                                                onEventSent(FilmScreenContract.Event.DeleteMyReview(filmId, it.id))
+                                            }
                                         )
 
                                         Box(
@@ -796,6 +819,7 @@ fun FilmReviews(
                                                 .height(26.dp).width(26.dp)
                                                 .clip(CircleShape)
                                                 .background(MaterialTheme.colorScheme.onSurface)
+                                                .align(Alignment.TopEnd)
                                                 .clickable {
                                                     expanded = !expanded
                                                 }
@@ -811,12 +835,13 @@ fun FilmReviews(
                             }
                         }
                     }
-                } else if (it.isAnonymous) {
+                } else {
                     Box(
                         modifier = Modifier.fillMaxWidth()
                     ){
                         Row(
-                            horizontalArrangement = spacedBy(10.dp)
+                            horizontalArrangement = spacedBy(10.dp),
+                            modifier = Modifier.align(Alignment.TopStart).padding(end = 60.dp)
                         ) {
                             AsyncImage(
                                 model = R.drawable.logo,
@@ -843,36 +868,32 @@ fun FilmReviews(
                             }
                         }
 
-                        Row(
-                            modifier = Modifier.align(Alignment.CenterEnd),
-                            horizontalArrangement = spacedBy(10.dp)
+                        Box(
+                            modifier = Modifier
+                                .height(26.dp)
+                                .clip(RoundedCornerShape(35.dp))
+                                .background(calculateRatingColor(it.rating))
+                                .align(Alignment.TopEnd)
                         ) {
-                            Box(
-                                modifier = Modifier
-                                    .height(26.dp)
-                                    .clip(RoundedCornerShape(35.dp))
-                                    .background(Color.Green)
+                            Row(
+                                horizontalArrangement = spacedBy(4.dp),
+                                modifier = Modifier.padding(4.dp),
+                                verticalAlignment = Alignment.CenterVertically
                             ) {
-                                Row(
-                                    horizontalArrangement = spacedBy(4.dp),
-                                    modifier = Modifier.padding(4.dp),
-                                    verticalAlignment = Alignment.CenterVertically
-                                ) {
-                                    Icon(
-                                        painterResource(R.drawable.small_star),
-                                        null
+                                Icon(
+                                    painterResource(R.drawable.small_star),
+                                    null
+                                )
+                                Text(
+                                    text = it.rating.toString(),
+                                    style = TextStyle(
+                                        fontFamily = interFamily,
+                                        fontWeight = FontWeight.W500,
+                                        fontSize = 15.sp,
+                                        color = MaterialTheme.colorScheme.onBackground,
+                                        textAlign = TextAlign.Center
                                     )
-                                    Text(
-                                        text = "9",
-                                        style = TextStyle(
-                                            fontFamily = interFamily,
-                                            fontWeight = FontWeight.W500,
-                                            fontSize = 15.sp,
-                                            color = MaterialTheme.colorScheme.onBackground,
-                                            textAlign = TextAlign.Center
-                                        )
-                                    )
-                                }
+                                )
                             }
                         }
                     }
@@ -903,11 +924,35 @@ fun FilmReviews(
     }
 }
 
+private fun calculateRatingColor(rating: Int): Color {
+    return when(rating) {
+        in 0 until 3 -> {
+            Color(0xFFE64646)
+        }
+        in 3 until 4 -> {
+            Color(0xFFF05C44)
+        }
+        in 4 until 6 -> {
+            Color(0xFFFFA000)
+        }
+        in 6 until 8 -> {
+            Color(0xFFFFD54F)
+        }
+        in 8 until 9 -> {
+            Color(0xFFA3CD4A)
+        }
+        else -> {
+            Color(0xFF4BB34B)
+        }
+    }
+}
+
 @Composable
 fun Menu(
     expanded: Boolean,
     onDismiss: () -> Unit,
-    onEditRequested: () -> Unit
+    onEditRequested: () -> Unit,
+    onDeleteRequested: () -> Unit
 ) {
     DropdownMenu(
         expanded = expanded,
@@ -942,7 +987,7 @@ fun Menu(
                 )
             }
         )
-
+        Spacer(modifier = Modifier.height(1.dp).fillMaxWidth().background(Color.LightGray))
         DropdownMenuItem(
             text = {
                 Text(
@@ -957,7 +1002,10 @@ fun Menu(
                     modifier = Modifier.align(Alignment.Start)
                 )
             },
-            onClick = { },
+            onClick = {
+                onDismiss()
+                onDeleteRequested()
+            },
             trailingIcon = {
                 Icon(
                     painterResource(R.drawable.ic_trash_can),
@@ -970,16 +1018,35 @@ fun Menu(
 }
 
 @Composable
-fun MyDialog(
+fun ReviewDialog(
     showDialog: Boolean,
-    onDismiss: () -> Unit
+    onDismiss: () -> Unit,
+    state: FilmScreenContract.State,
+    onEventSent: (event: FilmScreenContract.Event) -> Unit,
+    filmId: String,
+    reviewId: String? = null,
+    rating: Int? = null,
+    reviewText: String? = null,
+    isAnonymous: Boolean? = null
 ) {
-
-    var checked by remember { mutableStateOf(false) }
+    val isEditing: Boolean = !(rating == null && reviewText == null)
+    Log.e("a", isEditing.toString())
+    LaunchedEffect(isEditing) {
+//        if (isEditing) {
+            onEventSent(FilmScreenContract.Event.SaveReviewRating(rating ?: 1))
+            onEventSent(FilmScreenContract.Event.SaveReviewText(reviewText ?: ""))
+            onEventSent(FilmScreenContract.Event.SaveIsAnonymous(isAnonymous ?: false))
+//        }
+    }
 
     if (showDialog) {
         Dialog(
-            onDismissRequest = { onDismiss() }
+            onDismissRequest = { onDismiss() },
+            properties = DialogProperties(
+                dismissOnBackPress = true,
+                dismissOnClickOutside = true,
+                usePlatformDefaultWidth = false,
+            )
         ) {
             Surface(
                 modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
@@ -1001,21 +1068,34 @@ fun MyDialog(
                         ),
                     )
                     Spacer(modifier = Modifier.height(5.dp))
-                    Row() {
-                        Text(
-                            text = "Тут звёздочки",
-                            style = TextStyle(
-                                fontFamily = interFamily,
-                                fontWeight = FontWeight.W700,
-                                fontSize = 16.sp,
-                                color =  MaterialTheme.colorScheme.onBackground,
-                                textAlign = TextAlign.Center
-                            ),
-                        )
+                    Row(
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        for(i in 1..10) {
+                            Icon(
+                                painter = painterResource(
+                                    if(i <= state.myRating){
+                                        R.drawable.raiting_star_enabled
+                                    } else {
+                                        R.drawable.raiting_star_disabled
+                                    }
+                                ),
+                                contentDescription = null,
+                                modifier = Modifier.clickable {
+                                    onEventSent(FilmScreenContract.Event.SaveReviewRating(i))
+                                },
+                                tint =
+                                if(i <= state.myRating){
+                                    Color(0xFFFFD54F)
+                                } else {
+                                    Color(0xFF909499)
+                                }
+                            )
+                        }
                     }
-                    Spacer(modifier = Modifier.height(16.dp))
                     OutlinedTextField(
-                        value = "",
+                        value = state.myReviewTextField,
                         colors = OutlinedTextFieldDefaults.colors(
                         ),
                         textStyle = TextStyle(
@@ -1024,20 +1104,20 @@ fun MyDialog(
                             fontSize = 15.sp
                         ),
                         onValueChange = {
-
+                            onEventSent(FilmScreenContract.Event.SaveReviewText(it))
                         },
                         shape = RoundedCornerShape(5.dp),
-                        modifier = Modifier.fillMaxWidth()
+                        modifier = Modifier.fillMaxWidth().height(100.dp)
                     )
                     Row(
                         modifier = Modifier.clickable {
-                            checked = !checked
+                            onEventSent(FilmScreenContract.Event.SaveIsAnonymous(!state.isAnonymous))
                         },
                         verticalAlignment = Alignment.CenterVertically
                     ) {
 
                         Checkbox(
-                            checked = checked,
+                            checked = state.isAnonymous,
                             onCheckedChange = null
                         )
 
@@ -1054,9 +1134,36 @@ fun MyDialog(
                             )
                         )
                     }
-                    Spacer(modifier = Modifier.height(15.dp))
+                    Spacer(modifier = Modifier.height(10.dp))
                     Button(
-                        onClick = { },
+                        onClick = {
+                            if(!isEditing) {
+                                onEventSent(
+                                    FilmScreenContract.Event.AddMyReview(
+                                        ReviewModifyModel(
+                                            reviewText = state.myReviewTextField,
+                                            rating = state.myRating,
+                                            isAnonymous = state.isAnonymous
+                                        ),
+                                        filmId = filmId
+                                    )
+                                )
+                            } else {
+                                onEventSent(
+                                    FilmScreenContract.Event.EditMyReview(
+                                        ReviewModifyModel(
+                                            reviewText = state.myReviewTextField,
+                                            rating = state.myRating,
+                                            isAnonymous = state.isAnonymous
+                                        ),
+                                        filmId = filmId,
+                                        reviewId = reviewId ?: ""
+                                    )
+                                )
+                            }
+
+                            onDismiss()
+                        },
                         shape = RoundedCornerShape(10.dp),
                         modifier = Modifier
                             .fillMaxWidth()
@@ -1078,7 +1185,7 @@ fun MyDialog(
                     }
 
                     Button(
-                        onClick = { },
+                        onClick = { onDismiss() },
                         shape = RoundedCornerShape(10.dp),
                         modifier = Modifier
                             .fillMaxWidth()

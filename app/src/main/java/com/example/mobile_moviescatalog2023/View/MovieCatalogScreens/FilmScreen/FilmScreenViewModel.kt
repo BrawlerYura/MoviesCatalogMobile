@@ -1,24 +1,20 @@
 package com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.FilmScreen
 
-import android.annotation.SuppressLint
-import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.example.mobile_moviescatalog2023.Network.DataClasses.Models.MovieDetailsModel
-import com.example.mobile_moviescatalog2023.Network.DataClasses.Models.MovieElementModel
+import com.example.mobile_moviescatalog2023.Network.DataClasses.Models.ReviewModifyModel
 import com.example.mobile_moviescatalog2023.Network.FavoriteMovies.FavoriteMoviesRepository
 import com.example.mobile_moviescatalog2023.Network.Movie.MovieRepository
 import com.example.mobile_moviescatalog2023.Network.Network
+import com.example.mobile_moviescatalog2023.Network.Review.ReviewRepository
 import com.example.mobile_moviescatalog2023.View.Base.BaseViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.TimeZone
 
 class FilmScreenViewModel(
-    val movieRepository: MovieRepository,
-    val favoriteMoviesRepository: FavoriteMoviesRepository
+    private val movieRepository: MovieRepository,
+    private val favoriteMoviesRepository: FavoriteMoviesRepository,
+    private val reviewRepository: ReviewRepository
 ): BaseViewModel<FilmScreenContract.Event, FilmScreenContract.State, FilmScreenContract.Effect>() {
 
     override fun setInitialState() = FilmScreenContract.State(
@@ -27,7 +23,10 @@ class FilmScreenViewModel(
         isAddingSuccess = null,
         isDeletingSuccess = null,
         isMyFavorite = false,
-        isWithMyReview = false
+        isWithMyReview = false,
+        myReviewTextField = "",
+        myRating = 1,
+        isAnonymous = false
     )
 
     override fun handleEvents(event: FilmScreenContract.Event) {
@@ -35,6 +34,12 @@ class FilmScreenViewModel(
             is FilmScreenContract.Event.LoadFilmDetails -> loadFilmDetails(id = event.id)
             is FilmScreenContract.Event.AddToFavorite -> addToFavorite(id = event.id)
             is FilmScreenContract.Event.DeleteFavorite -> deleteFavorite(id = event.id)
+            is FilmScreenContract.Event.SaveReviewText -> saveReviewText(text = event.text)
+            is FilmScreenContract.Event.SaveReviewRating -> saveReviewRating(rating = event.rating)
+            is FilmScreenContract.Event.DeleteMyReview -> deleteMyReview(filmId = event.filmId, reviewId = event.reviewId)
+            is FilmScreenContract.Event.AddMyReview -> addMyReview(reviewModifyModel = event.reviewModifyModel, filmId = event.filmId)
+            is FilmScreenContract.Event.EditMyReview -> editMyReview(reviewModifyModel = event.reviewModifyModel, filmId = event.filmId, reviewId = event.reviewId)
+            is FilmScreenContract.Event.SaveIsAnonymous -> saveIsAnonymous(isAnonymous = event.isAnonymous)
         }
     }
 
@@ -64,7 +69,10 @@ class FilmScreenViewModel(
 
     private fun checkIfWithMyReview(it: MovieDetailsModel) {
         it.reviews?.forEach {
-            if(!it.isAnonymous && it.author.userId == Network.userId) {
+            if(
+                try { it.author.userId == Network.userId }
+                catch (e: Exception) { false }
+                ) {
                 setState {
                     copy(
                         isWithMyReview = true
@@ -144,6 +152,63 @@ class FilmScreenViewModel(
 
                     }
                 }
+        }
+    }
+
+    private fun saveReviewText(text: String) {
+        setState {
+            copy(
+                myReviewTextField = text
+            )
+        }
+    }
+
+    private fun saveReviewRating(rating: Int) {
+        setState {
+            copy(
+                myRating = rating
+            )
+        }
+    }
+
+    private fun deleteMyReview(filmId: String, reviewId: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            reviewRepository.deleteReview(filmId, reviewId)
+
+            loadFilmDetails(filmId)
+        }
+    }
+
+    private fun addMyReview(reviewModifyModel: ReviewModifyModel, filmId: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            reviewRepository.addReview(reviewModifyModel, filmId)
+                .collect { result ->
+                    result.onSuccess {
+                        loadFilmDetails(filmId)
+                    }.onFailure {
+
+                    }
+                }
+        }
+    }
+    private fun editMyReview(reviewModifyModel: ReviewModifyModel, filmId: String, reviewId: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            reviewRepository.editReview(reviewModifyModel, filmId, reviewId)
+                .collect { result ->
+                    result.onSuccess {
+                        loadFilmDetails(filmId)
+                    }.onFailure {
+
+                    }
+                }
+        }
+    }
+
+    private fun saveIsAnonymous(isAnonymous: Boolean) {
+        setState {
+            copy(
+                isAnonymous = isAnonymous
+            )
         }
     }
 }

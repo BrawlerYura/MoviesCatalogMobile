@@ -20,5 +20,5 @@ val ViewModelModule = module {
     viewModel { MainScreenViewModel(movieRepository = get(), userRepository = get()) }
     viewModel { FavoriteScreenViewModel(favoriteMoviesRepository = get()) }
     viewModel { ProfileScreenViewModel(androidContext(), userRepository = get(), authRepository = get()) }
-    viewModel { FilmScreenViewModel(movieRepository = get(), favoriteMoviesRepository = get()) }
+    viewModel { FilmScreenViewModel(movieRepository = get(), favoriteMoviesRepository = get(), reviewRepository = get()) }
 }

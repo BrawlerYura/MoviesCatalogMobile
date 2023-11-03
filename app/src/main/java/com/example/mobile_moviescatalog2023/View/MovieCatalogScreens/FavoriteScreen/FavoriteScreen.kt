@@ -61,7 +61,7 @@ fun FavoriteScreen(
         ) {
             Box(modifier = Modifier.padding(it)) {
                 LazyColumn(
-                    modifier = Modifier.fillMaxSize().padding(16.dp),
+                    modifier = Modifier.fillMaxSize(),
                     verticalArrangement = spacedBy(20.dp)
                 ) {
                     item {
@@ -76,13 +76,16 @@ fun FavoriteScreen(
                                     color = MaterialTheme.colorScheme.onBackground,
                                     textAlign = TextAlign.Center
                                 ),
-                                modifier = Modifier.align(Alignment.Center)
+                                modifier = Modifier.align(Alignment.Center).padding(top = 16.dp)
                             )
                         }
                     }
                     if (state.favoriteMovieList?.isEmpty() == false) {
                         items(state.favoriteMovieList) {
                             FavoriteFilmCard(it, onNavigationRequested)
+                        }
+                        item{
+                            Spacer(modifier = Modifier.height(5.dp))
                         }
                     } else {
                         item {
@@ -139,6 +142,7 @@ fun FavoriteFilmCard(
                         onNavigationRequested(FavoriteScreenContract.Effect.Navigation.ToFilm(item.firstMovie.id))
                     }
                         .fillMaxWidth(0.5f)
+                        .padding(start = 16.dp)
                 ) {
                     AsyncImage(
                         model = item.firstMovie.poster,
@@ -167,6 +171,7 @@ fun FavoriteFilmCard(
                             onNavigationRequested(FavoriteScreenContract.Effect.Navigation.ToFilm(item.secondMovie.id))
                         }
                             .fillMaxWidth()
+                            .padding(end = 16.dp)
                     ) {
                         AsyncImage(
                             model = item.secondMovie.poster,
@@ -197,6 +202,7 @@ fun FavoriteFilmCard(
                     onNavigationRequested(FavoriteScreenContract.Effect.Navigation.ToFilm(item.thirdMovie.id))
                 }
                     .fillMaxWidth()
+                    .padding(horizontal = 16.dp)
             ) {
                 AsyncImage(
                     model = item.thirdMovie.poster,
