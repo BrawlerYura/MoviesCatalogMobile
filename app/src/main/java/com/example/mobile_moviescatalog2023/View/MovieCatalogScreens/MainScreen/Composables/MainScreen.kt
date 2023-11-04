@@ -63,9 +63,7 @@ fun MainScreen(
             }
         ) {
             Box(modifier = Modifier.padding(it)) {
-                if (!state.isRequestingMoviePage) {
-                    MovieListScreen(state, onEventSent, onNavigationRequested)
-                }
+                MovieListScreen(state, onEventSent, onNavigationRequested)
             }
         }
     }

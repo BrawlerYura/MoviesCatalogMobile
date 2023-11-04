@@ -72,6 +72,11 @@ class MainScreenViewModel(
     }
     private fun getMovies()
     {
+        setState {
+            copy(
+                isUpdatingList = true
+            )
+        }
         viewModelScope.launch(Dispatchers.IO) {
             getMoviesUseCase.invoke(1)
                 .collect { result ->
@@ -82,10 +87,11 @@ class MainScreenViewModel(
                             movieCarouselList = it.movies.take(4),
                             movieList = it.movies.drop(4),
                             currentMoviePage = state.value.currentMoviePage + 1,
-                            pageCount = it.pageInfo.pageCount
+                            pageCount = it.pageInfo.pageCount,
+                            isUpdatingList = false
                         ) }
                         getMyId()
-                        it.movies.drop(4).forEach {
+                        state.value.movieList.forEach {
                             setState {
                                 copy(
                                     filmRatingsList = filmRatingsList + calculateFilmRating(it.reviews)
@@ -93,7 +99,7 @@ class MainScreenViewModel(
                             }
                         }
                     }.onFailure {
-                        setState { copy(isRequestingMoviePage = true, isSuccess = false) }
+                        setState { copy(isRequestingMoviePage = true, isSuccess = false, isUpdatingList = false) }
                     }
                 }
         }
