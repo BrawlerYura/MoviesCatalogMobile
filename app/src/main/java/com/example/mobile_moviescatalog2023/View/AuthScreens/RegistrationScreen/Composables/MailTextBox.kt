@@ -72,6 +72,19 @@ fun MailTextBox(
             shape = RoundedCornerShape(10.dp),
             modifier = Modifier.fillMaxWidth()
         )
+
+        if(state.isEmailValid == false) {
+            Text(
+                text = stringResource(R.string.invalid_email_message),
+                style = TextStyle(
+                    fontFamily = interFamily,
+                    fontWeight = FontWeight.W400,
+                    fontSize = 14.sp,
+                    color = MaterialTheme.colorScheme.error
+                ),
+                modifier = Modifier.padding(top = 5.dp)
+            )
+        }
     }
 }
 
@@ -79,14 +92,7 @@ fun MailTextBox(
 @Composable
 private fun MailTextBoxPreview() {
     MailTextBox(
-        state = RegistrationContract.State(
-            name = "my name",
-            gender = 0,
-            login = "",
-            email = "my@email.com",
-            birthDate = "30.07.2004",
-            apiBirthDate = ""
-        ),
+        state = registrationStatePreview,
         onEventSent = { }
     )
 }

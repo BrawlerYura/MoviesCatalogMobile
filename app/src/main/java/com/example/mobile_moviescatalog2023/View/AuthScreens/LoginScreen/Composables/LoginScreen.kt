@@ -63,7 +63,7 @@ fun LoginScreen(
 
                 PasswordTextBox(state, onEventSent)
 
-                SignInButton { onEventSent(LoginContract.Event.SignIn) }
+                SignInButton(state) { onEventSent(LoginContract.Event.SignIn) }
             }
             LoginBottomText { onNavigationRequested(LoginContract.Effect.Navigation.ToRegistration) }
         }
@@ -84,7 +84,8 @@ private fun LoginScreenPreview() {
             login = "my login",
             password = "password",
             isTriedToSignIn = false,
-            isSuccess = false
+            isSuccess = false,
+            buttonEnabled = false
         ),
         onEventSent = { },
         onNavigationRequested = { }

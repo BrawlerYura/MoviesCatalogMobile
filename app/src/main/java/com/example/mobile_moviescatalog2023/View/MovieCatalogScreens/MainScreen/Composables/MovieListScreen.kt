@@ -61,7 +61,9 @@ fun MovieListScreen(
             )
         }
         itemsIndexed(state.movieList) { index, item ->
-            FilmCard(item, state.filmRatingsList[index], onNavigationRequested)
+            if(state.filmRatingsList.isNotEmpty()) {
+                FilmCard(item, state.filmRatingsList[index], onNavigationRequested)
+            }
         }
     }
 }

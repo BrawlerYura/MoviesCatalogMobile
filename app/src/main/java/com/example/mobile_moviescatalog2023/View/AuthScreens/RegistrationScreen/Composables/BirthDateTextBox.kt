@@ -89,6 +89,19 @@ fun BirthDateTextBox(
             shape = RoundedCornerShape(10.dp),
             modifier = Modifier.fillMaxWidth()
         )
+
+        if(state.isBirthDateValid == false) {
+            Text(
+                text = stringResource(R.string.invalid_birth_date_message),
+                style = TextStyle(
+                    fontFamily = interFamily,
+                    fontWeight = FontWeight.W400,
+                    fontSize = 14.sp,
+                    color = MaterialTheme.colorScheme.error
+                ),
+                modifier = Modifier.padding(top = 5.dp)
+            )
+        }
     }
 }
 
@@ -140,14 +153,7 @@ fun MyDatePicker(
 @Composable
 fun BirthDateTextBoxPreview() {
     BirthDateTextBox(
-        state = RegistrationContract.State(
-            name = "my name",
-            gender = 0,
-            login = "",
-            email = "",
-            birthDate = "30.07.2004",
-            apiBirthDate = ""
-        ),
+        state = registrationStatePreview,
         onEventSent = { }
     )
 }

@@ -27,7 +27,11 @@ class RegistrationContract {
         val login: String,
         val email: String,
         val birthDate: String,
-        val apiBirthDate: String
+        val apiBirthDate: String,
+        val isNameValid: Boolean?,
+        val isLoginValid: Boolean?,
+        val isEmailValid: Boolean?,
+        val isBirthDateValid: Boolean?
     ) : ViewState
 
     sealed class Effect : ViewSideEffect {

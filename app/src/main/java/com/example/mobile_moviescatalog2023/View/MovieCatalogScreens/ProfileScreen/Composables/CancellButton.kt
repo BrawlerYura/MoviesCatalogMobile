@@ -31,7 +31,7 @@ fun CancellButton(
         },
         shape = RoundedCornerShape(10.dp),
         modifier = Modifier
-            .padding(top = 15.dp)
+            .padding(horizontal = 16.dp)
             .fillMaxWidth()
             .height(42.dp),
         colors = ButtonDefaults.buttonColors(

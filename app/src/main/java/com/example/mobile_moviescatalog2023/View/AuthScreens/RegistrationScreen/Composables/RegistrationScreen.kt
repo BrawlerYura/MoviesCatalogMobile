@@ -86,7 +86,7 @@ fun RegistrationScreen(
 
                 BirthDateTextBox(state, onEventSent)
 
-                ContinueButton {
+                ContinueButton(state) {
                     onNavigationRequested(
                         RegistrationContract.Effect.Navigation.NextScreen(
                             registerRequestBody = RegisterRequestBody(
@@ -112,15 +112,21 @@ fun RegistrationScreen(
 @Composable
 private fun RegistrationScreenPreview() {
     RegistrationScreen(
-        state = RegistrationContract.State(
-            name = "my name",
-            gender = 1,
-            login = "my login",
-            email = "my@email.com",
-            birthDate = "30.07.2004",
-            apiBirthDate = ""
-        ),
+        state = registrationStatePreview,
         onEventSent = { },
         onNavigationRequested = { }
     )
 }
+
+val registrationStatePreview = RegistrationContract.State(
+    name = "my name",
+    gender = 1,
+    login = "my login",
+    email = "my@email.com",
+    birthDate = "30.07.2004",
+    apiBirthDate = "",
+    isNameValid = false,
+    isLoginValid = false,
+    isEmailValid = false,
+    isBirthDateValid = false
+)

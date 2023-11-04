@@ -97,7 +97,7 @@ fun RegistrationPasswordScreen(
 
                 RepeatPasswordTextBox(state, onEventSent)
 
-                CompleteSignUpButton { onEventSent(RegistrationPasswordContract.Event.SignUp) }
+                CompleteSignUpButton(state) { onEventSent(RegistrationPasswordContract.Event.SignUp) }
             }
             BottomRegistrationText { onNavigationRequested(RegistrationPasswordContract.Effect.Navigation.ToLogin) }
         }
@@ -120,7 +120,8 @@ private fun RegistrationPasswordScreenPreview() {
             email = "",
             birthDate = "",
             gender = 0,
-            isSuccess = null
+            isSuccess = null,
+            buttonEnabled = true
         ),
         onEventSent = { },
         onNavigationRequested = { },

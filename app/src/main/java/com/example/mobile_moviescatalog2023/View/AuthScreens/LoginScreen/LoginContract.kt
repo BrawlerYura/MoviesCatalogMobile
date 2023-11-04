@@ -19,7 +19,8 @@ class LoginContract {
         val login: String,
         val password: String,
         val isTriedToSignIn: Boolean,
-        val isSuccess: Boolean
+        val isSuccess: Boolean,
+        val buttonEnabled: Boolean
     ) : ViewState
 
     sealed class Effect : ViewSideEffect{

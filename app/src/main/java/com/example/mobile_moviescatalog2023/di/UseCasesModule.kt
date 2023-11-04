@@ -15,6 +15,7 @@ import com.example.mobile_moviescatalog2023.domain.UseCases.UserUseCases.GetMyId
 import com.example.mobile_moviescatalog2023.domain.UseCases.UserUseCases.GetProfileUseCase
 import com.example.mobile_moviescatalog2023.domain.UseCases.UserUseCases.LogoutUseCase
 import com.example.mobile_moviescatalog2023.domain.UseCases.UserUseCases.PutProfileUseCase
+import com.example.mobile_moviescatalog2023.domain.UseCases.ValidationUseCase
 import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
 
@@ -34,4 +35,5 @@ val UseCasesModule = module {
     single { LogoutUseCase(repository = get(), context = androidContext()) }
     single { PutProfileUseCase(repository = get()) }
     single { FormatDateUseCase() }
+    single { ValidationUseCase() }
 }

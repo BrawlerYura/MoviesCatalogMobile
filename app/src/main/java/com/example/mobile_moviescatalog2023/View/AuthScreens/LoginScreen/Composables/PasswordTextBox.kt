@@ -94,7 +94,8 @@ private fun PasswordTextBoxPreview() {
             login = "my login",
             password = "password",
             isTriedToSignIn = false,
-            isSuccess = false
+            isSuccess = false,
+            buttonEnabled = false
         ),
         onEventSent = {  }
     )

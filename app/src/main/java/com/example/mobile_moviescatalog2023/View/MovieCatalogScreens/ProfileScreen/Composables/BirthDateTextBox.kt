@@ -43,7 +43,9 @@ fun BirthDateTextBox(
 ) {
     val openDialog = remember { mutableStateOf(false) }
     Column(
-        modifier = Modifier.fillMaxWidth().padding(bottom = 20.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(bottom = 5.dp, start = 16.dp, end = 16.dp),
         horizontalAlignment = Alignment.Start
     ) {
         Text(

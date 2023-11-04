@@ -73,6 +73,19 @@ fun NameTextBox(
             shape = RoundedCornerShape(10.dp),
             modifier = Modifier.fillMaxWidth()
         )
+
+        if(state.isNameValid == false) {
+            Text(
+                text = stringResource(R.string.invalid_name_message),
+                style = TextStyle(
+                    fontFamily = interFamily,
+                    fontWeight = FontWeight.W400,
+                    fontSize = 14.sp,
+                    color = MaterialTheme.colorScheme.error
+                ),
+                modifier = Modifier.padding(top = 5.dp)
+            )
+        }
     }
 }
 
@@ -80,14 +93,7 @@ fun NameTextBox(
 @Composable
 fun NameTextBoxPreview() {
     NameTextBox(
-        state = RegistrationContract.State(
-            name = "my name",
-            gender = 0,
-            login = "",
-            email = "",
-            birthDate = "",
-            apiBirthDate = ""
-        ),
+        state = registrationStatePreview,
         onEventSent = { }
     )
 }

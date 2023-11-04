@@ -16,8 +16,8 @@ import org.koin.androidx.viewmodel.dsl.viewModel
 
 val ViewModelModule = module {
     viewModel { SplashScreenViewModel( getProfileUseCase = get()) }
-    viewModel { LoginViewModel(androidContext(), loginUseCase = get()) }
-    viewModel { RegistrationViewModel(formatDateUseCase = get()) }
+    viewModel { LoginViewModel(androidContext(), loginUseCase = get(), validationUseCase = get()) }
+    viewModel { RegistrationViewModel(formatDateUseCase = get(), validationUseCase = get()) }
     viewModel { RegistrationPasswordViewModel(androidContext(), registerUseCase = get()) }
     viewModel { MainScreenViewModel(getMoviesUseCase = get(), getMyIdUseCase = get()) }
     viewModel { FavoriteScreenViewModel(getFavoriteMoviesUseCase = get()) }

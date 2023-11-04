@@ -101,7 +101,8 @@ private fun PasswordTextBoxPreview() {
             email = "",
             birthDate = "",
             gender = 0,
-            isSuccess = null
+            isSuccess = null,
+            buttonEnabled = false
         ),
         onEventSent = { }
     )

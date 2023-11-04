@@ -2,6 +2,7 @@ package com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.ProfileScr
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
@@ -31,6 +32,7 @@ fun SaveUserDetailsButton(
         modifier = Modifier
             .fillMaxWidth()
             .height(42.dp)
+            .padding(horizontal = 16.dp)
     ) {
         Text(
             text = stringResource(R.string.save),

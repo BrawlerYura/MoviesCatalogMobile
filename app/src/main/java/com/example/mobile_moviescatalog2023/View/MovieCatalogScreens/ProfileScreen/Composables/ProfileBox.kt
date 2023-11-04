@@ -29,7 +29,9 @@ fun ProfileBox(
     state: ProfileScreenContract.State
 ) {
     Column(
-        modifier = Modifier.padding(bottom = 20.dp).fillMaxWidth(),
+        modifier = Modifier
+            .padding(bottom = 5.dp, top = 16.dp, start = 16.dp, end = 16.dp)
+            .fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(6.dp)
     ) {

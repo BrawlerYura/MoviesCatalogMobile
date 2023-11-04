@@ -31,7 +31,8 @@ fun NameTextBox(
     onEventSent: (event: ProfileScreenContract.Event) -> Unit
 ) {
     Column(
-        modifier = Modifier.fillMaxWidth().padding(bottom = 15.dp),
+        modifier = Modifier.fillMaxWidth()
+            .padding(horizontal = 16.dp),
         horizontalAlignment = Alignment.Start
     ) {
         Text(

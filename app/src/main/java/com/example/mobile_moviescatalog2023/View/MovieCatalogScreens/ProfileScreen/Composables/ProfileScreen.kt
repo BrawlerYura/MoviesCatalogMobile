@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Arrangement.Absolute.spacedBy
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -68,39 +69,38 @@ fun ProfileScreen(
                 )
             }
         ) {
-            Box(modifier = Modifier.padding(it)) {
-                Column(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(top = 16.dp, start = 16.dp, end = 16.dp)
-                        .verticalScroll(rememberScrollState())
-                ) {
-                    ProfileBox(state)
-                    MailTextBox(state, onEventSent)
-                    ProfileIconUrlBox(state, onEventSent)
-                    NameTextBox(state, onEventSent)
-                    GenderTextBox(state, onEventSent)
-                    BirthDateTextBox(state, onEventSent)
-                    SaveUserDetailsButton(onEventSent)
-                    CancellButton(onEventSent)
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(it)
+                    .verticalScroll(rememberScrollState()),
+                verticalArrangement = spacedBy(15.dp)
+            ) {
+                ProfileBox(state)
+                MailTextBox(state, onEventSent)
+                ProfileIconUrlBox(state, onEventSent)
+                NameTextBox(state, onEventSent)
+                GenderTextBox(state, onEventSent)
+                BirthDateTextBox(state, onEventSent)
+                SaveUserDetailsButton(onEventSent)
+                CancellButton(onEventSent)
 
-                    Text(
-                        text = stringResource(R.string.logout),
-                        style = TextStyle(
-                            fontFamily = interFamily,
-                            fontWeight = FontWeight.W600,
-                            fontSize = 14.sp,
-                            color = MaterialTheme.colorScheme.primary,
-                        ),
-                        modifier = Modifier
-                            .padding(top = 24.dp, bottom = 10.dp)
-                            .clickable {
-                                onEventSent(ProfileScreenContract.Event.Logout)
-                                onNavigationRequested(ProfileScreenContract.Effect.Navigation.ToIntroducing)
-                            }
-                            .align(Alignment.CenterHorizontally)
-                    )
-                }
+                Text(
+                    text = stringResource(R.string.logout),
+                    style = TextStyle(
+                        fontFamily = interFamily,
+                        fontWeight = FontWeight.W600,
+                        fontSize = 14.sp,
+                        color = MaterialTheme.colorScheme.primary,
+                    ),
+                    modifier = Modifier
+                        .padding(top = 5.dp, bottom = 5.dp)
+                        .clickable {
+                            onEventSent(ProfileScreenContract.Event.Logout)
+                            onNavigationRequested(ProfileScreenContract.Effect.Navigation.ToIntroducing)
+                        }
+                        .align(Alignment.CenterHorizontally)
+                )
             }
         }
     }

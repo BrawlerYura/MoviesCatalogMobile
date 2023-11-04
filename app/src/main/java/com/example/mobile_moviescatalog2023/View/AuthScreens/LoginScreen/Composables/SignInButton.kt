@@ -24,12 +24,14 @@ import com.example.mobile_moviescatalog2023.ui.theme.interFamily
 
 @Composable
 fun SignInButton(
+    state: LoginContract.State,
     onEventSent: () -> Unit
 ) {
     Button(
         onClick = {
             onEventSent()
         },
+        enabled = state.buttonEnabled,
         shape = RoundedCornerShape(10.dp),
         modifier = Modifier
             .padding(top = 5.dp)
@@ -37,7 +39,9 @@ fun SignInButton(
             .height(42.dp),
         colors = ButtonDefaults.buttonColors(
             containerColor = MaterialTheme.colorScheme.primary,
-            contentColor = MaterialTheme.colorScheme.onPrimary
+            contentColor = MaterialTheme.colorScheme.onPrimary,
+            disabledContainerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.4f),
+            disabledContentColor = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.4f)
         ),
     ) {
         Text(
@@ -51,10 +55,4 @@ fun SignInButton(
             ),
         )
     }
-}
-
-@Preview(showBackground = true)
-@Composable
-private fun SignInButtonPreview() {
-    SignUpButton {  }
 }

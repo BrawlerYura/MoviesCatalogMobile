@@ -102,14 +102,7 @@ fun GenderTextBox(
 @Composable
 private fun GenderTextBoxPreview() {
     GenderTextBox(
-        state = RegistrationContract.State(
-            name = "my name",
-            gender = 1,
-            login = "my login",
-            email = "my@email.com",
-            birthDate = "30.07.2004",
-            apiBirthDate = ""
-        ),
+        state = registrationStatePreview,
         onEventSent = { }
     )
 }

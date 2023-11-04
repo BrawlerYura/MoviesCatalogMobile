@@ -7,19 +7,22 @@ import com.example.mobile_moviescatalog2023.domain.Entities.RequestBodies.LoginR
 import com.example.mobile_moviescatalog2023.TokenManager.TokenManager
 import com.example.mobile_moviescatalog2023.View.Base.BaseViewModel
 import com.example.mobile_moviescatalog2023.domain.UseCases.AuthUseCases.LoginUseCase
+import com.example.mobile_moviescatalog2023.domain.UseCases.ValidationUseCase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class LoginViewModel(
     private val context: Context,
-    private val loginUseCase: LoginUseCase
+    private val loginUseCase: LoginUseCase,
+    private val validationUseCase: ValidationUseCase
 ): BaseViewModel<LoginContract.Event, LoginContract.State, LoginContract.Effect>() {
 
     override fun setInitialState() = LoginContract.State(
         login = "",
         password = "",
         isTriedToSignIn = false,
-        isSuccess = false
+        isSuccess = false,
+        buttonEnabled = false
     )
 
     override fun handleEvents(event: LoginContract.Event) {
@@ -32,10 +35,29 @@ class LoginViewModel(
 
     private fun saveLogin(login: String) {
         setState { copy(login = login) }
+        checkIfTextBoxesValid()
     }
 
     private fun savePassword(password: String) {
         setState { copy(password = password) }
+        checkIfTextBoxesValid()
+    }
+
+    private fun checkIfTextBoxesValid(){
+        if(validationUseCase.checkIfLoginValid(state.value.login)
+            && validationUseCase.checkIfLoginPasswordValid(state.value.password)) {
+            setState {
+                copy(
+                    buttonEnabled = true
+                )
+            }
+        } else {
+            setState {
+                copy(
+                    buttonEnabled = false
+                )
+            }
+        }
     }
 
     private fun signIn() {

@@ -22,19 +22,23 @@ import com.example.mobile_moviescatalog2023.ui.theme.interFamily
 
 @Composable
 fun CompleteSignUpButton(
+    state: RegistrationPasswordContract.State,
     onEventSent: () -> Unit
 ) {
     Button(
         onClick = {
             onEventSent()
         },
+        enabled = state.buttonEnabled,
         shape = RoundedCornerShape(10.dp),
         modifier = Modifier
             .fillMaxWidth()
             .height(42.dp),
         colors = ButtonDefaults.buttonColors(
             containerColor = MaterialTheme.colorScheme.primary,
-            contentColor = MaterialTheme.colorScheme.onPrimary
+            contentColor = MaterialTheme.colorScheme.onPrimary,
+            disabledContainerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.4f),
+            disabledContentColor = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.4f)
         ),
     ) {
         Text(
@@ -48,12 +52,4 @@ fun CompleteSignUpButton(
             ),
         )
     }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun CompleteSignUpButtonPreview() {
-    CompleteSignUpButton(
-        onEventSent = { }
-    )
 }

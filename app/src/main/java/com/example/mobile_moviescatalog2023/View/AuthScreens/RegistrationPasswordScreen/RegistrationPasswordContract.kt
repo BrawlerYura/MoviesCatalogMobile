@@ -22,7 +22,8 @@ class RegistrationPasswordContract {
         val email: String,
         val birthDate: String,
         val gender: Int,
-        val isSuccess: Boolean?
+        val isSuccess: Boolean?,
+        val buttonEnabled: Boolean
     ) : ViewState
 
     sealed class Effect : ViewSideEffect {

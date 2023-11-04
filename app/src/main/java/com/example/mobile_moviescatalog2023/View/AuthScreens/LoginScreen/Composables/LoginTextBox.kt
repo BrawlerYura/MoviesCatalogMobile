@@ -83,7 +83,8 @@ private fun LoginTextBoxPreview() {
             login = "my login",
             password = "",
             isTriedToSignIn = false,
-            isSuccess = false
+            isSuccess = false,
+            buttonEnabled = false
         ),
         onEventSent = {  }
     )

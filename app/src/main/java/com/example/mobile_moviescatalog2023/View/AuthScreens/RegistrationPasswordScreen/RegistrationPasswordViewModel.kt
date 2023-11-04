@@ -47,7 +47,8 @@ class RegistrationPasswordViewModel(
         email = "",
         birthDate = "",
         gender = 0,
-        isSuccess = null
+        isSuccess = null,
+        buttonEnabled = false
     )
 
     override fun handleEvents(event: RegistrationPasswordContract.Event) {

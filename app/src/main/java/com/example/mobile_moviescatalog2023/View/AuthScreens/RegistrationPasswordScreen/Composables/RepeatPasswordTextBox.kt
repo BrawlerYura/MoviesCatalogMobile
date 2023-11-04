@@ -101,7 +101,8 @@ private fun RepeatPasswordTextBoxPreview() {
             email = "",
             birthDate = "",
             gender = 0,
-            isSuccess = null
+            isSuccess = null,
+            buttonEnabled = true
         ),
         onEventSent = { }
     )

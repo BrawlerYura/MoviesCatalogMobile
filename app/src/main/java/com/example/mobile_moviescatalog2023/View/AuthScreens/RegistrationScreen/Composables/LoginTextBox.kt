@@ -73,6 +73,19 @@ fun LoginTextBox(
             shape = RoundedCornerShape(10.dp),
             modifier = Modifier.fillMaxWidth()
         )
+
+        if(state.isLoginValid == false) {
+            Text(
+                text = stringResource(R.string.invalid_login_message),
+                style = TextStyle(
+                    fontFamily = interFamily,
+                    fontWeight = FontWeight.W400,
+                    fontSize = 14.sp,
+                    color = MaterialTheme.colorScheme.error
+                ),
+                modifier = Modifier.padding(top = 5.dp)
+            )
+        }
     }
 }
 
@@ -80,14 +93,7 @@ fun LoginTextBox(
 @Composable
 private fun LoginTextBoxPreview() {
     LoginTextBox(
-        state = RegistrationContract.State(
-            name = "my name",
-            gender = 0,
-            login = "my login",
-            email = "my@email.com",
-            birthDate = "30.07.2004",
-            apiBirthDate = ""
-        ),
+        state = registrationStatePreview,
         onEventSent = { }
     )
 }

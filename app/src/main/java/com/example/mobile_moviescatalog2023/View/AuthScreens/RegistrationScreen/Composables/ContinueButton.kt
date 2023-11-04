@@ -9,6 +9,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -22,19 +23,28 @@ import com.example.mobile_moviescatalog2023.ui.theme.interFamily
 
 @Composable
 fun ContinueButton(
+    state: RegistrationContract.State,
     onNavigationRequested: () -> Unit
 ) {
     Button(
         onClick = {
             onNavigationRequested()
         },
+        enabled = (
+                state.isBirthDateValid == true &&
+                        state.isLoginValid == true &&
+                        state.isEmailValid == true &&
+                        state.isNameValid == true
+                ),
         shape = RoundedCornerShape(10.dp),
         modifier = Modifier
             .fillMaxWidth()
             .height(42.dp),
         colors = ButtonDefaults.buttonColors(
             containerColor = MaterialTheme.colorScheme.primary,
-            contentColor = MaterialTheme.colorScheme.onPrimary
+            contentColor = MaterialTheme.colorScheme.onPrimary,
+            disabledContainerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f),
+            disabledContentColor = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.5f)
         ),
     ) {
         Text(
@@ -43,7 +53,6 @@ fun ContinueButton(
                 fontFamily = interFamily,
                 fontWeight = FontWeight.W600,
                 fontSize = 15.sp,
-                color = MaterialTheme.colorScheme.onPrimary,
                 textAlign = TextAlign.Center
             ),
         )
