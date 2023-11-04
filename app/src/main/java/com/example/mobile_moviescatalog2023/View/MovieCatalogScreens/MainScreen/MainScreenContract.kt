@@ -1,25 +1,26 @@
 package com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.MainScreen
 
 import coil.compose.AsyncImagePainter
-import com.example.mobile_moviescatalog2023.Network.DataClasses.Models.MovieElementModel
-import com.example.mobile_moviescatalog2023.Network.DataClasses.Models.MoviesModel
-import com.example.mobile_moviescatalog2023.Network.DataClasses.Models.ReviewShortModel
+import com.example.mobile_moviescatalog2023.domain.Entities.Models.MovieElementModel
+import com.example.mobile_moviescatalog2023.domain.Entities.Models.MoviesModel
+import com.example.mobile_moviescatalog2023.domain.Entities.Models.ReviewShortModel
 import com.example.mobile_moviescatalog2023.View.AuthScreens.LoginScreen.LoginContract
 import com.example.mobile_moviescatalog2023.View.Base.ViewEvent
 import com.example.mobile_moviescatalog2023.View.Base.ViewSideEffect
 import com.example.mobile_moviescatalog2023.View.Base.ViewState
+import com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.MainScreen.Composables.FilmRating
 
 class MainScreenContract {
 
     sealed class Event : ViewEvent {
         object UpdateMoviesList : Event()
         object GetMovies : Event()
-        class CalculateFilmScore(val reviews: List<ReviewShortModel>?) : Event()
     }
 
     data class State(
         val movieList: List<MovieElementModel>,
         val movieCarouselList: List<MovieElementModel>,
+        val filmRatingsList: List<FilmRating?>,
         val currentMoviePage: Int,
         val isRequestingMoviePage: Boolean,
         val isSuccess: Boolean,

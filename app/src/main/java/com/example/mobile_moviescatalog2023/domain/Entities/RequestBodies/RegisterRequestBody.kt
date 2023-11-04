@@ -1,4 +1,4 @@
-package com.example.mobile_moviescatalog2023.Network.DataClasses.RequestBodies
+package com.example.mobile_moviescatalog2023.domain.Entities.RequestBodies
 
 data class RegisterRequestBody (
     val userName: String,

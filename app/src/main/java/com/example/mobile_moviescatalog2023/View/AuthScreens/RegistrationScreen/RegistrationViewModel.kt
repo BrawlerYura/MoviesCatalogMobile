@@ -1,23 +1,16 @@
 package com.example.mobile_moviescatalog2023.View.AuthScreens.RegistrationScreen
 
 import android.annotation.SuppressLint
-import com.example.mobile_moviescatalog2023.Network.DataClasses.RequestBodies.RegisterRequestBody
+import com.example.mobile_moviescatalog2023.domain.Entities.RequestBodies.RegisterRequestBody
 import com.example.mobile_moviescatalog2023.View.Base.BaseViewModel
+import com.example.mobile_moviescatalog2023.domain.UseCases.FormatDateUseCase
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.TimeZone
 
 class RegistrationViewModel(
-
+    private val formatDateUseCase: FormatDateUseCase
 ): BaseViewModel<RegistrationContract.Event, RegistrationContract.State, RegistrationContract.Effect>() {
-
-    private fun formatDateToApi(date: String): String {
-        val parts = date.split(".")
-        val year = parts[2]
-        val month = parts[1]
-        val day = parts[0]
-        return "$year-$month-${day}T08:12:28.534Z"
-    }
     private fun saveName(name: String) {
         setState { copy(name = name) }
     }
@@ -35,7 +28,7 @@ class RegistrationViewModel(
     }
 
     private fun saveBirthDate(birthDate: String) {
-        setState { copy(birthDate = birthDate, apiBirthDate = formatDateToApi(birthDate)) }
+        setState { copy(birthDate = birthDate, apiBirthDate = formatDateUseCase.formatDateToApi(birthDate)) }
     }
 
     @SuppressLint("SimpleDateFormat")

@@ -1,9 +1,9 @@
 package com.example.mobile_moviescatalog2023.Network.Review
 
 import android.util.Log
-import com.example.mobile_moviescatalog2023.Network.DataClasses.Models.MovieDetailsModel
-import com.example.mobile_moviescatalog2023.Network.DataClasses.Models.MoviesModel
-import com.example.mobile_moviescatalog2023.Network.DataClasses.Models.ReviewModifyModel
+import com.example.mobile_moviescatalog2023.domain.Entities.Models.MovieDetailsModel
+import com.example.mobile_moviescatalog2023.domain.Entities.Models.MoviesModel
+import com.example.mobile_moviescatalog2023.domain.Entities.Models.ReviewModifyModel
 import com.example.mobile_moviescatalog2023.Network.Movie.MovieApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow

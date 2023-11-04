@@ -7,14 +7,14 @@ import com.example.mobile_moviescatalog2023.Network.Network
 import com.example.mobile_moviescatalog2023.Network.User.UserRepository
 import com.example.mobile_moviescatalog2023.TokenManager.TokenManager
 import com.example.mobile_moviescatalog2023.View.Base.BaseViewModel
+import com.example.mobile_moviescatalog2023.domain.UseCases.UserUseCases.GetProfileUseCase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
 class SplashScreenViewModel (
-    private val context: Context,
-    private val userRepository: UserRepository
+    private val getProfileUseCase: GetProfileUseCase
 ) : BaseViewModel<SplashContract.Event, SplashContract.State, SplashContract.Effect>() {
 
     override fun setInitialState() = SplashContract.State(
@@ -29,14 +29,9 @@ class SplashScreenViewModel (
     }
 
     private fun getToken() {
-        val dataStore = TokenManager(context)
 
         viewModelScope.launch(Dispatchers.IO) {
-            val tokenValue = dataStore.getToken.first()
-
-            Network.token = tokenValue.toString()
-
-            userRepository.getProfile()
+            getProfileUseCase.invoke()
                 .collect { result ->
                     result.onSuccess {
                         Network.userId = it.id

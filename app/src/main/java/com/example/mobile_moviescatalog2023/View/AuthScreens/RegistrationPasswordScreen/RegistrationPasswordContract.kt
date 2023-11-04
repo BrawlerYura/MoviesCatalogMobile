@@ -1,6 +1,6 @@
 package com.example.mobile_moviescatalog2023.View.AuthScreens.RegistrationPasswordScreen
 
-import com.example.mobile_moviescatalog2023.Network.DataClasses.RequestBodies.RegisterRequestBody
+import com.example.mobile_moviescatalog2023.domain.Entities.RequestBodies.RegisterRequestBody
 import com.example.mobile_moviescatalog2023.View.Base.ViewEvent
 import com.example.mobile_moviescatalog2023.View.Base.ViewSideEffect
 import com.example.mobile_moviescatalog2023.View.Base.ViewState

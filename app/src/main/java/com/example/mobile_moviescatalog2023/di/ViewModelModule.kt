@@ -8,17 +8,39 @@ import com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.FavoriteScr
 import com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.FilmScreen.FilmScreenViewModel
 import com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.MainScreen.MainScreenViewModel
 import com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.ProfileScreen.ProfileScreenViewModel
+import com.example.mobile_moviescatalog2023.domain.UseCases.FormatDateUseCase
+import com.example.mobile_moviescatalog2023.domain.UseCases.UserUseCases.LogoutUseCase
 import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
 import org.koin.androidx.viewmodel.dsl.viewModel
 
 val ViewModelModule = module {
-    viewModel { SplashScreenViewModel(androidContext(), userRepository = get()) }
-    viewModel { LoginViewModel(androidContext(), authRepository = get()) }
-    viewModel { RegistrationViewModel() }
-    viewModel { RegistrationPasswordViewModel(androidContext(), authRepository = get()) }
-    viewModel { MainScreenViewModel(movieRepository = get(), userRepository = get()) }
-    viewModel { FavoriteScreenViewModel(favoriteMoviesRepository = get()) }
-    viewModel { ProfileScreenViewModel(androidContext(), userRepository = get(), authRepository = get()) }
-    viewModel { FilmScreenViewModel(movieRepository = get(), favoriteMoviesRepository = get(), reviewRepository = get()) }
+    viewModel { SplashScreenViewModel( getProfileUseCase = get()) }
+    viewModel { LoginViewModel(androidContext(), loginUseCase = get()) }
+    viewModel { RegistrationViewModel(formatDateUseCase = get()) }
+    viewModel { RegistrationPasswordViewModel(androidContext(), registerUseCase = get()) }
+    viewModel { MainScreenViewModel(getMoviesUseCase = get(), getMyIdUseCase = get()) }
+    viewModel { FavoriteScreenViewModel(getFavoriteMoviesUseCase = get()) }
+
+    viewModel {
+        ProfileScreenViewModel(
+            getProfileUseCase = get(),
+            putProfileUseCase = get(),
+            logoutUseCase = get(),
+            formatDateUseCase = get()
+        )
+    }
+
+    viewModel {
+        FilmScreenViewModel(
+            getFilmDetailsUseCase = get(),
+            addToFavoriteUseCase = get(),
+            deleteFavoriteMovieUseCase = get(),
+            getFavoriteMoviesUseCase = get(),
+            deleteReviewUseCase = get(),
+            addReviewUseCase = get(),
+            putReviewUseCase = get(),
+            formatDateUseCase = get()
+        )
+    }
 }

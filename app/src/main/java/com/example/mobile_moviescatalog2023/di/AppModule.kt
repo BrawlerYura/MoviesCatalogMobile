@@ -11,5 +11,6 @@ val appModule = module {
 
 val appModules = listOf (
     ViewModelModule,
-    RepositoryModule
+    RepositoryModule,
+    UseCasesModule,
 )

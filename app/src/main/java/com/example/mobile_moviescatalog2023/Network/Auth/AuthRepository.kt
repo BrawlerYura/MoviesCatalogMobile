@@ -1,9 +1,9 @@
 package com.example.mobile_moviescatalog2023.Network.Auth
 
 import android.util.Log
-import com.example.mobile_moviescatalog2023.Network.DataClasses.RequestBodies.LoginRequestBody
-import com.example.mobile_moviescatalog2023.Network.DataClasses.RequestBodies.RegisterRequestBody
-import com.example.mobile_moviescatalog2023.Network.DataClasses.Models.TokenModel
+import com.example.mobile_moviescatalog2023.domain.Entities.RequestBodies.LoginRequestBody
+import com.example.mobile_moviescatalog2023.domain.Entities.RequestBodies.RegisterRequestBody
+import com.example.mobile_moviescatalog2023.domain.Entities.Models.TokenModel
 import com.example.mobile_moviescatalog2023.Network.Network
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow

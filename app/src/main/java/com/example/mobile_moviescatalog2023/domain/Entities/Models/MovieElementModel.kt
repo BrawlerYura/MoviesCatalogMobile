@@ -1,4 +1,4 @@
-package com.example.mobile_moviescatalog2023.Network.DataClasses.Models
+package com.example.mobile_moviescatalog2023.domain.Entities.Models
 
 data class MovieElementModel(
     val id: String,

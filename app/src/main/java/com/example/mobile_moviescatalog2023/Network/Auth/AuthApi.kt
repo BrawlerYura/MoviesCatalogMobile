@@ -1,8 +1,8 @@
 package com.example.mobile_moviescatalog2023.Network.Auth
 
-import com.example.mobile_moviescatalog2023.Network.DataClasses.RequestBodies.LoginRequestBody
-import com.example.mobile_moviescatalog2023.Network.DataClasses.RequestBodies.RegisterRequestBody
-import com.example.mobile_moviescatalog2023.Network.DataClasses.Models.TokenModel
+import com.example.mobile_moviescatalog2023.domain.Entities.RequestBodies.LoginRequestBody
+import com.example.mobile_moviescatalog2023.domain.Entities.RequestBodies.RegisterRequestBody
+import com.example.mobile_moviescatalog2023.domain.Entities.Models.TokenModel
 import retrofit2.http.Body
 import retrofit2.http.POST
 

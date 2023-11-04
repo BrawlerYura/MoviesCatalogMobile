@@ -3,7 +3,7 @@ package com.example.mobile_moviescatalog2023.Navigation.AuthNavigation
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import com.example.mobile_moviescatalog2023.Navigation.Screen
-import com.example.mobile_moviescatalog2023.Network.DataClasses.RequestBodies.RegisterRequestBody
+import com.example.mobile_moviescatalog2023.domain.Entities.RequestBodies.RegisterRequestBody
 import com.example.mobile_moviescatalog2023.View.AuthScreens.RegistrationPasswordScreen.RegistrationPasswordContract
 import com.example.mobile_moviescatalog2023.View.AuthScreens.RegistrationPasswordScreen.RegistrationPasswordViewModel
 import com.example.mobile_moviescatalog2023.View.LoginScreens.RegistrationScreen.RegistrationPasswordScreen

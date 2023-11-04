@@ -83,4 +83,5 @@ dependencies {
     implementation("com.squareup.okhttp3:logging-interceptor:5.0.0-alpha.10")
     implementation("com.squareup.retrofit2:converter-moshi:2.4.0")
     implementation("io.coil-kt:coil-compose:2.4.0")
+    implementation("javax.inject:javax.inject:1")
 }

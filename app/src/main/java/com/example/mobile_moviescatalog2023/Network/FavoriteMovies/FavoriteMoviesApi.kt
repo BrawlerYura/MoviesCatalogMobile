@@ -1,6 +1,6 @@
 package com.example.mobile_moviescatalog2023.Network.FavoriteMovies
 
-import com.example.mobile_moviescatalog2023.Network.DataClasses.Models.MoviesListModel
+import com.example.mobile_moviescatalog2023.domain.Entities.Models.MoviesListModel
 import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.POST

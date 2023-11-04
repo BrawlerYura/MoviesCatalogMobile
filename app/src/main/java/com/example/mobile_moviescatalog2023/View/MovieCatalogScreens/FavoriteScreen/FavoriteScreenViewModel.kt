@@ -3,17 +3,19 @@ package com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.FavoriteSc
 import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.example.mobile_moviescatalog2023.Network.Auth.AuthRepository
-import com.example.mobile_moviescatalog2023.Network.DataClasses.Models.MovieElementModel
-import com.example.mobile_moviescatalog2023.Network.DataClasses.Models.MoviesListModel
+import com.example.mobile_moviescatalog2023.domain.Entities.Models.MovieElementModel
+import com.example.mobile_moviescatalog2023.domain.Entities.Models.MoviesListModel
 import com.example.mobile_moviescatalog2023.Network.FavoriteMovies.FavoriteMoviesRepository
 import com.example.mobile_moviescatalog2023.View.AuthScreens.LoginScreen.LoginContract
 import com.example.mobile_moviescatalog2023.View.Base.BaseViewModel
+import com.example.mobile_moviescatalog2023.domain.Entities.Models.ThreeFavoriteMovies
+import com.example.mobile_moviescatalog2023.domain.UseCases.FavoriteMoviesUseCases.GetFavoriteMoviesUseCase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 class FavoriteScreenViewModel(
-    val favoriteMoviesRepository: FavoriteMoviesRepository
+    private val getFavoriteMoviesUseCase :GetFavoriteMoviesUseCase
 ): BaseViewModel<FavoriteScreenContract.Event, FavoriteScreenContract.State, FavoriteScreenContract.Effect>() {
 
     override fun setInitialState() = FavoriteScreenContract.State(
@@ -29,7 +31,7 @@ class FavoriteScreenViewModel(
 
     private fun getFavoriteMovies() {
         viewModelScope.launch(Dispatchers.IO) {
-            favoriteMoviesRepository.getFavoriteMovies()
+            getFavoriteMoviesUseCase.invoke()
                 .collect { result ->
                     result.onSuccess {
                         it.movies?.forEach {
@@ -49,7 +51,7 @@ class FavoriteScreenViewModel(
     }
 
     private fun fromListToPartsMovies(movies: List<MovieElementModel>?): List<ThreeFavoriteMovies>? {
-        var listFavoriteMovies: List<ThreeFavoriteMovies> = listOf()
+        val listFavoriteMovies: MutableList<ThreeFavoriteMovies> = mutableListOf()
         return if(movies != null) {
             var index = 0
             while(index < movies.count()) {
@@ -85,9 +87,3 @@ class FavoriteScreenViewModel(
         }
     }
 }
-
-data class ThreeFavoriteMovies (
-    val firstMovie: MovieElementModel?,
-    val secondMovie: MovieElementModel?,
-    val thirdMovie: MovieElementModel?
-)

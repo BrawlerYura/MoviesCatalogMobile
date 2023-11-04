@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -59,8 +60,8 @@ fun MovieListScreen(
                 )
             )
         }
-        items(state.movieList) {
-            FilmCard(it, onNavigationRequested)
+        itemsIndexed(state.movieList) { index, item ->
+            FilmCard(item, state.filmRatingsList[index], onNavigationRequested)
         }
     }
 }
@@ -78,7 +79,8 @@ private fun MovieListScreenPreview() {
             movieCarouselList = listOf(),
             isSuccess = false,
             pageCount = 1,
-            isUpdatingList = false
+            isUpdatingList = false,
+            filmRatingsList = listOf()
         ),
         onEventSent = { },
         onNavigationRequested = { }

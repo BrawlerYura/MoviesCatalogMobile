@@ -5,13 +5,18 @@ import android.content.Context
 import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.example.mobile_moviescatalog2023.Network.Auth.AuthRepository
-import com.example.mobile_moviescatalog2023.Network.DataClasses.Models.ProfileModel
+import com.example.mobile_moviescatalog2023.domain.Entities.Models.ProfileModel
 import com.example.mobile_moviescatalog2023.Network.Network
 import com.example.mobile_moviescatalog2023.Network.User.UserRepository
 import com.example.mobile_moviescatalog2023.TokenManager.TokenManager
 import com.example.mobile_moviescatalog2023.View.AuthScreens.LoginScreen.LoginContract
 import com.example.mobile_moviescatalog2023.View.Base.BaseViewModel
+import com.example.mobile_moviescatalog2023.domain.UseCases.FormatDateUseCase
+import com.example.mobile_moviescatalog2023.domain.UseCases.UserUseCases.GetProfileUseCase
+import com.example.mobile_moviescatalog2023.domain.UseCases.UserUseCases.LogoutUseCase
+import com.example.mobile_moviescatalog2023.domain.UseCases.UserUseCases.PutProfileUseCase
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
@@ -19,9 +24,10 @@ import java.util.Date
 import java.util.TimeZone
 
 class ProfileScreenViewModel(
-    private val context: Context,
-    private val userRepository: UserRepository,
-    private val authRepository: AuthRepository
+    private val getProfileUseCase: GetProfileUseCase,
+    private val putProfileUseCase: PutProfileUseCase,
+    private val logoutUseCase: LogoutUseCase,
+    private val formatDateUseCase: FormatDateUseCase
 ): BaseViewModel<ProfileScreenContract.Event, ProfileScreenContract.State, ProfileScreenContract.Effect>() {
     override fun setInitialState() = ProfileScreenContract.State(
         id = "",
@@ -41,28 +47,11 @@ class ProfileScreenViewModel(
             is ProfileScreenContract.Event.SaveNameEvent -> saveName(name = event.name)
             is ProfileScreenContract.Event.SaveGenderEvent -> saveGender(gender = event.gender)
             is ProfileScreenContract.Event.SaveBirthDateEvent -> saveBirthDate(birthDate = event.birthDate)
-            is ProfileScreenContract.Event.SaveBirthDateWithFormatEvent -> saveBirthDate(formatDateToTextField(event.birthDate))
+            is ProfileScreenContract.Event.SaveBirthDateWithFormatEvent -> saveBirthDate(formatDateUseCase.formatDateToTextField(event.birthDate))
             is ProfileScreenContract.Event.PutNewUserDetails -> putUserDetails()
             is ProfileScreenContract.Event.LoadUserDetails -> loadUserDetails()
             is ProfileScreenContract.Event.Logout -> logout()
         }
-    }
-
-    private fun formatDateToApi(date: String): String {
-        val parts = date.split(".")
-        val day = parts[0]
-        val month = parts[1]
-        val year = parts[2]
-        Log.e("a", "$year-$month-${day}T08:12:28.534Z")
-        return "$year-$month-${day}T08:12:28.534Z"
-    }
-
-    private fun formatDateFromApi(date: String): String {
-        val parts = date.split("-")
-        val year = parts[0]
-        val month = parts[1]
-        val day = parts[2]
-        return "${day.substring(startIndex = 0, endIndex = 2)}.$month.$year"
     }
 
     private fun saveName(name: String) {
@@ -85,50 +74,33 @@ class ProfileScreenViewModel(
         setState { copy(birthDate = birthDate) }
     }
 
-    @SuppressLint("SimpleDateFormat")
-    private fun formatDateToTextField(selectedDateMillis: Long?): String {
-        if (selectedDateMillis == null) {
-            return ""
-        }
 
-        val dateFormat = SimpleDateFormat("dd.MM.yyyy")
-        dateFormat.timeZone = TimeZone.getTimeZone("UTC")
 
-        val date = Date(selectedDateMillis)
-        return dateFormat.format(date)
-    }
 
     private fun loadUserDetails()
     {
-        val dataStore = TokenManager(context)
-
         viewModelScope.launch(Dispatchers.IO) {
-            val tokenValue = dataStore.getToken.first()
-
-            Network.token = tokenValue.toString()
-
-            userRepository.getProfile()
-                .collect { result ->
-                    result.onSuccess {
-                        setState {copy(
-                                id = it.id,
-                                nickName = it.nickName,
-                                email = it.email,
-                                userIconUrl = it.avatarLink,
-                                name = it.name,
-                                gender = it.gender,
-                                birthDate = formatDateFromApi(it.birthDate),
-                                isSuccess = true
-                            )
-                        }
-                    }.onFailure {
-                        setState {
-                            copy(
-                                isSuccess = false
-                            )
-                        }
+            getProfileUseCase.invoke()
+                .collect{ result ->
+                result.onSuccess {
+                    setState {
+                        copy(
+                            isSuccess = true,
+                            id = it.id,
+                            nickName = it.nickName,
+                            email = it.email,
+                            userIconUrl = it.avatarLink,
+                            name = it.name,
+                            gender = it.gender,
+                            birthDate = formatDateUseCase.formatDateFromApi(it.birthDate),
+                        )
+                    }
+                } .onFailure {
+                    setState {
+                        copy(isSuccess = false)
                     }
                 }
+            }
         }
     }
 
@@ -140,21 +112,18 @@ class ProfileScreenViewModel(
             avatarLink = state.value.userIconUrl,
             name = state.value.name,
             gender = state.value.gender,
-            birthDate = formatDateToApi(state.value.birthDate)
+            birthDate = formatDateUseCase.formatDateToApi(state.value.birthDate)
         )
         viewModelScope.launch(Dispatchers.IO) {
-            userRepository.putProfile(profileModel)
+            putProfileUseCase.invoke(profileModel)
                 .collect { result ->
                     result.onSuccess {
-                        setState {copy(
-                                isSuccess = true
-                            )
-                        }
-                    }.onFailure {
                         setState {
-                            copy(
-                                isSuccess = false
-                            )
+                            copy(isSuccess = true)
+                        }
+                    } .onFailure {
+                        setState {
+                            copy(isSuccess = false)
                         }
                     }
                 }
@@ -163,8 +132,7 @@ class ProfileScreenViewModel(
 
     private fun logout() {
         viewModelScope.launch(Dispatchers.IO) {
-            authRepository.logout()
-            TokenManager(context).deleteToken()
+            logoutUseCase.invoke()
         }
     }
 }

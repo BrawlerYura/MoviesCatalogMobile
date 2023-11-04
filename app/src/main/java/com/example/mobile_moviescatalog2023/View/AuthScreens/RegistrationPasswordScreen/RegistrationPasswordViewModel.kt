@@ -3,15 +3,16 @@ package com.example.mobile_moviescatalog2023.View.AuthScreens.RegistrationPasswo
 import android.content.Context
 import androidx.lifecycle.viewModelScope
 import com.example.mobile_moviescatalog2023.Network.Auth.AuthRepository
-import com.example.mobile_moviescatalog2023.Network.DataClasses.RequestBodies.RegisterRequestBody
+import com.example.mobile_moviescatalog2023.domain.Entities.RequestBodies.RegisterRequestBody
 import com.example.mobile_moviescatalog2023.TokenManager.TokenManager
 import com.example.mobile_moviescatalog2023.View.Base.BaseViewModel
+import com.example.mobile_moviescatalog2023.domain.UseCases.AuthUseCases.RegisterUseCase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class RegistrationPasswordViewModel(
     private val context: Context,
-    private val authRepository: AuthRepository
+    private val registerUseCase: RegisterUseCase
 ): BaseViewModel<
         RegistrationPasswordContract.Event,
         RegistrationPasswordContract.State,
@@ -69,7 +70,7 @@ class RegistrationPasswordViewModel(
         )
 
         viewModelScope.launch(Dispatchers.IO) {
-            authRepository.register(registrationBody)
+            registerUseCase.invoke(registrationBody)
                 .collect { result ->
                     result.onSuccess {
                         TokenManager(context).saveToken(it.token)

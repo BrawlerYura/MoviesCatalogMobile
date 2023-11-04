@@ -1,7 +1,7 @@
 package com.example.mobile_moviescatalog2023.Network.FavoriteMovies
 
 import android.util.Log
-import com.example.mobile_moviescatalog2023.Network.DataClasses.Models.MoviesListModel
+import com.example.mobile_moviescatalog2023.domain.Entities.Models.MoviesListModel
 import com.example.mobile_moviescatalog2023.Network.Network
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow

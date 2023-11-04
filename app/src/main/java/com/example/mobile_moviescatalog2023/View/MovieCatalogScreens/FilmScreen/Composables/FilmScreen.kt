@@ -10,13 +10,15 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
-import com.example.mobile_moviescatalog2023.Network.DataClasses.Models.GenreModel
-import com.example.mobile_moviescatalog2023.Network.DataClasses.Models.MovieDetailsModel
-import com.example.mobile_moviescatalog2023.Network.DataClasses.Models.ReviewModel
-import com.example.mobile_moviescatalog2023.Network.DataClasses.Models.UserShortModel
+import com.example.mobile_moviescatalog2023.domain.Entities.Models.GenreModel
+import com.example.mobile_moviescatalog2023.domain.Entities.Models.MovieDetailsModel
+import com.example.mobile_moviescatalog2023.domain.Entities.Models.ReviewModel
+import com.example.mobile_moviescatalog2023.domain.Entities.Models.UserShortModel
 import com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.FilmScreen.Composables.FilmReviewComposables.FilmReviews
 import com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.FilmScreen.FilmScreenContract
+import com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.MainScreen.Composables.FilmRating
 import com.example.mobile_moviescatalog2023.ui.theme.FilmusTheme
 
 @Composable
@@ -77,14 +79,6 @@ fun FilmScreen(
             }
         }
     }
-}
-
-fun formatDateFromApi(date: String): String {
-    val parts = date.split("-")
-    val year = parts[0]
-    val month = parts[1]
-    val day = parts[2]
-    return "${day.substring(startIndex = 0, endIndex = 2)}.$month.$year"
 }
 
 @Preview(showBackground = true)
@@ -164,5 +158,9 @@ val filmScreensPreviewState = FilmScreenContract.State (
     isWithMyReview = false,
     myReviewTextField = "Lorem ipsum dolor",
     myRating = 4,
-    isAnonymous = false
+    isAnonymous = false,
+    currentFilmRating = FilmRating(
+        rating = "2.5",
+        color = Color.Red
+    )
 )

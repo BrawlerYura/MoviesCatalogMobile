@@ -1,22 +1,27 @@
 package com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.MainScreen
 
 import android.util.Log
+import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.viewModelScope
-import com.example.mobile_moviescatalog2023.Network.DataClasses.Models.MovieElementModel
-import com.example.mobile_moviescatalog2023.Network.DataClasses.Models.MoviesModel
-import com.example.mobile_moviescatalog2023.Network.DataClasses.Models.ReviewModel
-import com.example.mobile_moviescatalog2023.Network.DataClasses.Models.ReviewShortModel
+import com.example.mobile_moviescatalog2023.domain.Entities.Models.MovieElementModel
+import com.example.mobile_moviescatalog2023.domain.Entities.Models.MoviesModel
+import com.example.mobile_moviescatalog2023.domain.Entities.Models.ReviewModel
+import com.example.mobile_moviescatalog2023.domain.Entities.Models.ReviewShortModel
 import com.example.mobile_moviescatalog2023.Network.Movie.MovieRepository
 import com.example.mobile_moviescatalog2023.Network.Network
 import com.example.mobile_moviescatalog2023.Network.User.UserRepository
 import com.example.mobile_moviescatalog2023.View.Base.BaseViewModel
+import com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.MainScreen.Composables.FilmRating
+import com.example.mobile_moviescatalog2023.domain.UseCases.MoviesUseCases.GetMoviesUseCase
+import com.example.mobile_moviescatalog2023.domain.UseCases.UserUseCases.GetMyIdUseCase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class MainScreenViewModel(
-    private val movieRepository: MovieRepository,
-    private val userRepository: UserRepository
+    private val getMoviesUseCase: GetMoviesUseCase,
+    private val getMyIdUseCase: GetMyIdUseCase,
 ): BaseViewModel<MainScreenContract.Event, MainScreenContract.State, MainScreenContract.Effect>() {
+
     override fun setInitialState() = MainScreenContract.State(
         currentMoviePage = 1,
         isRequestingMoviePage = true,
@@ -24,21 +29,21 @@ class MainScreenViewModel(
         movieCarouselList = listOf(),
         isSuccess = false,
         pageCount = 1,
-        isUpdatingList = false
+        isUpdatingList = false,
+        filmRatingsList = listOf()
     )
 
     override fun handleEvents(event: MainScreenContract.Event) {
         when (event) {
             is MainScreenContract.Event.UpdateMoviesList -> updateMoviesList()
             is MainScreenContract.Event.GetMovies -> getMovies()
-            is MainScreenContract.Event.CalculateFilmScore -> calculateFilmScore(reviews = event.reviews)
         }
     }
 
     private fun updateMoviesList() {
         setState { copy(isUpdatingList = true) }
         viewModelScope.launch(Dispatchers.IO) {
-            movieRepository.getMovies(state.value.currentMoviePage)
+            getMoviesUseCase.invoke(state.value.currentMoviePage)
                 .collect { result ->
                     result.onSuccess {
                         setState {
@@ -47,6 +52,13 @@ class MainScreenViewModel(
                                 currentMoviePage = state.value.currentMoviePage + 1,
                                 isUpdatingList = false
                             )
+                        }
+                        it.movies.forEach {
+                            setState {
+                                copy(
+                                    filmRatingsList = filmRatingsList + calculateFilmRating(it.reviews)
+                                )
+                            }
                         }
                     }.onFailure {
                         setState {
@@ -61,18 +73,25 @@ class MainScreenViewModel(
     private fun getMovies()
     {
         viewModelScope.launch(Dispatchers.IO) {
-            movieRepository.getMovies(1)
+            getMoviesUseCase.invoke(1)
                 .collect { result ->
                     result.onSuccess {
                         setState { copy(
                             isRequestingMoviePage = false,
                             isSuccess = true,
-                            movieCarouselList = state.value.movieCarouselList + it.movies.take(4),
-                            movieList = state.value.movieList + it.movies.drop(4),
+                            movieCarouselList = it.movies.take(4),
+                            movieList = it.movies.drop(4),
                             currentMoviePage = state.value.currentMoviePage + 1,
                             pageCount = it.pageInfo.pageCount
                         ) }
                         getMyId()
+                        it.movies.drop(4).forEach {
+                            setState {
+                                copy(
+                                    filmRatingsList = filmRatingsList + calculateFilmRating(it.reviews)
+                                )
+                            }
+                        }
                     }.onFailure {
                         setState { copy(isRequestingMoviePage = true, isSuccess = false) }
                     }
@@ -80,31 +99,57 @@ class MainScreenViewModel(
         }
     }
 
-    private fun getMyId()
+    private suspend fun getMyId()
     {
-        viewModelScope.launch(Dispatchers.IO) {
-            userRepository.getProfile()
-                .collect { result ->
-                    result.onSuccess {
-                        Network.userId = it.id
-                    }.onFailure {
+        getMyIdUseCase.invoke()
+            .collect { result ->
+                result.onSuccess {
+                    Network.userId = it.id
+                }.onFailure {
 
-                    }
                 }
-        }
+            }
     }
 
-    private fun calculateFilmScore(reviews: List<ReviewShortModel>?): String {
-        val _reviews: List<ReviewShortModel>
+    private fun calculateFilmRating(reviews: List<ReviewShortModel>?): FilmRating? {
         if(reviews == null) {
-            return ""
+            return null
         } else {
-            _reviews = reviews
+
+            var sumScore: Int = 0
+            reviews.forEach {
+                sumScore += it.rating
+            }
+
+            val rating = (sumScore.toDouble() / reviews.count())
+
+            val color = when {
+                rating >= 0.0 && rating < 3.0 -> {
+                    Color(0xFFE64646)
+                }
+                rating >= 3.0 && rating < 4.0 -> {
+                    Color(0xFFF05C44)
+                }
+                rating >= 4.0 && rating < 5.0 -> {
+                    Color(0xFFFFA000)
+                }
+                rating >= 5.0 && rating < 7.0 -> {
+                    Color(0xFFFFD54F)
+                }
+                rating >= 7.0 && rating < 9.0 -> {
+                    Color(0xFFA3CD4A)
+                }
+                else -> {
+                    Color(0xFF4BB34B)
+                }
+            }
+
+            return FilmRating(
+                rating = if (rating != 10.0)
+                { rating.toString().substring(startIndex = 0, endIndex = 3) }
+                else { rating.toString().substring(startIndex = 0, endIndex = 4) },
+                color = color
+            )
         }
-        var sumScore: Int = 0
-        _reviews.forEach {
-            sumScore += it.rating
-        }
-        return (sumScore / _reviews.count()).toString()
     }
 }

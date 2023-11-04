@@ -29,9 +29,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
-import com.example.mobile_moviescatalog2023.Network.DataClasses.Models.GenreModel
-import com.example.mobile_moviescatalog2023.Network.DataClasses.Models.MovieElementModel
-import com.example.mobile_moviescatalog2023.Network.DataClasses.Models.ReviewShortModel
+import com.example.mobile_moviescatalog2023.domain.Entities.Models.GenreModel
+import com.example.mobile_moviescatalog2023.domain.Entities.Models.MovieElementModel
+import com.example.mobile_moviescatalog2023.domain.Entities.Models.ReviewShortModel
 import com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.MainScreen.MainScreenContract
 import com.example.mobile_moviescatalog2023.ui.theme.interFamily
 
@@ -39,6 +39,7 @@ import com.example.mobile_moviescatalog2023.ui.theme.interFamily
 @Composable
 fun FilmCard(
     item: MovieElementModel,
+    filmRating: FilmRating?,
     onNavigationRequested: (navigationEffect: MainScreenContract.Effect.Navigation) -> Unit
 ) {
     Row(
@@ -55,7 +56,7 @@ fun FilmCard(
                 modifier = Modifier.fillMaxSize().clip(RoundedCornerShape(3.dp)),
                 contentScale = ContentScale.Crop
             )
-            val filmRating: FilmRating? = calculateFilmRating(item.reviews)
+
             if(filmRating != null) {
                 Box(
                     modifier = Modifier
@@ -221,6 +222,10 @@ private fun FilmCardPreview() {
         )
     FilmCard(
         item =  movieElementModel,
+        filmRating = FilmRating(
+            rating = "9.2",
+            color = Color.Green
+        ),
         onNavigationRequested = { }
     )
 }

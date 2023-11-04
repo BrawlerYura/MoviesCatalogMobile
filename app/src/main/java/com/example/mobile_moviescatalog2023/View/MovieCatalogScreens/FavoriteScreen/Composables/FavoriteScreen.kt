@@ -30,14 +30,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
-import com.example.mobile_moviescatalog2023.Network.DataClasses.Models.GenreModel
-import com.example.mobile_moviescatalog2023.Network.DataClasses.Models.MovieElementModel
-import com.example.mobile_moviescatalog2023.Network.DataClasses.Models.ReviewShortModel
+import com.example.mobile_moviescatalog2023.domain.Entities.Models.GenreModel
+import com.example.mobile_moviescatalog2023.domain.Entities.Models.MovieElementModel
+import com.example.mobile_moviescatalog2023.domain.Entities.Models.ReviewShortModel
 import com.example.mobile_moviescatalog2023.R
 import com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.BottomNavigationBar
 import com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.FavoriteScreen.FavoriteScreenContract
-import com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.FavoriteScreen.ThreeFavoriteMovies
 import com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.MainScreen.MovieNavigationContract
+import com.example.mobile_moviescatalog2023.domain.Entities.Models.ThreeFavoriteMovies
 import com.example.mobile_moviescatalog2023.ui.theme.FilmusTheme
 import com.example.mobile_moviescatalog2023.ui.theme.interFamily
 

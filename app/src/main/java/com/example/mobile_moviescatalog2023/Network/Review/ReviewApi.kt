@@ -1,6 +1,6 @@
 package com.example.mobile_moviescatalog2023.Network.Review
 
-import com.example.mobile_moviescatalog2023.Network.DataClasses.Models.ReviewModifyModel
+import com.example.mobile_moviescatalog2023.domain.Entities.Models.ReviewModifyModel
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.POST

@@ -1,10 +1,11 @@
 package com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.FilmScreen
 
-import com.example.mobile_moviescatalog2023.Network.DataClasses.Models.MovieDetailsModel
-import com.example.mobile_moviescatalog2023.Network.DataClasses.Models.ReviewModifyModel
+import com.example.mobile_moviescatalog2023.domain.Entities.Models.MovieDetailsModel
+import com.example.mobile_moviescatalog2023.domain.Entities.Models.ReviewModifyModel
 import com.example.mobile_moviescatalog2023.View.Base.ViewEvent
 import com.example.mobile_moviescatalog2023.View.Base.ViewSideEffect
 import com.example.mobile_moviescatalog2023.View.Base.ViewState
+import com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.MainScreen.Composables.FilmRating
 
 class FilmScreenContract {
 
@@ -29,7 +30,8 @@ class FilmScreenContract {
         val isWithMyReview: Boolean,
         val myReviewTextField: String,
         val myRating: Int,
-        val isAnonymous: Boolean
+        val isAnonymous: Boolean,
+        val currentFilmRating: FilmRating?
     ) : ViewState
 
     sealed class Effect : ViewSideEffect {

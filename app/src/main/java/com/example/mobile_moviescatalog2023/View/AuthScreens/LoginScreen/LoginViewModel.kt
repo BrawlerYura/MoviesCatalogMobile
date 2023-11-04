@@ -3,15 +3,16 @@ package com.example.mobile_moviescatalog2023.View.AuthScreens.LoginScreen
 import android.content.Context
 import androidx.lifecycle.viewModelScope
 import com.example.mobile_moviescatalog2023.Network.Auth.AuthRepository
-import com.example.mobile_moviescatalog2023.Network.DataClasses.RequestBodies.LoginRequestBody
+import com.example.mobile_moviescatalog2023.domain.Entities.RequestBodies.LoginRequestBody
 import com.example.mobile_moviescatalog2023.TokenManager.TokenManager
 import com.example.mobile_moviescatalog2023.View.Base.BaseViewModel
+import com.example.mobile_moviescatalog2023.domain.UseCases.AuthUseCases.LoginUseCase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class LoginViewModel(
     private val context: Context,
-    private val authRepository: AuthRepository
+    private val loginUseCase: LoginUseCase
 ): BaseViewModel<LoginContract.Event, LoginContract.State, LoginContract.Effect>() {
 
     override fun setInitialState() = LoginContract.State(
@@ -41,7 +42,7 @@ class LoginViewModel(
         val loginBody = LoginRequestBody(state.value.login, state.value.password)
 
         viewModelScope.launch(Dispatchers.IO) {
-            authRepository.login(loginBody)
+                loginUseCase.invoke(loginBody)
                 .collect { result ->
                     result.onSuccess {
                         TokenManager(context).saveToken(it.token)
