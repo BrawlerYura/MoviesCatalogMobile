@@ -18,7 +18,7 @@ val ViewModelModule = module {
     viewModel { SplashScreenViewModel( getProfileUseCase = get()) }
     viewModel { LoginViewModel(androidContext(), loginUseCase = get(), validationUseCase = get()) }
     viewModel { RegistrationViewModel(formatDateUseCase = get(), validationUseCase = get()) }
-    viewModel { RegistrationPasswordViewModel(androidContext(), registerUseCase = get()) }
+    viewModel { RegistrationPasswordViewModel(androidContext(), registerUseCase = get(), validationUseCase = get()) }
     viewModel { MainScreenViewModel(getMoviesUseCase = get(), getMyIdUseCase = get()) }
     viewModel { FavoriteScreenViewModel(getFavoriteMoviesUseCase = get()) }
 
@@ -27,7 +27,8 @@ val ViewModelModule = module {
             getProfileUseCase = get(),
             putProfileUseCase = get(),
             logoutUseCase = get(),
-            formatDateUseCase = get()
+            formatDateUseCase = get(),
+            validationUseCase = get()
         )
     }
 

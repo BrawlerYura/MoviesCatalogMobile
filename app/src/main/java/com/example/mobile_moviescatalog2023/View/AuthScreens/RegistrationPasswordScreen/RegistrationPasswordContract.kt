@@ -1,5 +1,7 @@
 package com.example.mobile_moviescatalog2023.View.AuthScreens.RegistrationPasswordScreen
 
+import androidx.compose.ui.hapticfeedback.HapticFeedback
+import androidx.core.view.HapticFeedbackConstantsCompat.HapticFeedbackType
 import com.example.mobile_moviescatalog2023.domain.Entities.RequestBodies.RegisterRequestBody
 import com.example.mobile_moviescatalog2023.View.Base.ViewEvent
 import com.example.mobile_moviescatalog2023.View.Base.ViewSideEffect
@@ -10,7 +12,7 @@ class RegistrationPasswordContract {
     sealed class Event : ViewEvent {
         class SavePasswordEvent(val password: String) : Event()
         class SaveRepeatedPasswordEvent(val repPassword: String) : Event()
-        object SignUp : Event()
+        class SignUp(val haptic: HapticFeedback) : Event()
         class LoadRegisterRequestBody(val registerRequestBody: RegisterRequestBody) : Event()
     }
 
@@ -23,7 +25,9 @@ class RegistrationPasswordContract {
         val birthDate: String,
         val gender: Int,
         val isSuccess: Boolean?,
-        val buttonEnabled: Boolean
+        val isPasswordValid: Boolean?,
+        val isRepPasswordValid: Boolean?,
+        val errorMessage: String?
     ) : ViewState
 
     sealed class Effect : ViewSideEffect {

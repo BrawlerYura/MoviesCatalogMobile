@@ -10,6 +10,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.hapticfeedback.HapticFeedback
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -25,11 +27,12 @@ import com.example.mobile_moviescatalog2023.ui.theme.interFamily
 @Composable
 fun SignInButton(
     state: LoginContract.State,
-    onEventSent: () -> Unit
+    onEventSent: (haptic: HapticFeedback) -> Unit
 ) {
+    val haptic = LocalHapticFeedback.current
     Button(
         onClick = {
-            onEventSent()
+            onEventSent(haptic)
         },
         enabled = state.buttonEnabled,
         shape = RoundedCornerShape(10.dp),
@@ -50,7 +53,6 @@ fun SignInButton(
                 fontFamily = interFamily,
                 fontWeight = FontWeight.W600,
                 fontSize = 15.sp,
-                color = MaterialTheme.colorScheme.onPrimary,
                 textAlign = TextAlign.Center
             ),
         )

@@ -1,6 +1,7 @@
 package com.example.mobile_moviescatalog2023.View.AuthScreens.LoginScreen
 
 import android.content.Context
+import androidx.compose.ui.hapticfeedback.HapticFeedback
 import com.example.mobile_moviescatalog2023.View.Base.ViewEvent
 import com.example.mobile_moviescatalog2023.View.Base.ViewSideEffect
 import com.example.mobile_moviescatalog2023.View.Base.ViewState
@@ -12,18 +13,18 @@ class LoginContract {
 
         class SavePasswordEvent(val password: String) : Event()
 
-        object SignIn : Event()
+        class SignIn(val haptic: HapticFeedback) : Event()
     }
 
     data class State(
         val login: String,
         val password: String,
-        val isTriedToSignIn: Boolean,
-        val isSuccess: Boolean,
-        val buttonEnabled: Boolean
+        val isSuccess: Boolean?,
+        val buttonEnabled: Boolean,
+        val errorMessage: String?
     ) : ViewState
 
-    sealed class Effect : ViewSideEffect{
+    sealed class Effect : ViewSideEffect {
         sealed class Navigation : Effect() {
             object ToMain : Navigation()
             object ToRegistration : Navigation()

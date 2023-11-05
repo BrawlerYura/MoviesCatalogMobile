@@ -15,6 +15,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -46,7 +47,9 @@ fun LoginTextBox(state: LoginContract.State, onEventSent: (event: LoginContract.
 
         OutlinedTextField(
             value = state.login,
+            isError = state.isSuccess == false,
             colors = OutlinedTextFieldDefaults.colors(
+                errorContainerColor = Color(0xFFE64646).copy(alpha = 0.1f)
             ),
             textStyle = TextStyle(
                 fontFamily = interFamily,
@@ -79,13 +82,7 @@ fun LoginTextBox(state: LoginContract.State, onEventSent: (event: LoginContract.
 @Composable
 private fun LoginTextBoxPreview() {
     LoginTextBox(
-        state = LoginContract.State (
-            login = "my login",
-            password = "",
-            isTriedToSignIn = false,
-            isSuccess = false,
-            buttonEnabled = false
-        ),
+        state = loginStatePreview,
         onEventSent = {  }
     )
 }

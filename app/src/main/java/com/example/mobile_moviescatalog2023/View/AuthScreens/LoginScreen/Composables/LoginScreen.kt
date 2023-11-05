@@ -63,15 +63,13 @@ fun LoginScreen(
 
                 PasswordTextBox(state, onEventSent)
 
-                SignInButton(state) { onEventSent(LoginContract.Event.SignIn) }
+                SignInButton(state) { haptic -> onEventSent(LoginContract.Event.SignIn(haptic)) }
             }
             LoginBottomText { onNavigationRequested(LoginContract.Effect.Navigation.ToRegistration) }
         }
 
-        if(state.isTriedToSignIn and state.isSuccess) {
+        if(state.isSuccess == true) {
             onNavigationRequested(LoginContract.Effect.Navigation.ToMain)
-        } else if(state.isTriedToSignIn and !state.isSuccess) {
-
         }
     }
 }
@@ -80,14 +78,16 @@ fun LoginScreen(
 @Composable
 private fun LoginScreenPreview() {
     LoginScreen(
-        state = LoginContract.State (
-            login = "my login",
-            password = "password",
-            isTriedToSignIn = false,
-            isSuccess = false,
-            buttonEnabled = false
-        ),
+        state = loginStatePreview,
         onEventSent = { },
         onNavigationRequested = { }
     )
 }
+
+val loginStatePreview = LoginContract.State (
+    login = "my login",
+    password = "password",
+    isSuccess = null,
+    buttonEnabled = true,
+    errorMessage = null
+)

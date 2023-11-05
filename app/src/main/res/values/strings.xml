@@ -56,8 +56,9 @@
     <string name="hide">Скрыть</string>
 
     <string name="invalid_birth_date_message">Неверный формат даты</string>
-    <string name="invalid_login_message">Логин слишком короткий</string>
-    <string name="invalid_name_message">Имя слишком короткое</string>
+    <string name="invalid_login_message">Поле логина не должно быть пустым</string>
+    <string name="invalid_name_message">Поле имени не должно быть пустым</string>
     <string name="invalid_email_message">Неверная почта</string>
-    <string name="invalid_password_message">Слишком простой пароль</string>
+    <string name="invalid_password_message">Поле пароля не должно быть пустым</string>
+    <string name="passwords_dont_match">Пароли не совпадают</string>
 </resources>

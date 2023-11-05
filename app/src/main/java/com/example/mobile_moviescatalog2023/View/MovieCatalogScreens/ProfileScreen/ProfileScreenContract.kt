@@ -1,9 +1,11 @@
 package com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.ProfileScreen
 
+import androidx.compose.ui.hapticfeedback.HapticFeedback
 import com.example.mobile_moviescatalog2023.View.AuthScreens.RegistrationScreen.RegistrationContract
 import com.example.mobile_moviescatalog2023.View.Base.ViewEvent
 import com.example.mobile_moviescatalog2023.View.Base.ViewSideEffect
 import com.example.mobile_moviescatalog2023.View.Base.ViewState
+import com.example.mobile_moviescatalog2023.domain.Entities.Models.ProfileModel
 
 class ProfileScreenContract {
 
@@ -19,8 +21,7 @@ class ProfileScreenContract {
         class SaveBirthDateWithFormatEvent(val birthDate: Long?) : Event()
 
         class SaveUserIconUrl(val userIconUrl: String) : Event()
-        object PutNewUserDetails : Event()
-
+        class PutNewUserDetails(val haptic: HapticFeedback) : Event()
         object LoadUserDetails : Event()
         object Logout : Event()
     }
@@ -33,7 +34,10 @@ class ProfileScreenContract {
         val name: String,
         val gender: Int,
         val birthDate: String,
-        val isSuccess: Boolean?
+        val isSuccess: Boolean?,
+        val errorMessage: String?,
+        val profileModel: ProfileModel?,
+        val isEnable: Boolean
     ) : ViewState
 
     sealed class Effect : ViewSideEffect {

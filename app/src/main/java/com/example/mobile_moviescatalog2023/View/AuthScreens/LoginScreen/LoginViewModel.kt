@@ -1,8 +1,9 @@
 package com.example.mobile_moviescatalog2023.View.AuthScreens.LoginScreen
 
 import android.content.Context
+import androidx.compose.ui.hapticfeedback.HapticFeedback
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.lifecycle.viewModelScope
-import com.example.mobile_moviescatalog2023.Network.Auth.AuthRepository
 import com.example.mobile_moviescatalog2023.domain.Entities.RequestBodies.LoginRequestBody
 import com.example.mobile_moviescatalog2023.TokenManager.TokenManager
 import com.example.mobile_moviescatalog2023.View.Base.BaseViewModel
@@ -20,16 +21,16 @@ class LoginViewModel(
     override fun setInitialState() = LoginContract.State(
         login = "",
         password = "",
-        isTriedToSignIn = false,
-        isSuccess = false,
-        buttonEnabled = false
+        isSuccess = null,
+        buttonEnabled = false,
+        errorMessage = null
     )
 
     override fun handleEvents(event: LoginContract.Event) {
         when (event) {
             is LoginContract.Event.SaveLoginEvent -> saveLogin(login = event.login)
             is LoginContract.Event.SavePasswordEvent -> savePassword(password = event.password)
-            is LoginContract.Event.SignIn -> signIn()
+            is LoginContract.Event.SignIn -> signIn(haptic = event.haptic)
         }
     }
 
@@ -45,7 +46,7 @@ class LoginViewModel(
 
     private fun checkIfTextBoxesValid(){
         if(validationUseCase.checkIfLoginValid(state.value.login)
-            && validationUseCase.checkIfLoginPasswordValid(state.value.password)) {
+            && validationUseCase.checkIfPasswordValid(state.value.password)) {
             setState {
                 copy(
                     buttonEnabled = true
@@ -60,7 +61,7 @@ class LoginViewModel(
         }
     }
 
-    private fun signIn() {
+    private fun signIn(haptic: HapticFeedback) {
         val loginBody = LoginRequestBody(state.value.login, state.value.password)
 
         viewModelScope.launch(Dispatchers.IO) {
@@ -68,9 +69,10 @@ class LoginViewModel(
                 .collect { result ->
                     result.onSuccess {
                         TokenManager(context).saveToken(it.token)
-                        setState { copy(isTriedToSignIn = true, isSuccess = true) }
+                        setState { copy(isSuccess = true) }
                     }.onFailure {
-                        setState { copy(isTriedToSignIn = true, isSuccess = false) }
+                        setState { copy(isSuccess = false, errorMessage = "Неверный логин или пароль") }
+                        haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                     }
                 }
         }

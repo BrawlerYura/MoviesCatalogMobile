@@ -57,15 +57,6 @@ fun ProfileBox(
 @Composable
 private fun ProfileBoxPreview() {
     ProfileBox(
-        state = ProfileScreenContract.State(
-            id = "",
-            nickName = "BrawlerYura",
-            email = "my@email.com",
-            userIconUrl = null,
-            name = "",
-            gender = 0,
-            birthDate = "",
-            isSuccess = null
-        )
+        state = profileStatePreview
     )
 }

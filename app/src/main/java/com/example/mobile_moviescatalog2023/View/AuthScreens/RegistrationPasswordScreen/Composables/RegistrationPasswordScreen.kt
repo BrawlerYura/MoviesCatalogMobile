@@ -97,7 +97,7 @@ fun RegistrationPasswordScreen(
 
                 RepeatPasswordTextBox(state, onEventSent)
 
-                CompleteSignUpButton(state) { onEventSent(RegistrationPasswordContract.Event.SignUp) }
+                CompleteSignUpButton(state) { haptic -> onEventSent(RegistrationPasswordContract.Event.SignUp(haptic)) }
             }
             BottomRegistrationText { onNavigationRequested(RegistrationPasswordContract.Effect.Navigation.ToLogin) }
         }
@@ -112,17 +112,7 @@ fun RegistrationPasswordScreen(
 @Composable
 private fun RegistrationPasswordScreenPreview() {
     RegistrationPasswordScreen(
-        state = RegistrationPasswordContract.State (
-            password = "password",
-            repPassword = "password",
-            userName = "",
-            name = "",
-            email = "",
-            birthDate = "",
-            gender = 0,
-            isSuccess = null,
-            buttonEnabled = true
-        ),
+        state = repeatPasswordStatePreview,
         onEventSent = { },
         onNavigationRequested = { },
         registerRequestBody = RegisterRequestBody(
@@ -135,3 +125,17 @@ private fun RegistrationPasswordScreenPreview() {
         )
     )
 }
+
+val repeatPasswordStatePreview = RegistrationPasswordContract.State (
+    password = "password",
+    repPassword = "password",
+    userName = "Shomas Thelby",
+    name = "Cherry Tomatoes",
+    email = "sis.sas@gmail.com",
+    birthDate = "01.01.2001",
+    gender = 0,
+    isSuccess = true,
+    isPasswordValid = true,
+    isRepPasswordValid = true,
+    errorMessage = null
+)

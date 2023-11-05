@@ -19,6 +19,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
@@ -32,6 +33,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.mobile_moviescatalog2023.R
 import com.example.mobile_moviescatalog2023.View.AuthScreens.RegistrationPasswordScreen.RegistrationPasswordContract
+import com.example.mobile_moviescatalog2023.View.LoginScreens.RegistrationScreen.repeatPasswordStatePreview
 import com.example.mobile_moviescatalog2023.ui.theme.interFamily
 
 @Composable
@@ -59,7 +61,9 @@ fun PasswordTextBox(
             value = state.repPassword,
             keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Password),
             visualTransformation =  if (isTextHidden) PasswordVisualTransformation() else VisualTransformation.None,
+            isError = state.isSuccess == false,
             colors = OutlinedTextFieldDefaults.colors(
+                errorContainerColor = Color(0xFFE64646).copy(alpha = 0.1f)
             ),
             textStyle = TextStyle(
                 fontFamily = interFamily,
@@ -93,17 +97,7 @@ fun PasswordTextBox(
 @Composable
 private fun PasswordTextBoxPreview() {
     PasswordTextBox(
-        state = RegistrationPasswordContract.State (
-            password = "password",
-            repPassword = "password",
-            userName = "",
-            name = "",
-            email = "",
-            birthDate = "",
-            gender = 0,
-            isSuccess = null,
-            buttonEnabled = false
-        ),
+        state = repeatPasswordStatePreview,
         onEventSent = { }
     )
 }

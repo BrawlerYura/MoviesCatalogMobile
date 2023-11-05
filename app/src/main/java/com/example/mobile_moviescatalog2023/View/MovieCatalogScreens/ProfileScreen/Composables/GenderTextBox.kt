@@ -104,16 +104,7 @@ fun GenderTextBox(
 @Composable
 private fun GenderTextBoxPreview() {
     GenderTextBox(
-        state = ProfileScreenContract.State(
-            id = "",
-            nickName = null,
-            email = "my@email.com",
-            userIconUrl = null,
-            name = "my name",
-            gender = 0,
-            birthDate = "",
-            isSuccess = null
-        ),
+        state = profileStatePreview,
         onEventSent = { }
     )
 }

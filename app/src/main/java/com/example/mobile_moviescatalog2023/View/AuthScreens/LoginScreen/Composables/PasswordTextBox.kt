@@ -19,6 +19,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
@@ -56,7 +57,9 @@ fun PasswordTextBox(state: LoginContract.State, onEventSent: (event: LoginContra
             value = state.password,
             keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Password),
             visualTransformation =  if (isTextHidden) PasswordVisualTransformation() else VisualTransformation.None,
+            isError = state.isSuccess == false,
             colors = OutlinedTextFieldDefaults.colors(
+                errorContainerColor = Color(0xFFE64646).copy(alpha = 0.1f)
             ),
             textStyle = TextStyle(
                 fontFamily = interFamily,
@@ -83,6 +86,19 @@ fun PasswordTextBox(state: LoginContract.State, onEventSent: (event: LoginContra
             shape = RoundedCornerShape(10.dp),
             modifier = Modifier.fillMaxWidth()
         )
+
+        if(state.isSuccess == false) {
+            Text(
+                text = state.errorMessage ?: "",
+                style = TextStyle(
+                    fontFamily = interFamily,
+                    fontWeight = FontWeight.W400,
+                    fontSize = 14.sp,
+                    color = MaterialTheme.colorScheme.error
+                ),
+                modifier = Modifier.padding(top = 8.dp)
+            )
+        }
     }
 }
 
@@ -90,13 +106,7 @@ fun PasswordTextBox(state: LoginContract.State, onEventSent: (event: LoginContra
 @Composable
 private fun PasswordTextBoxPreview() {
     PasswordTextBox(
-        state = LoginContract.State (
-            login = "my login",
-            password = "password",
-            isTriedToSignIn = false,
-            isSuccess = false,
-            buttonEnabled = false
-        ),
+        state = loginStatePreview,
         onEventSent = {  }
     )
 }

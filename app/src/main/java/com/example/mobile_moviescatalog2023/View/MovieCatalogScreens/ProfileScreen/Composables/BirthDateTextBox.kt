@@ -15,6 +15,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextFieldDefaults
@@ -25,6 +26,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -68,7 +70,10 @@ fun BirthDateTextBox(
         val maxLength = 10
         OutlinedTextField(
             value = state.birthDate,
-            colors = TextFieldDefaults.outlinedTextFieldColors(),
+            isError = state.isSuccess == false,
+            colors = OutlinedTextFieldDefaults.colors(
+                errorContainerColor = Color(0xFFE64646).copy(alpha = 0.1f)
+            ),
             textStyle = TextStyle(
                 fontFamily = interFamily,
                 fontWeight = FontWeight.W400,
@@ -91,6 +96,19 @@ fun BirthDateTextBox(
             shape = RoundedCornerShape(10.dp),
             modifier = Modifier.fillMaxWidth()
         )
+
+        if(state.isSuccess == false) {
+            Text(
+                text = state.errorMessage ?: "",
+                style = TextStyle(
+                    fontFamily = interFamily,
+                    fontWeight = FontWeight.W400,
+                    fontSize = 14.sp,
+                    color = MaterialTheme.colorScheme.error
+                ),
+                modifier = Modifier.padding(top = 8.dp)
+            )
+        }
     }
 }
 
@@ -142,16 +160,7 @@ fun MyDatePicker(
 @Composable
 fun BirthDateTextBoxPreview() {
     BirthDateTextBox(
-        state = ProfileScreenContract.State(
-            id = "",
-            nickName = null,
-            email = "my@email.com",
-            userIconUrl = null,
-            name = "",
-            gender = 0,
-            birthDate = "30.07.2004",
-            isSuccess = null
-        ),
+        state = profileStatePreview,
         onEventSent = { }
     )
 }

@@ -15,6 +15,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -48,7 +49,9 @@ fun NameTextBox(
 
         OutlinedTextField(
             value = state.name,
+            isError = state.isSuccess == false,
             colors = OutlinedTextFieldDefaults.colors(
+                errorContainerColor = Color(0xFFE64646).copy(alpha = 0.1f)
             ),
             textStyle = TextStyle(
                 fontFamily = interFamily,
@@ -81,16 +84,7 @@ fun NameTextBox(
 @Composable
 private fun NameTextBoxPreview() {
     NameTextBox(
-        state = ProfileScreenContract.State(
-            id = "",
-            nickName = null,
-            email = "my@email.com",
-            userIconUrl = null,
-            name = "my name",
-            gender = 0,
-            birthDate = "",
-            isSuccess = null
-        ),
+        state = profileStatePreview,
         onEventSent = { }
     )
 }

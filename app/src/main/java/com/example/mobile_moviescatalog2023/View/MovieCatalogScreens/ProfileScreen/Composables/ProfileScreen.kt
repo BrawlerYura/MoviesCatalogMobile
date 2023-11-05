@@ -82,7 +82,7 @@ fun ProfileScreen(
                 NameTextBox(state, onEventSent)
                 GenderTextBox(state, onEventSent)
                 BirthDateTextBox(state, onEventSent)
-                SaveUserDetailsButton(onEventSent)
+                SaveUserDetailsButton(state, onEventSent)
                 CancellButton(onEventSent)
 
                 Text(
@@ -110,18 +110,23 @@ fun ProfileScreen(
 @Composable
 private fun ProfileScreenPreview() {
     ProfileScreen(
-        state = ProfileScreenContract.State(
-            id = "",
-            nickName = "BrawlerYura",
-            email = "my@email.com",
-            userIconUrl = null,
-            name = "my name",
-            gender = 0,
-            birthDate = "30.07.2004",
-            isSuccess = null
-        ),
+        state = profileStatePreview,
         onEventSent = { },
         onNavigationRequested = { },
         onBottomNavigationRequested = { }
     )
 }
+
+val profileStatePreview = ProfileScreenContract.State(
+    id = "",
+    nickName = "BrawlerYura",
+    email = "my@email.com",
+    userIconUrl = null,
+    name = "my name",
+    gender = 0,
+    birthDate = "30.07.2004",
+    isSuccess = null,
+    errorMessage = null,
+    profileModel = null,
+    isEnable = true
+)
