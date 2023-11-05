@@ -14,6 +14,8 @@ class LoginContract {
         class SavePasswordEvent(val password: String) : Event()
 
         class SignIn(val haptic: HapticFeedback) : Event()
+        object NavigationToRegistration : Event()
+        object NavigationBack : Event()
     }
 
     data class State(

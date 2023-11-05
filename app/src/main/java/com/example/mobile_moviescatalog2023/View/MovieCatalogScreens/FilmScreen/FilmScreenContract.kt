@@ -6,6 +6,7 @@ import com.example.mobile_moviescatalog2023.View.Base.ViewEvent
 import com.example.mobile_moviescatalog2023.View.Base.ViewSideEffect
 import com.example.mobile_moviescatalog2023.View.Base.ViewState
 import com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.MainScreen.Composables.FilmRating
+import com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.MainScreen.MainScreenContract
 
 class FilmScreenContract {
 
@@ -17,12 +18,19 @@ class FilmScreenContract {
         class SaveReviewRating(val rating: Int) : Event()
         class DeleteMyReview(val filmId: String, val reviewId: String) : Event()
         class AddMyReview(val reviewModifyModel: ReviewModifyModel, val filmId: String) : Event()
-        class EditMyReview(val reviewModifyModel: ReviewModifyModel, val filmId: String, val reviewId: String) : Event()
-        class SaveIsAnonymous(val isAnonymous: Boolean): Event()
+        class EditMyReview(
+            val reviewModifyModel: ReviewModifyModel,
+            val filmId: String,
+            val reviewId: String
+        ) : Event()
+
+        class SaveIsAnonymous(val isAnonymous: Boolean) : Event()
+        object NavigationBack : Event()
     }
 
     data class State(
-        val isSuccess: Boolean?,
+        val isLoaded: Boolean,
+        val isLoading: Boolean,
         val movieDetails: MovieDetailsModel,
         val isAddingSuccess: Boolean?,
         val isDeletingSuccess: Boolean?,

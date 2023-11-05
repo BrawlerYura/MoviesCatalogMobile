@@ -11,23 +11,21 @@ import org.koin.androidx.compose.getViewModel
 
 @Composable
 fun ProfileScreenDestination(
-    navController: NavHostController,
-    onBottomNavigationRequested: (navigationEffect: MovieNavigationContract.Effect.Navigation) -> Unit
+    navController: NavHostController
     ) {
     val viewModel = getViewModel<ProfileScreenViewModel>()
     ProfileScreen(
         state = viewModel.state.value,
         onEventSent = { event ->  viewModel.setEvent(event) },
+        effectFlow = viewModel.effect,
         onNavigationRequested = { navigationEffect ->
             when (navigationEffect) {
-                is ProfileScreenContract.Effect.Navigation.ToFilm -> { }
-
                 is ProfileScreenContract.Effect.Navigation.ToFavorite -> {
                     navController.navigate(Screen.Favorite.route)
                 }
 
-                is ProfileScreenContract.Effect.Navigation.ToProfile -> {
-                    navController.navigate(Screen.Profile.route)
+                is ProfileScreenContract.Effect.Navigation.ToMain -> {
+                    navController.navigate(Screen.Main.route)
                 }
 
                 is ProfileScreenContract.Effect.Navigation.ToIntroducing -> {
@@ -38,7 +36,6 @@ fun ProfileScreenDestination(
                     }
                 }
             }
-        },
-        onBottomNavigationRequested
+        }
     )
 }

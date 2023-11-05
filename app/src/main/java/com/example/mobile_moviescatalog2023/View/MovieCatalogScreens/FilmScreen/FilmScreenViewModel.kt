@@ -28,26 +28,27 @@ class FilmScreenViewModel(
     private val addReviewUseCase: AddReviewUseCase,
     private val putReviewUseCase: PutReviewUseCase,
     private val formatDateUseCase: FormatDateUseCase
-): BaseViewModel<FilmScreenContract.Event, FilmScreenContract.State, FilmScreenContract.Effect>() {
+) : BaseViewModel<FilmScreenContract.Event, FilmScreenContract.State, FilmScreenContract.Effect>() {
 
     override fun setInitialState() = FilmScreenContract.State(
-        isSuccess = null,
+        isLoaded = false,
+        isLoading = false,
         movieDetails = MovieDetailsModel(
-                id = "",
-                name = null,
-                poster = null,
-                year = 0,
-                country = null,
-                genres = null,
-                reviews = null,
-                time = 0,
-                tagline = null,
-                description = null,
-                director = null,
-                budget = null,
-                fees = null,
-                ageLimit = 0
-                ),
+            id = "",
+            name = null,
+            poster = null,
+            year = 0,
+            country = null,
+            genres = null,
+            reviews = null,
+            time = 0,
+            tagline = null,
+            description = null,
+            director = null,
+            budget = null,
+            fees = null,
+            ageLimit = 0
+        ),
         isAddingSuccess = null,
         isDeletingSuccess = null,
         isMyFavorite = false,
@@ -59,7 +60,7 @@ class FilmScreenViewModel(
     )
 
     override fun handleEvents(event: FilmScreenContract.Event) {
-        when(event) {
+        when (event) {
             is FilmScreenContract.Event.LoadFilmDetails -> loadFilmDetails(id = event.id)
             is FilmScreenContract.Event.AddToFavorite -> addToFavorite(id = event.id)
             is FilmScreenContract.Event.DeleteFavorite -> deleteFavorite(id = event.id)
@@ -67,27 +68,34 @@ class FilmScreenViewModel(
             is FilmScreenContract.Event.SaveReviewRating -> saveReviewRating(rating = event.rating)
             is FilmScreenContract.Event.DeleteMyReview ->
                 deleteMyReview(filmId = event.filmId, reviewId = event.reviewId)
+
             is FilmScreenContract.Event.AddMyReview ->
                 addMyReview(reviewModifyModel = event.reviewModifyModel, filmId = event.filmId)
+
             is FilmScreenContract.Event.EditMyReview ->
                 editMyReview(
                     reviewModifyModel = event.reviewModifyModel,
                     filmId = event.filmId,
                     reviewId = event.reviewId
                 )
+
             is FilmScreenContract.Event.SaveIsAnonymous ->
                 saveIsAnonymous(isAnonymous = event.isAnonymous)
+            is FilmScreenContract.Event.NavigationBack -> setEffect {
+                FilmScreenContract.Effect.Navigation.Back
+            }
         }
     }
 
     private fun loadFilmDetails(id: String) {
+        setState { copy(isLoading = true) }
         viewModelScope.launch(Dispatchers.IO) {
             getFilmDetailsUseCase.invoke(id)
                 .collect { result ->
                     result.onSuccess {
                         setState {
                             copy(
-                                isSuccess = true,
+                                isLoaded = true,
                                 movieDetails = formatDateUseCase.formatCreateDateTime(it),
                                 currentFilmRating = calculateFilmRating(it.reviews)
                             )
@@ -97,7 +105,7 @@ class FilmScreenViewModel(
                     }.onFailure {
                         setState {
                             copy(
-                                isSuccess = false
+                                isLoaded = false
                             )
                         }
                     }
@@ -107,10 +115,17 @@ class FilmScreenViewModel(
 
     private fun checkIfWithMyReview(it: MovieDetailsModel) {
         it.reviews?.forEach {
-            if(
-                try { it.author.userId == Network.userId }
-                catch (e: Exception) { false }
-                ) {
+            if (
+                if (it.author != null) {
+                    try {
+                        it.author.userId == Network.userId
+                    } catch (e: Exception) {
+                        false
+                    }
+                } else {
+                    false
+                }
+            ) {
                 setState {
                     copy(
                         isWithMyReview = true
@@ -164,14 +179,14 @@ class FilmScreenViewModel(
         }
     }
 
-    private fun checkIfFavorite(id: String){
+    private fun checkIfFavorite(id: String) {
         viewModelScope.launch(Dispatchers.IO) {
             getFavoriteMoviesUseCase.invoke()
                 .collect { result ->
                     result.onSuccess {
-                        if(it.movies != null) {
+                        if (it.movies != null) {
                             it.movies.forEach {
-                                if(id == it.id) {
+                                if (id == it.id) {
                                     setState {
                                         copy(
                                             isMyFavorite = true
@@ -236,7 +251,12 @@ class FilmScreenViewModel(
                 }
         }
     }
-    private fun editMyReview(reviewModifyModel: ReviewModifyModel, filmId: String, reviewId: String) {
+
+    private fun editMyReview(
+        reviewModifyModel: ReviewModifyModel,
+        filmId: String,
+        reviewId: String
+    ) {
         viewModelScope.launch(Dispatchers.IO) {
             putReviewUseCase.invoke(reviewModifyModel, filmId, reviewId)
                 .collect { result ->
@@ -250,7 +270,7 @@ class FilmScreenViewModel(
     }
 
     private fun calculateFilmRating(reviews: List<ReviewModel>?): FilmRating? {
-        if(reviews == null) {
+        if (reviews == null) {
             return null
         } else {
 
@@ -265,27 +285,34 @@ class FilmScreenViewModel(
                 rating >= 0.0 && rating < 3.0 -> {
                     Color(0xFFE64646)
                 }
+
                 rating >= 3.0 && rating < 4.0 -> {
                     Color(0xFFF05C44)
                 }
+
                 rating >= 4.0 && rating < 5.0 -> {
                     Color(0xFFFFA000)
                 }
+
                 rating >= 5.0 && rating < 7.0 -> {
                     Color(0xFFFFD54F)
                 }
+
                 rating >= 7.0 && rating < 9.0 -> {
                     Color(0xFFA3CD4A)
                 }
+
                 else -> {
                     Color(0xFF4BB34B)
                 }
             }
 
             return FilmRating(
-                rating = if (rating != 10.0)
-                { rating.toString().substring(startIndex = 0, endIndex = 3) }
-                else { rating.toString().substring(startIndex = 0, endIndex = 4) },
+                rating = if (rating != 10.0) {
+                    rating.toString().substring(startIndex = 0, endIndex = 3)
+                } else {
+                    rating.toString().substring(startIndex = 0, endIndex = 4)
+                },
                 color = color
             )
         }

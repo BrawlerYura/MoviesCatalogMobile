@@ -10,7 +10,10 @@ import com.example.mobile_moviescatalog2023.domain.Entities.Models.ThreeFavorite
 class FavoriteScreenContract {
 
     sealed class Event : ViewEvent {
-        object GetFavoriteMovies: Event()
+        object GetFavoriteMovies : Event()
+        object NavigationToMain : Event()
+        object NavigationToProfile : Event()
+        class NavigationToFilm(val id: String) : Event()
     }
 
     data class State(
@@ -21,6 +24,8 @@ class FavoriteScreenContract {
     sealed class Effect : ViewSideEffect {
         sealed class Navigation : Effect() {
             class ToFilm(val id: String) : Navigation()
+            object ToMain : Navigation()
+            object ToProfile : Navigation()
         }
     }
 }

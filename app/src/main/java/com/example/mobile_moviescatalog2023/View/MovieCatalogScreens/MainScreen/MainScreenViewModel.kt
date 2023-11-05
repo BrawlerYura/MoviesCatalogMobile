@@ -1,9 +1,7 @@
 package com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.MainScreen
 
-import android.util.Log
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.viewModelScope
-import com.example.mobile_moviescatalog2023.domain.Entities.Models.MovieElementModel
 import com.example.mobile_moviescatalog2023.domain.Entities.Models.MoviesModel
 import com.example.mobile_moviescatalog2023.domain.Entities.Models.ReviewModel
 import com.example.mobile_moviescatalog2023.domain.Entities.Models.ReviewShortModel
@@ -22,6 +20,10 @@ class MainScreenViewModel(
     private val getMyIdUseCase: GetMyIdUseCase,
 ): BaseViewModel<MainScreenContract.Event, MainScreenContract.State, MainScreenContract.Effect>() {
 
+    init {
+        getMovies()
+    }
+
     override fun setInitialState() = MainScreenContract.State(
         currentMoviePage = 1,
         isRequestingMoviePage = true,
@@ -37,6 +39,15 @@ class MainScreenViewModel(
         when (event) {
             is MainScreenContract.Event.UpdateMoviesList -> updateMoviesList()
             is MainScreenContract.Event.GetMovies -> getMovies()
+            is MainScreenContract.Event.NavigationToFilm -> setEffect {
+                MainScreenContract.Effect.Navigation.ToFilm(id = event.id)
+            }
+            is MainScreenContract.Event.NavigationToProfile -> setEffect {
+                MainScreenContract.Effect.Navigation.ToProfile
+            }
+            is MainScreenContract.Event.NavigationToFavorite -> setEffect {
+                MainScreenContract.Effect.Navigation.ToFavorite
+            }
         }
     }
 
@@ -70,8 +81,8 @@ class MainScreenViewModel(
                 }
         }
     }
-    private fun getMovies()
-    {
+
+    private fun getMovies() {
         setState {
             copy(
                 isUpdatingList = true
@@ -81,15 +92,17 @@ class MainScreenViewModel(
             getMoviesUseCase.invoke(1)
                 .collect { result ->
                     result.onSuccess {
-                        setState { copy(
-                            isRequestingMoviePage = false,
-                            isSuccess = true,
-                            movieCarouselList = it.movies.take(4),
-                            movieList = it.movies.drop(4),
-                            currentMoviePage = state.value.currentMoviePage + 1,
-                            pageCount = it.pageInfo.pageCount,
-                            isUpdatingList = false
-                        ) }
+                        setState {
+                            copy(
+                                isRequestingMoviePage = false,
+                                isSuccess = true,
+                                movieCarouselList = it.movies.take(4),
+                                movieList = it.movies.drop(4),
+                                currentMoviePage = state.value.currentMoviePage + 1,
+                                pageCount = it.pageInfo.pageCount,
+                                isUpdatingList = false
+                            )
+                        }
                         getMyId()
                         state.value.movieList.forEach {
                             setState {
@@ -99,14 +112,19 @@ class MainScreenViewModel(
                             }
                         }
                     }.onFailure {
-                        setState { copy(isRequestingMoviePage = true, isSuccess = false, isUpdatingList = false) }
+                        setState {
+                            copy(
+                                isRequestingMoviePage = true,
+                                isSuccess = false,
+                                isUpdatingList = false
+                            )
+                        }
                     }
                 }
         }
     }
 
-    private suspend fun getMyId()
-    {
+    private suspend fun getMyId() {
         getMyIdUseCase.invoke()
             .collect { result ->
                 result.onSuccess {
@@ -118,7 +136,7 @@ class MainScreenViewModel(
     }
 
     private fun calculateFilmRating(reviews: List<ReviewShortModel>?): FilmRating? {
-        if(reviews == null) {
+        if (reviews == null) {
             return null
         } else {
 
@@ -133,27 +151,34 @@ class MainScreenViewModel(
                 rating >= 0.0 && rating < 3.0 -> {
                     Color(0xFFE64646)
                 }
+
                 rating >= 3.0 && rating < 4.0 -> {
                     Color(0xFFF05C44)
                 }
+
                 rating >= 4.0 && rating < 5.0 -> {
                     Color(0xFFFFA000)
                 }
+
                 rating >= 5.0 && rating < 7.0 -> {
                     Color(0xFFFFD54F)
                 }
+
                 rating >= 7.0 && rating < 9.0 -> {
                     Color(0xFFA3CD4A)
                 }
+
                 else -> {
                     Color(0xFF4BB34B)
                 }
             }
 
             return FilmRating(
-                rating = if (rating != 10.0)
-                { rating.toString().substring(startIndex = 0, endIndex = 3) }
-                else { rating.toString().substring(startIndex = 0, endIndex = 4) },
+                rating = if (rating != 10.0) {
+                    rating.toString().substring(startIndex = 0, endIndex = 3)
+                } else {
+                    rating.toString().substring(startIndex = 0, endIndex = 4)
+                },
                 color = color
             )
         }

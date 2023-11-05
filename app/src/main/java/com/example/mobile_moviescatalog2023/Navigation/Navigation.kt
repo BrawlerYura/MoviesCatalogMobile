@@ -20,22 +20,7 @@ fun Navigation() {
     {
         NavGraphAuth(navController)
         NavGraphMovie(
-            navController,
-            onNavigationRequested = { navigationEffect ->
-            when (navigationEffect) {
-                is MovieNavigationContract.Effect.Navigation.ToFavorite -> {
-                    navController.navigate(Screen.Favorite.route)
-                }
-
-                is MovieNavigationContract.Effect.Navigation.ToProfile -> {
-                    navController.navigate(Screen.Profile.route)
-                }
-
-                is MovieNavigationContract.Effect.Navigation.ToMain -> {
-                    navController.navigate(Screen.Main.route)
-                }
-            }
-        }
+            navController
         )
     }
 }

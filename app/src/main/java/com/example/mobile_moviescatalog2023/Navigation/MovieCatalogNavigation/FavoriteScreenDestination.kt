@@ -6,25 +6,33 @@ import com.example.mobile_moviescatalog2023.Navigation.Screen
 import com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.FavoriteScreen.Composables.FavoriteScreen
 import com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.FavoriteScreen.FavoriteScreenContract
 import com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.FavoriteScreen.FavoriteScreenViewModel
+import com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.MainScreen.MainScreenContract
 import com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.MainScreen.MovieNavigationContract
 import org.koin.androidx.compose.getViewModel
 
 @Composable
 fun FavoriteScreenDestination(
-    navController: NavHostController,
-    onBottomNavigationRequested: (navigationEffect: MovieNavigationContract.Effect.Navigation) -> Unit
+    navController: NavHostController
     ) {
     val viewModel = getViewModel<FavoriteScreenViewModel>()
     FavoriteScreen(
         state = viewModel.state.value,
         onEventSent = { event ->  viewModel.setEvent(event) },
+        effectFlow = viewModel.effect,
         onNavigationRequested = { navigationEffect ->
             when (navigationEffect) {
                 is FavoriteScreenContract.Effect.Navigation.ToFilm -> {
                     navController.navigate(Screen.Film.route + "/${navigationEffect.id}")
                 }
+
+                is FavoriteScreenContract.Effect.Navigation.ToProfile -> {
+                    navController.navigate(Screen.Profile.route)
+                }
+
+                is FavoriteScreenContract.Effect.Navigation.ToMain -> {
+                    navController.navigate(Screen.Main.route)
+                }
             }
-        },
-        onBottomNavigationRequested
+        }
     )
 }

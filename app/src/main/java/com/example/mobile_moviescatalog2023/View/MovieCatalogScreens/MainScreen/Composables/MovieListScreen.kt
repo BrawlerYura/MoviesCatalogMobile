@@ -23,8 +23,8 @@ import com.example.mobile_moviescatalog2023.ui.theme.interFamily
 @Composable
 fun MovieListScreen(
     state: MainScreenContract.State,
-    onEventSent: (event: MainScreenContract.Event) -> Unit,
-    onNavigationRequested: (navigationEffect: MainScreenContract.Effect.Navigation) -> Unit
+    onUpdateListRequested: () -> Unit,
+    onNavigationRequested: (id: String) -> Unit
 ) {
     val lazyListState = rememberLazyListState()
 
@@ -33,7 +33,7 @@ fun MovieListScreen(
         (state.currentMoviePage - 1 < state.pageCount) &&
         !state.isUpdatingList
     ) {
-        onEventSent(MainScreenContract.Event.UpdateMoviesList)
+        onUpdateListRequested()
     }
 
     LazyColumn(
@@ -72,19 +72,8 @@ fun MovieListScreen(
 @Composable
 private fun MovieListScreenPreview() {
     MovieListScreen(
-        state = MainScreenContract.State (
-            currentMoviePage = 1,
-            isRequestingMoviePage = true,
-            movieList = listOf(
-
-            ),
-            movieCarouselList = listOf(),
-            isSuccess = false,
-            pageCount = 1,
-            isUpdatingList = false,
-            filmRatingsList = listOf()
-        ),
-        onEventSent = { },
+        state = mainStatePreview,
+        onUpdateListRequested = { },
         onNavigationRequested = { }
     )
 }

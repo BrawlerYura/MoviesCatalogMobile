@@ -14,6 +14,7 @@ fun SplashScreenDestination(navController: NavHostController) {
     SplashScreen(
         state = viewModel.state.value,
         onEventSent = { event ->  viewModel.setEvent(event) },
+        effectFlow = viewModel.effect,
         onNavigationRequested = { navigationEffect ->
             when (navigationEffect) {
                 is SplashContract.Effect.Navigation.ToIntroducingScreen -> {

@@ -40,13 +40,13 @@ import com.example.mobile_moviescatalog2023.ui.theme.interFamily
 fun FilmCard(
     item: MovieElementModel,
     filmRating: FilmRating?,
-    onNavigationRequested: (navigationEffect: MainScreenContract.Effect.Navigation) -> Unit
+    onNavigationRequested: (id: String) -> Unit
 ) {
     Row(
         modifier = Modifier
             .padding(bottom = 16.dp, start = 16.dp, end = 16.dp).fillMaxWidth().height(130.dp)
             .clickable {
-                onNavigationRequested(MainScreenContract.Effect.Navigation.ToFilm(item.id))
+                onNavigationRequested(item.id)
             }
     ) {
         Box(modifier = Modifier.fillMaxHeight().width(95.dp)) {
@@ -220,6 +220,7 @@ private fun FilmCardPreview() {
             genres = genres,
             reviews = reviews,
         )
+
     FilmCard(
         item =  movieElementModel,
         filmRating = FilmRating(

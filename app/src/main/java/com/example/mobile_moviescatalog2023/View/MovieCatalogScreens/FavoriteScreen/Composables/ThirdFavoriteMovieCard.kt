@@ -29,12 +29,12 @@ import com.example.mobile_moviescatalog2023.ui.theme.interFamily
 @Composable
 fun ThirdFavoriteMovieCard(
     item: MovieElementModel,
-    onNavigationRequested: (navigationEffect: FavoriteScreenContract.Effect.Navigation) -> Unit
+    onNavigationRequested: (id: String) -> Unit
 ) {
     Column(
         verticalArrangement = Arrangement.Absolute.spacedBy(5.dp),
         modifier = Modifier.clickable {
-            onNavigationRequested(FavoriteScreenContract.Effect.Navigation.ToFilm(item.id))
+            onNavigationRequested(item.id)
         }
             .fillMaxWidth()
             .padding(horizontal = 16.dp)

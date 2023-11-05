@@ -24,18 +24,33 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.mobile_moviescatalog2023.R
 import com.example.mobile_moviescatalog2023.View.AuthScreens.LoginScreen.LoginContract
+import com.example.mobile_moviescatalog2023.View.Base.SIDE_EFFECTS_KEY
 import com.example.mobile_moviescatalog2023.ui.theme.FilmusTheme
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
 @Composable
 fun SplashScreen(
     state: SplashContract.State,
     onEventSent: (event: SplashContract.Event) -> Unit,
+    effectFlow: Flow<SplashContract.Effect>?,
     onNavigationRequested: (navigationEffect: SplashContract.Effect.Navigation) -> Unit
 ) {
+
+    LaunchedEffect(SIDE_EFFECTS_KEY) {
+        effectFlow?.onEach { effect ->
+            when (effect) {
+                is SplashContract.Effect.Navigation.ToMain -> onNavigationRequested(effect)
+                is SplashContract.Effect.Navigation.ToIntroducingScreen -> onNavigationRequested(effect)
+            }
+        }?.collect()
+    }
+
     FilmusTheme {
         Box(modifier = Modifier.fillMaxSize().background(Color.Black)) {
             Image(
@@ -51,27 +66,9 @@ fun SplashScreen(
             )
         }
 
-        val systemUiController = rememberSystemUiController()
-        val statusBarColor = MaterialTheme.colorScheme.background
-        val navigationBarColor = Color(0xFF161616)
-
-        DisposableEffect(statusBarColor, navigationBarColor) {
-            systemUiController.setStatusBarColor(Color.Black)
-            systemUiController.setNavigationBarColor(Color.Black)
-            onDispose {
-                systemUiController.setStatusBarColor(statusBarColor)
-                systemUiController.setNavigationBarColor(navigationBarColor)
-            }
-        }
-
-        LaunchedEffect(Unit) {
-            onEventSent(SplashContract.Event.GetToken)
-        }
-
-        if(!state.isTryingGetToken and state.isSuccessGetToken) {
-            onNavigationRequested(SplashContract.Effect.Navigation.ToMain)
-        } else if(!state.isTryingGetToken and !state.isSuccessGetToken) {
-            onNavigationRequested(SplashContract.Effect.Navigation.ToIntroducingScreen)
+        when {
+            state.isSuccessGetToken -> onEventSent(SplashContract.Event.OnTokenLoadedSuccess)
+            state.isError -> onEventSent(SplashContract.Event.OnTokenLoadedFailed)
         }
     }
 }
@@ -81,10 +78,11 @@ fun SplashScreen(
 private fun SplashScreenPreview() {
     SplashScreen(
         state = SplashContract.State (
-            isTryingGetToken = true,
-            isSuccessGetToken = false
+            isSuccessGetToken = false,
+            isError = false
         ),
         onEventSent = { },
+        effectFlow = null,
         onNavigationRequested = { }
     )
 }

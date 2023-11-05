@@ -24,6 +24,9 @@ class ProfileScreenContract {
         class PutNewUserDetails(val haptic: HapticFeedback) : Event()
         object LoadUserDetails : Event()
         object Logout : Event()
+        object NavigationToMain : Event()
+        object NavigationToFavorite : Event()
+        object NavigationToIntroducing : Event()
     }
 
     data class State(
@@ -43,9 +46,8 @@ class ProfileScreenContract {
     sealed class Effect : ViewSideEffect {
         sealed class Navigation : Effect() {
             object ToIntroducing : Navigation()
-            object ToFilm : Navigation()
             object ToFavorite : Navigation()
-            object ToProfile : Navigation()
+            object ToMain : Navigation()
         }
     }
 }

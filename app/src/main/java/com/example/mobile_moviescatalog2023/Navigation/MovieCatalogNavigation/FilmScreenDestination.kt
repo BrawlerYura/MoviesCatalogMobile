@@ -16,6 +16,7 @@ fun FilmScreenDestination(
     FilmScreen(
         state = viewModel.state.value,
         onEventSent = { event ->  viewModel.setEvent(event) },
+        effectFlow = viewModel.effect,
         onNavigationRequested = { navigationEffect ->
             when (navigationEffect) {
                 is FilmScreenContract.Effect.Navigation.Back -> {

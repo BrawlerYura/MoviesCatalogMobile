@@ -58,7 +58,7 @@ fun CurrentReviewHeader(
             horizontalArrangement = Arrangement.Absolute.spacedBy(10.dp)
         ) {
             AsyncImage(
-                model = if(!it.isAnonymous || isMyReview) {
+                model = if((!it.isAnonymous || isMyReview) && it.author != null) {
                     it.author.avatar ?: R.drawable.logo
                 } else {
                     R.drawable.logo
@@ -74,7 +74,7 @@ fun CurrentReviewHeader(
                     modifier = Modifier.align(Alignment.TopStart).padding(end = 100.dp)
                 ) {
                     Text(
-                        text = if(!it.isAnonymous || isMyReview) {
+                        text = if((!it.isAnonymous || isMyReview) && it.author != null) {
                             it.author.nickName ?: ""
                         } else {
                             stringResource(R.string.anonymous_name)

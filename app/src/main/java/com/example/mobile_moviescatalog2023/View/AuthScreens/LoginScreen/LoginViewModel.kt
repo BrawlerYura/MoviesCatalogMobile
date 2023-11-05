@@ -10,6 +10,7 @@ import com.example.mobile_moviescatalog2023.View.Base.BaseViewModel
 import com.example.mobile_moviescatalog2023.domain.UseCases.AuthUseCases.LoginUseCase
 import com.example.mobile_moviescatalog2023.domain.UseCases.ValidationUseCase
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 
 class LoginViewModel(
@@ -31,6 +32,8 @@ class LoginViewModel(
             is LoginContract.Event.SaveLoginEvent -> saveLogin(login = event.login)
             is LoginContract.Event.SavePasswordEvent -> savePassword(password = event.password)
             is LoginContract.Event.SignIn -> signIn(haptic = event.haptic)
+            is LoginContract.Event.NavigationToRegistration -> setEffect { LoginContract.Effect.Navigation.ToRegistration }
+            is LoginContract.Event.NavigationBack -> setEffect { LoginContract.Effect.Navigation.Back }
         }
     }
 
@@ -70,6 +73,9 @@ class LoginViewModel(
                     result.onSuccess {
                         TokenManager(context).saveToken(it.token)
                         setState { copy(isSuccess = true) }
+                        MainScope().launch {
+                            setEffect { LoginContract.Effect.Navigation.ToMain }
+                        }
                     }.onFailure {
                         setState { copy(isSuccess = false, errorMessage = "Неверный логин или пароль") }
                         haptic.performHapticFeedback(HapticFeedbackType.LongPress)

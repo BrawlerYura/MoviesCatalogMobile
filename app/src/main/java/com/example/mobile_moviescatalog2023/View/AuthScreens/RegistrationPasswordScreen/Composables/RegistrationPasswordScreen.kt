@@ -46,22 +46,39 @@ import androidx.compose.ui.unit.sp
 import com.example.mobile_moviescatalog2023.domain.Entities.RequestBodies.RegisterRequestBody
 import com.example.mobile_moviescatalog2023.R
 import com.example.mobile_moviescatalog2023.View.AuthScreens.LoginScreen.Composables.LoginHeader
+import com.example.mobile_moviescatalog2023.View.AuthScreens.LoginScreen.LoginContract
 import com.example.mobile_moviescatalog2023.View.AuthScreens.RegistrationPasswordScreen.Composables.BottomRegistrationText
 import com.example.mobile_moviescatalog2023.View.AuthScreens.RegistrationPasswordScreen.Composables.CompleteSignUpButton
 import com.example.mobile_moviescatalog2023.View.AuthScreens.RegistrationPasswordScreen.Composables.PasswordTextBox
 import com.example.mobile_moviescatalog2023.View.AuthScreens.RegistrationPasswordScreen.Composables.RepeatPasswordTextBox
 import com.example.mobile_moviescatalog2023.View.AuthScreens.RegistrationPasswordScreen.RegistrationPasswordContract
+import com.example.mobile_moviescatalog2023.View.Base.SIDE_EFFECTS_KEY
 import com.example.mobile_moviescatalog2023.ui.theme.FilmusTheme
 import com.example.mobile_moviescatalog2023.ui.theme.interFamily
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.onEach
 
 @Composable
 fun RegistrationPasswordScreen(
     state: RegistrationPasswordContract.State,
     onEventSent: (event: RegistrationPasswordContract.Event) -> Unit,
+    effectFlow: Flow<RegistrationPasswordContract.Effect>?,
     onNavigationRequested: (navigation: RegistrationPasswordContract.Effect.Navigation) -> Unit,
     registerRequestBody: RegisterRequestBody
 ) {
-    LaunchedEffect(true) {
+
+    LaunchedEffect(SIDE_EFFECTS_KEY) {
+        effectFlow?.onEach { effect ->
+            when (effect) {
+                is RegistrationPasswordContract.Effect.Navigation.ToMain -> onNavigationRequested(effect)
+                is RegistrationPasswordContract.Effect.Navigation.ToLogin -> onNavigationRequested(effect)
+                is RegistrationPasswordContract.Effect.Navigation.Back -> onNavigationRequested(effect)
+            }
+        }?.collect()
+    }
+
+    if(!state.isBodyLoaded) {
         onEventSent(RegistrationPasswordContract.Event.LoadRegisterRequestBody(registerRequestBody))
     }
 
@@ -80,7 +97,7 @@ fun RegistrationPasswordScreen(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
 
-                LoginHeader { onNavigationRequested(RegistrationPasswordContract.Effect.Navigation.Back) }
+                LoginHeader { onEventSent(RegistrationPasswordContract.Event.NavigationBack) }
 
                 Text(
                     text = stringResource(R.string.registration_button),
@@ -99,11 +116,7 @@ fun RegistrationPasswordScreen(
 
                 CompleteSignUpButton(state) { haptic -> onEventSent(RegistrationPasswordContract.Event.SignUp(haptic)) }
             }
-            BottomRegistrationText { onNavigationRequested(RegistrationPasswordContract.Effect.Navigation.ToLogin) }
-        }
-
-        if(state.isSuccess == true) {
-            onNavigationRequested(RegistrationPasswordContract.Effect.Navigation.ToMain)
+            BottomRegistrationText { onEventSent(RegistrationPasswordContract.Event.NavigationToLogin) }
         }
     }
 }
@@ -114,6 +127,7 @@ private fun RegistrationPasswordScreenPreview() {
     RegistrationPasswordScreen(
         state = repeatPasswordStatePreview,
         onEventSent = { },
+        effectFlow = null,
         onNavigationRequested = { },
         registerRequestBody = RegisterRequestBody(
             userName = "",
@@ -137,5 +151,6 @@ val repeatPasswordStatePreview = RegistrationPasswordContract.State (
     isSuccess = true,
     isPasswordValid = true,
     isRepPasswordValid = true,
-    errorMessage = null
+    errorMessage = null,
+    isBodyLoaded = true
 )

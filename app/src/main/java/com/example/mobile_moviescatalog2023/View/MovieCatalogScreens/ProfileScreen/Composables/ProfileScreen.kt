@@ -43,29 +43,43 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.mobile_moviescatalog2023.R
+import com.example.mobile_moviescatalog2023.View.Base.SIDE_EFFECTS_KEY
 import com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.BottomNavigationBar
+import com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.MainScreen.MainScreenContract
 import com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.MainScreen.MovieNavigationContract
 import com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.ProfileScreen.ProfileScreenContract
 import com.example.mobile_moviescatalog2023.ui.theme.FilmusTheme
 import com.example.mobile_moviescatalog2023.ui.theme.interFamily
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.onEach
 
 @Composable
 fun ProfileScreen(
     state: ProfileScreenContract.State,
     onEventSent: (event: ProfileScreenContract.Event) -> Unit,
-    onNavigationRequested: (navigationEffect: ProfileScreenContract.Effect.Navigation) -> Unit,
-    onBottomNavigationRequested: (navigationEffect: MovieNavigationContract.Effect.Navigation) -> Unit
+    effectFlow: Flow<ProfileScreenContract.Effect>?,
+    onNavigationRequested: (navigationEffect: ProfileScreenContract.Effect.Navigation) -> Unit
 ) {
-    LaunchedEffect(true) {
-        onEventSent(ProfileScreenContract.Event.LoadUserDetails)
+
+    LaunchedEffect(SIDE_EFFECTS_KEY) {
+        effectFlow?.onEach { effect ->
+            when (effect) {
+                is ProfileScreenContract.Effect.Navigation.ToMain -> onNavigationRequested(effect)
+                is ProfileScreenContract.Effect.Navigation.ToFavorite -> onNavigationRequested(effect)
+                is ProfileScreenContract.Effect.Navigation.ToIntroducing -> onNavigationRequested(effect)
+            }
+        }?.collect()
     }
 
     FilmusTheme {
         Scaffold(
             bottomBar = {
                 BottomNavigationBar(
-                    onBottomNavigationRequested,
-                    2
+                    onNavigationToMainRequested = { onEventSent(ProfileScreenContract.Event.NavigationToMain) },
+                    onNavigationToProfileRequested = {  },
+                    onNavigationToFavoriteRequested = { onEventSent(ProfileScreenContract.Event.NavigationToFavorite) },
+                    currentScreen = 2
                 )
             }
         ) {
@@ -97,7 +111,6 @@ fun ProfileScreen(
                         .padding(top = 5.dp, bottom = 5.dp)
                         .clickable {
                             onEventSent(ProfileScreenContract.Event.Logout)
-                            onNavigationRequested(ProfileScreenContract.Effect.Navigation.ToIntroducing)
                         }
                         .align(Alignment.CenterHorizontally)
                 )
@@ -112,8 +125,8 @@ private fun ProfileScreenPreview() {
     ProfileScreen(
         state = profileStatePreview,
         onEventSent = { },
-        onNavigationRequested = { },
-        onBottomNavigationRequested = { }
+        effectFlow = null,
+        onNavigationRequested = { }
     )
 }
 

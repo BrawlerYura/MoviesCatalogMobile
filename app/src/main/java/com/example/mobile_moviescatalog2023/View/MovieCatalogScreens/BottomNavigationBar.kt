@@ -21,7 +21,9 @@ import com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.MainScreen.
 
 @Composable
 fun BottomNavigationBar(
-    onNavigationRequested: (navigationEffect: MovieNavigationContract.Effect.Navigation) -> Unit,
+    onNavigationToMainRequested: () -> Unit,
+    onNavigationToFavoriteRequested: () -> Unit,
+    onNavigationToProfileRequested: () -> Unit,
     currentScreen: Int
 ) {
     val screens = listOf(
@@ -44,19 +46,19 @@ fun BottomNavigationBar(
                         when (index) {
                             0 -> {
                                 if(currentScreen != 0){
-                                    onNavigationRequested(MovieNavigationContract.Effect.Navigation.ToMain)
+                                    onNavigationToMainRequested()
                                 }
                             }
 
                             1 -> {
                                 if(currentScreen != 1) {
-                                    onNavigationRequested(MovieNavigationContract.Effect.Navigation.ToFavorite)
+                                    onNavigationToFavoriteRequested()
                                 }
                             }
 
                             else -> {
                                 if(currentScreen != 2) {
-                                    onNavigationRequested(MovieNavigationContract.Effect.Navigation.ToProfile)
+                                    onNavigationToProfileRequested()
                                 }
                             }
                         }
@@ -102,7 +104,9 @@ fun BottomNavigationBar(
 @Composable
 private fun BottomNavigationBarPreview() {
     BottomNavigationBar(
-        onNavigationRequested = { },
+        onNavigationToMainRequested = { },
+        onNavigationToFavoriteRequested = { },
+        onNavigationToProfileRequested = { },
         currentScreen = 1
     )
 }

@@ -15,6 +15,7 @@ fun RegistrationPasswordScreenDestination(navController: NavHostController, regi
     RegistrationPasswordScreen(
         state = viewModel.state.value,
         onEventSent = { event ->  viewModel.setEvent(event) },
+        effectFlow = viewModel.effect,
         onNavigationRequested = { navigationEffect ->
             when (navigationEffect) {
                 is RegistrationPasswordContract.Effect.Navigation.ToMain -> {

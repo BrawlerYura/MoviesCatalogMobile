@@ -14,6 +14,7 @@ fun LoginScreenDestination(navController: NavHostController) {
     LoginScreen(
         state = viewModel.state.value,
         onEventSent = { event ->  viewModel.setEvent(event) },
+        effectFlow = viewModel.effect,
         onNavigationRequested =  { navigationEffect ->
             when (navigationEffect) {
                 is LoginContract.Effect.Navigation.ToMain -> {

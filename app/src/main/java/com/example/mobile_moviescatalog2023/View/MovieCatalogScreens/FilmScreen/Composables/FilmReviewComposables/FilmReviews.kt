@@ -40,8 +40,13 @@ fun FilmReviews(
             ) {
                 val isMyReview = remember {
                     mutableStateOf(
-                        try { it.author.userId == Network.userId }
-                        catch (e: Exception) {
+                        if(it.author != null) {
+                            try {
+                                it.author.userId == Network.userId
+                            } catch (e: Exception) {
+                                false
+                            }
+                        } else {
                             false
                         }
                     )

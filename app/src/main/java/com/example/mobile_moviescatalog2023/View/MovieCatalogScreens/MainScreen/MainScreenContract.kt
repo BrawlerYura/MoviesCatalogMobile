@@ -15,6 +15,9 @@ class MainScreenContract {
     sealed class Event : ViewEvent {
         object UpdateMoviesList : Event()
         object GetMovies : Event()
+        class NavigationToFilm(val id: String) : Event()
+        object NavigationToProfile : Event()
+        object NavigationToFavorite : Event()
     }
 
     data class State(
@@ -31,6 +34,8 @@ class MainScreenContract {
     sealed class Effect : ViewSideEffect {
         sealed class Navigation : Effect() {
             class ToFilm(val id: String) : Navigation()
+            object ToProfile : Navigation()
+            object ToFavorite : Navigation()
         }
     }
 }

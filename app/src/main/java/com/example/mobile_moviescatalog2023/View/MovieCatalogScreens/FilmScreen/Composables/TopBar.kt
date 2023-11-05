@@ -41,7 +41,7 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun TopBar(
-    onNavigationRequested: (navigationEffect: FilmScreenContract.Effect.Navigation) -> Unit,
+    onNavigationRequested: () -> Unit,
     showName: Boolean,
     state: FilmScreenContract.State,
     onEventSent: (FilmScreenContract.Event) -> Unit
@@ -53,7 +53,7 @@ fun TopBar(
             onClick = {
                 if (isClickable) {
                     isClickable = false
-                    onNavigationRequested(FilmScreenContract.Effect.Navigation.Back)
+                    onNavigationRequested()
                     CoroutineScope(Dispatchers.Main).launch {
                         delay(1000L)
                         isClickable = true

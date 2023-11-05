@@ -119,11 +119,11 @@ private fun RegistrationScreenPreview() {
 }
 
 val registrationStatePreview = RegistrationContract.State(
-    name = "my name",
-    gender = 1,
-    login = "my login",
-    email = "my@email.com",
-    birthDate = "30.07.2004",
+    login = "Shomas Thelby",
+    name = "Cherry Tomatoes",
+    email = "sis.sas@gmail.com",
+    birthDate = "01.01.2001",
+    gender = 0,
     apiBirthDate = "",
     isNameValid = false,
     isLoginValid = false,

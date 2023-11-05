@@ -9,11 +9,13 @@ class SplashContract {
 
     sealed class Event : ViewEvent {
         object GetToken : Event()
+        object OnTokenLoadedSuccess : Event()
+        object OnTokenLoadedFailed : Event()
     }
 
-    data class State(
-        val isTryingGetToken: Boolean,
-        val isSuccessGetToken: Boolean
+    data class State (
+        val isSuccessGetToken: Boolean,
+        val isError: Boolean
     ) : ViewState
 
     sealed class Effect : ViewSideEffect {

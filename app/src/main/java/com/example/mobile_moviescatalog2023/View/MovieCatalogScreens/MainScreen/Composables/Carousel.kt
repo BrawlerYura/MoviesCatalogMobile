@@ -35,7 +35,7 @@ import kotlinx.coroutines.delay
 @Composable
 fun Carousel(
     state: MainScreenContract.State,
-    onNavigationRequested: (navigationEffect: MainScreenContract.Effect.Navigation) -> Unit
+    onNavigationRequested: (id: String) -> Unit
 ) {
 
     val pagerState = rememberPagerState(initialPage = 0, pageCount = { state.movieCarouselList.size })
@@ -65,7 +65,7 @@ fun Carousel(
                 contentDescription = null,
                 modifier = Modifier.fillMaxSize()
                     .clickable {
-                        onNavigationRequested(MainScreenContract.Effect.Navigation.ToFilm(state.movieCarouselList[page].id))
+                        onNavigationRequested(state.movieCarouselList[page].id)
                     },
                 contentScale = ContentScale.Crop
             )

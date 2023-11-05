@@ -1,17 +1,9 @@
 package com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.ProfileScreen
 
-import android.annotation.SuppressLint
-import android.content.Context
-import android.util.Log
 import androidx.compose.ui.hapticfeedback.HapticFeedback
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.lifecycle.viewModelScope
-import com.example.mobile_moviescatalog2023.Network.Auth.AuthRepository
 import com.example.mobile_moviescatalog2023.domain.Entities.Models.ProfileModel
-import com.example.mobile_moviescatalog2023.Network.Network
-import com.example.mobile_moviescatalog2023.Network.User.UserRepository
-import com.example.mobile_moviescatalog2023.TokenManager.TokenManager
-import com.example.mobile_moviescatalog2023.View.AuthScreens.LoginScreen.LoginContract
 import com.example.mobile_moviescatalog2023.View.Base.BaseViewModel
 import com.example.mobile_moviescatalog2023.domain.UseCases.FormatDateUseCase
 import com.example.mobile_moviescatalog2023.domain.UseCases.UserUseCases.GetProfileUseCase
@@ -19,12 +11,8 @@ import com.example.mobile_moviescatalog2023.domain.UseCases.UserUseCases.LogoutU
 import com.example.mobile_moviescatalog2023.domain.UseCases.UserUseCases.PutProfileUseCase
 import com.example.mobile_moviescatalog2023.domain.UseCases.ValidationUseCase
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.TimeZone
 
 class ProfileScreenViewModel(
     private val getProfileUseCase: GetProfileUseCase,
@@ -33,6 +21,9 @@ class ProfileScreenViewModel(
     private val formatDateUseCase: FormatDateUseCase,
     private val validationUseCase: ValidationUseCase
 ) : BaseViewModel<ProfileScreenContract.Event, ProfileScreenContract.State, ProfileScreenContract.Effect>() {
+
+    init { loadUserDetails() }
+
     override fun setInitialState() = ProfileScreenContract.State(
         id = "",
         nickName = null,
@@ -61,6 +52,9 @@ class ProfileScreenViewModel(
             is ProfileScreenContract.Event.PutNewUserDetails -> putUserDetails(haptic = event.haptic)
             is ProfileScreenContract.Event.LoadUserDetails -> loadUserDetails()
             is ProfileScreenContract.Event.Logout -> logout()
+            is ProfileScreenContract.Event.NavigationToMain -> setEffect { ProfileScreenContract.Effect.Navigation.ToMain }
+            is ProfileScreenContract.Event.NavigationToFavorite -> setEffect { ProfileScreenContract.Effect.Navigation.ToFavorite }
+            is ProfileScreenContract.Event.NavigationToIntroducing -> setEffect { ProfileScreenContract.Effect.Navigation.ToIntroducing }
         }
     }
 
@@ -187,6 +181,9 @@ class ProfileScreenViewModel(
     private fun logout() {
         viewModelScope.launch(Dispatchers.IO) {
             logoutUseCase.invoke()
+            MainScope().launch {
+                setEffect { ProfileScreenContract.Effect.Navigation.ToIntroducing }
+            }
         }
     }
 }

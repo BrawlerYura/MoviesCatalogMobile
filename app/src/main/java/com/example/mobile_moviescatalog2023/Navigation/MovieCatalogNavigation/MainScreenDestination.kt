@@ -11,20 +11,27 @@ import org.koin.androidx.compose.getViewModel
 
 @Composable
 fun MainScreenDestination(
-    navController: NavHostController,
-    onBottomNavigationRequested: (navigationEffect: MovieNavigationContract.Effect.Navigation) -> Unit
+    navController: NavHostController
 ) {
     val viewModel = getViewModel<MainScreenViewModel>()
     MainScreen(
         state = viewModel.state.value,
         onEventSent = { event ->  viewModel.setEvent(event) },
+        effectFlow = viewModel.effect,
         onNavigationRequested = { navigationEffect ->
             when (navigationEffect) {
                 is MainScreenContract.Effect.Navigation.ToFilm -> {
                     navController.navigate(Screen.Film.route + "/${navigationEffect.id}")
                 }
+
+                is MainScreenContract.Effect.Navigation.ToFavorite -> {
+                    navController.navigate(Screen.Favorite.route)
+                }
+
+                is MainScreenContract.Effect.Navigation.ToProfile -> {
+                    navController.navigate(Screen.Profile.route)
+                }
             }
-        },
-        onBottomNavigationRequested
+        }
     )
 }

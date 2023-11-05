@@ -3,16 +3,14 @@ package com.example.mobile_moviescatalog2023.View.AuthScreens.RegistrationPasswo
 import android.content.Context
 import androidx.compose.ui.hapticfeedback.HapticFeedback
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
-import androidx.compose.ui.platform.LocalHapticFeedback
-import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewModelScope
-import com.example.mobile_moviescatalog2023.R
 import com.example.mobile_moviescatalog2023.domain.Entities.RequestBodies.RegisterRequestBody
 import com.example.mobile_moviescatalog2023.TokenManager.TokenManager
 import com.example.mobile_moviescatalog2023.View.Base.BaseViewModel
 import com.example.mobile_moviescatalog2023.domain.UseCases.AuthUseCases.RegisterUseCase
 import com.example.mobile_moviescatalog2023.domain.UseCases.ValidationUseCase
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 
 class RegistrationPasswordViewModel(
@@ -59,6 +57,7 @@ class RegistrationPasswordViewModel(
                 email = registerRequestBody.email,
                 birthDate = registerRequestBody.birthDate,
                 gender = registerRequestBody.gender,
+                isBodyLoaded = true
             )
         }
     }
@@ -74,7 +73,8 @@ class RegistrationPasswordViewModel(
         isSuccess = null,
         isPasswordValid = null,
         isRepPasswordValid = null,
-        errorMessage = null
+        errorMessage = null,
+        isBodyLoaded = false
     )
 
     override fun handleEvents(event: RegistrationPasswordContract.Event) {
@@ -83,6 +83,8 @@ class RegistrationPasswordViewModel(
             is RegistrationPasswordContract.Event.SaveRepeatedPasswordEvent -> saveRepeatedPassword(event.repPassword)
             is RegistrationPasswordContract.Event.SignUp -> signUp(haptic = event.haptic)
             is RegistrationPasswordContract.Event.LoadRegisterRequestBody -> loadRegisterRequestBody(event.registerRequestBody)
+            is RegistrationPasswordContract.Event.NavigationToLogin -> setEffect { RegistrationPasswordContract.Effect.Navigation.ToLogin }
+            is RegistrationPasswordContract.Event.NavigationBack -> setEffect { RegistrationPasswordContract.Effect.Navigation.Back }
         }
     }
 
@@ -106,6 +108,9 @@ class RegistrationPasswordViewModel(
                         result.onSuccess {
                             TokenManager(context).saveToken(it.token)
                             setState { copy(isSuccess = true) }
+                            MainScope().launch {
+                                setEffect { RegistrationPasswordContract.Effect.Navigation.ToMain }
+                            }
                         }.onFailure {
                             setState { copy(isSuccess = false, errorMessage = "Указаны некорректные данные") }
                             haptic.performHapticFeedback(HapticFeedbackType.LongPress)

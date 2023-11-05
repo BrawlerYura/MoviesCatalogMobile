@@ -17,6 +17,8 @@ interface ViewState
 
 interface ViewSideEffect
 
+const val SIDE_EFFECTS_KEY = "side-effects_key"
+
 abstract class BaseViewModel<Event: ViewEvent, UiState: ViewState, Effect: ViewSideEffect> : ViewModel() {
 
     abstract fun setInitialState(): UiState

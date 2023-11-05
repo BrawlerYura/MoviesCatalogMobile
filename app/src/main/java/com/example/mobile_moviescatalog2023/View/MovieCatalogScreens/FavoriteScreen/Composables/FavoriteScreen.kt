@@ -34,30 +34,44 @@ import com.example.mobile_moviescatalog2023.domain.Entities.Models.GenreModel
 import com.example.mobile_moviescatalog2023.domain.Entities.Models.MovieElementModel
 import com.example.mobile_moviescatalog2023.domain.Entities.Models.ReviewShortModel
 import com.example.mobile_moviescatalog2023.R
+import com.example.mobile_moviescatalog2023.View.Base.SIDE_EFFECTS_KEY
 import com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.BottomNavigationBar
 import com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.FavoriteScreen.FavoriteScreenContract
+import com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.MainScreen.MainScreenContract
 import com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.MainScreen.MovieNavigationContract
 import com.example.mobile_moviescatalog2023.domain.Entities.Models.ThreeFavoriteMovies
 import com.example.mobile_moviescatalog2023.ui.theme.FilmusTheme
 import com.example.mobile_moviescatalog2023.ui.theme.interFamily
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.onEach
 
 @Composable
 fun FavoriteScreen(
     state: FavoriteScreenContract.State,
     onEventSent: (event: FavoriteScreenContract.Event) -> Unit,
-    onNavigationRequested: (navigationEffect: FavoriteScreenContract.Effect.Navigation) -> Unit,
-    onBottomNavigationRequested: (navigationEffect: MovieNavigationContract.Effect.Navigation) -> Unit
+    effectFlow: Flow<FavoriteScreenContract.Effect>?,
+    onNavigationRequested: (navigationEffect: FavoriteScreenContract.Effect.Navigation) -> Unit
 ) {
-    LaunchedEffect(true) {
-        onEventSent(FavoriteScreenContract.Event.GetFavoriteMovies)
+
+    LaunchedEffect(SIDE_EFFECTS_KEY) {
+        effectFlow?.onEach { effect ->
+            when (effect) {
+                is FavoriteScreenContract.Effect.Navigation.ToFilm -> onNavigationRequested(effect)
+                is FavoriteScreenContract.Effect.Navigation.ToMain -> onNavigationRequested(effect)
+                is FavoriteScreenContract.Effect.Navigation.ToProfile -> onNavigationRequested(effect)
+            }
+        }?.collect()
     }
 
     FilmusTheme {
         Scaffold(
             bottomBar = {
                 BottomNavigationBar(
-                    onBottomNavigationRequested,
-                    1
+                    onNavigationToMainRequested = { onEventSent(FavoriteScreenContract.Event.NavigationToMain) },
+                    onNavigationToProfileRequested = { onEventSent(FavoriteScreenContract.Event.NavigationToProfile) },
+                    onNavigationToFavoriteRequested = { },
+                    currentScreen = 1
                 )
             }
         ) {
@@ -84,14 +98,16 @@ fun FavoriteScreen(
                     }
                     if (state.favoriteMovieList?.isEmpty() == false) {
                         items(state.favoriteMovieList) {
-                            FavoriteFilmCard(it, onNavigationRequested)
+                            FavoriteFilmCard(
+                                it
+                            ) { id -> onEventSent(FavoriteScreenContract.Event.NavigationToFilm(id)) }
                         }
                     } else {
                         item {
                             FavoriteFilmsPlaceholder()
                         }
                     }
-                    item{
+                    item {
                         Spacer(modifier = Modifier.height(5.dp))
                     }
                 }
@@ -135,7 +151,7 @@ private fun FavoriteScreenPreview() {
             reviews = reviews,
         )
     FavoriteScreen(
-        state = FavoriteScreenContract.State (
+        state = FavoriteScreenContract.State(
             favoriteMovieList = listOf(
                 ThreeFavoriteMovies(
                     firstMovie = movieElementModel,
@@ -151,7 +167,7 @@ private fun FavoriteScreenPreview() {
             isSuccess = true
         ),
         onEventSent = { },
-        onNavigationRequested = { },
-        onBottomNavigationRequested = { }
+        effectFlow = null,
+        onNavigationRequested = { }
     )
 }

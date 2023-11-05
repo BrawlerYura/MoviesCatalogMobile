@@ -30,7 +30,7 @@ import com.example.mobile_moviescatalog2023.domain.Entities.Models.ThreeFavorite
 @Composable
 fun FavoriteFilmCard(
     item: ThreeFavoriteMovies,
-    onNavigationRequested: (navigationEffect: FavoriteScreenContract.Effect.Navigation) -> Unit
+    onNavigationRequested: (id: String) -> Unit
 ) {
     Column(
         modifier = Modifier.fillMaxWidth(),

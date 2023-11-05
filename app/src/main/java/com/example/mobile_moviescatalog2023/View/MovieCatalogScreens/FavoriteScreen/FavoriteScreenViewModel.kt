@@ -18,6 +18,7 @@ class FavoriteScreenViewModel(
     private val getFavoriteMoviesUseCase :GetFavoriteMoviesUseCase
 ): BaseViewModel<FavoriteScreenContract.Event, FavoriteScreenContract.State, FavoriteScreenContract.Effect>() {
 
+    init{ getFavoriteMovies() }
     override fun setInitialState() = FavoriteScreenContract.State(
         favoriteMovieList = null,
         isSuccess = null
@@ -26,6 +27,9 @@ class FavoriteScreenViewModel(
     override fun handleEvents(event: FavoriteScreenContract.Event) {
         when (event) {
             is FavoriteScreenContract.Event.GetFavoriteMovies -> getFavoriteMovies()
+            is FavoriteScreenContract.Event.NavigationToMain -> setEffect { FavoriteScreenContract.Effect.Navigation.ToMain }
+            is FavoriteScreenContract.Event.NavigationToProfile -> setEffect { FavoriteScreenContract.Effect.Navigation.ToProfile }
+            is FavoriteScreenContract.Event.NavigationToFilm -> setEffect { FavoriteScreenContract.Effect.Navigation.ToFilm(id = event.id) }
         }
     }
 
