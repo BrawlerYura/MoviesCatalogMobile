@@ -12,6 +12,7 @@ import com.example.mobile_moviescatalog2023.domain.UseCases.ReviewUseCases.AddRe
 import com.example.mobile_moviescatalog2023.domain.UseCases.ReviewUseCases.DeleteReviewUseCase
 import com.example.mobile_moviescatalog2023.domain.UseCases.ReviewUseCases.PutReviewUseCase
 import com.example.mobile_moviescatalog2023.domain.UseCases.UserUseCases.GetMyIdUseCase
+import com.example.mobile_moviescatalog2023.domain.UseCases.UserUseCases.CheckTokenUseCase
 import com.example.mobile_moviescatalog2023.domain.UseCases.UserUseCases.GetProfileUseCase
 import com.example.mobile_moviescatalog2023.domain.UseCases.UserUseCases.LogoutUseCase
 import com.example.mobile_moviescatalog2023.domain.UseCases.UserUseCases.PutProfileUseCase
@@ -31,7 +32,8 @@ val UseCasesModule = module {
     single { DeleteReviewUseCase(repository = get()) }
     single { PutReviewUseCase(repository = get()) }
     single { GetMyIdUseCase(repository = get()) }
-    single { GetProfileUseCase(repository = get(), context = androidContext()) }
+    single { GetProfileUseCase(repository = get()) }
+    single { CheckTokenUseCase(repository = get(), context = androidContext()) }
     single { LogoutUseCase(repository = get(), context = androidContext()) }
     single { PutProfileUseCase(repository = get()) }
     single { FormatDateUseCase() }

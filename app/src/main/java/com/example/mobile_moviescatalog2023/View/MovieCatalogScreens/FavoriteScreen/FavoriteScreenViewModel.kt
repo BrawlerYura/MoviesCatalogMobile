@@ -35,9 +35,7 @@ class FavoriteScreenViewModel(
 
     private fun getFavoriteMovies() {
         viewModelScope.launch(Dispatchers.IO) {
-            getFavoriteMoviesUseCase.invoke()
-                .collect { result ->
-                    result.onSuccess {
+            getFavoriteMoviesUseCase.invoke().onSuccess {
                         it.movies?.forEach {
                             Log.e("a", it.name ?: "")
                         }
@@ -51,7 +49,6 @@ class FavoriteScreenViewModel(
                         ) }
                     }
                 }
-        }
     }
 
     private fun fromListToPartsMovies(movies: List<MovieElementModel>?): List<ThreeFavoriteMovies>? {

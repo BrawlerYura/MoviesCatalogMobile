@@ -13,29 +13,15 @@ import kotlinx.coroutines.flow.flowOn
 class ReviewRepository(
     private val api: ReviewApi
 ) {
-    suspend fun addReview(reviewModifyModel: ReviewModifyModel, movieId: String) = flow {
-        try {
-            emit(Result.success(api.addReview(reviewModifyModel, movieId)))
-        } catch (e: Exception) {
-            Log.e("a", e.message.toString())
-            emit(Result.failure(Throwable(e)))
-        }
-    }.flowOn(Dispatchers.IO)
+    suspend fun addReview(reviewModifyModel: ReviewModifyModel, movieId: String) {
+        api.addReview(reviewModifyModel, movieId)
+    }
 
-    suspend fun editReview(reviewModifyModel: ReviewModifyModel, movieId: String, id: String) = flow {
-        try {
-            emit(Result.success(api.editReview(reviewModifyModel, movieId, id)))
-        } catch (e: Exception) {
-            Log.e("a", e.message.toString())
-            emit(Result.failure(Throwable(e)))
-        }
-    }.flowOn(Dispatchers.IO)
+    suspend fun editReview(reviewModifyModel: ReviewModifyModel, movieId: String, id: String) {
+        api.editReview(reviewModifyModel, movieId, id)
+    }
 
     suspend fun deleteReview(movieId: String, id: String) {
-        try {
-           api.deleteReview(movieId, id)
-        } catch (e: Exception) {
-            Log.e("a", e.message.toString())
-        }
+        api.deleteReview(movieId, id)
     }
 }

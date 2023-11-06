@@ -7,6 +7,7 @@ import kotlinx.coroutines.flow.Flow
 class GetMyIdUseCase(
     private val repository: UserRepository
 ) {
-    suspend fun invoke(): Flow<Result<ProfileModel>> =
-        repository.getProfile()
+    suspend fun invoke(): Result<ProfileModel> {
+        return repository.getProfile()
+    }
 }

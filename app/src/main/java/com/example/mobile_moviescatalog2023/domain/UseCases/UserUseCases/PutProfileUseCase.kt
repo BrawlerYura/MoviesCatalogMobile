@@ -9,6 +9,7 @@ import kotlinx.coroutines.flow.first
 class PutProfileUseCase(
     private val repository: UserRepository
 ) {
-    suspend fun invoke(profileModel: ProfileModel): Flow<Result<Unit>> =
+    suspend fun invoke(profileModel: ProfileModel) {
         repository.putProfile(profileModel)
+    }
 }

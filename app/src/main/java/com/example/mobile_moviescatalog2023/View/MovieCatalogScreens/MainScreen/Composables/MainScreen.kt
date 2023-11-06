@@ -38,7 +38,6 @@ import com.example.mobile_moviescatalog2023.domain.Entities.Models.MovieElementM
 import com.example.mobile_moviescatalog2023.domain.Entities.Models.ReviewShortModel
 import com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.BottomNavigationBar
 import com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.MainScreen.MainScreenContract
-import com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.MainScreen.MovieNavigationContract
 import com.example.mobile_moviescatalog2023.ui.theme.FilmusTheme
 import com.example.mobile_moviescatalog2023.ui.theme.interFamily
 import kotlinx.coroutines.flow.Flow
@@ -81,6 +80,9 @@ fun MainScreen(
                         { onEventSent(MainScreenContract.Event.UpdateMoviesList) },
                         { id -> onEventSent(MainScreenContract.Event.NavigationToFilm(id)) }
                     )
+                    else -> {
+                        Box(modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background))
+                    }
                 }
             }
         }

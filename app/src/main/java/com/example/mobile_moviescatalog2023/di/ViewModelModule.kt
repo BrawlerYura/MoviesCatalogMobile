@@ -8,14 +8,12 @@ import com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.FavoriteScr
 import com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.FilmScreen.FilmScreenViewModel
 import com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.MainScreen.MainScreenViewModel
 import com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.ProfileScreen.ProfileScreenViewModel
-import com.example.mobile_moviescatalog2023.domain.UseCases.FormatDateUseCase
-import com.example.mobile_moviescatalog2023.domain.UseCases.UserUseCases.LogoutUseCase
 import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
 import org.koin.androidx.viewmodel.dsl.viewModel
 
 val ViewModelModule = module {
-    viewModel { SplashScreenViewModel( getProfileUseCase = get()) }
+    viewModel { SplashScreenViewModel( checkTokenUseCase = get()) }
     viewModel { LoginViewModel(androidContext(), loginUseCase = get(), validationUseCase = get()) }
     viewModel { RegistrationViewModel(formatDateUseCase = get(), validationUseCase = get()) }
     viewModel { RegistrationPasswordViewModel(androidContext(), registerUseCase = get(), validationUseCase = get()) }

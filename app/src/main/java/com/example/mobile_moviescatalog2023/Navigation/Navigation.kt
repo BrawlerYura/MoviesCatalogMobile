@@ -5,7 +5,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import com.example.mobile_moviescatalog2023.Navigation.AuthNavigation.NavGraphAuth
 import com.example.mobile_moviescatalog2023.Navigation.MovieCatalogNavigation.NavGraphMovie
-import com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.MainScreen.MovieNavigationContract
+ 
 import org.koin.androidx.compose.getViewModel
 
 

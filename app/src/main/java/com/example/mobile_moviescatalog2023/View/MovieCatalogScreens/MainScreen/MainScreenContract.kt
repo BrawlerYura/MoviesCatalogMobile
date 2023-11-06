@@ -39,13 +39,3 @@ class MainScreenContract {
         }
     }
 }
-
-class MovieNavigationContract {
-    sealed class Effect : ViewSideEffect {
-        sealed class Navigation : Effect() {
-            object ToMain : Navigation()
-            object ToFavorite : Navigation()
-            object ToProfile : Navigation()
-        }
-    }
-}

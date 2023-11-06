@@ -35,7 +35,7 @@ fun FilmPoster(
         }
     ) {
         AsyncImage(
-            model = poster ?: R.drawable.logo,
+            model = poster,
             contentDescription = null,
             modifier = Modifier.fillMaxWidth().height(497.dp),
             contentScale = ContentScale.Crop

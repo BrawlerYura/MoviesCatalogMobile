@@ -66,15 +66,10 @@ fun FilmLoadedScreen(
     onEventSent: (event: FilmScreenContract.Event) -> Unit,
     filmId: String
 ) {
-    val lazyListState = rememberLazyListState()
+
     val showName = remember { mutableStateOf(false) }
 
-    LaunchedEffect(lazyListState) {
-        snapshotFlow { lazyListState.firstVisibleItemIndex }
-            .collect { firstVisibleIndex ->
-                showName.value = firstVisibleIndex > 1
-            }
-    }
+
 
     Scaffold(
         topBar = {
@@ -86,6 +81,16 @@ fun FilmLoadedScreen(
             )
         }
     ) {
+
+        val lazyListState = rememberLazyListState()
+
+        LaunchedEffect(lazyListState) {
+            snapshotFlow { lazyListState.firstVisibleItemIndex }
+                .collect { firstVisibleIndex ->
+                    showName.value = firstVisibleIndex > 1
+                }
+        }
+
         LazyColumn(
             state = lazyListState,
             modifier = Modifier.padding(it)

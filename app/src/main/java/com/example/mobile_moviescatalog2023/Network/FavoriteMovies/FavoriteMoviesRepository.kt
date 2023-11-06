@@ -7,35 +7,25 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
+import retrofit2.Response
 
 class FavoriteMoviesRepository(
     private val api: FavoriteMoviesApi
 ) {
 
-    suspend fun getFavoriteMovies(): Flow<Result<MoviesListModel>> = flow {
-        try {
-            emit(Result.success(api.getFavoriteMovies()))
-        } catch (e: Exception) {
-            Log.e("a", e.message.toString())
-            emit(Result.failure(Throwable(e)))
+    suspend fun getFavoriteMovies(): Result<MoviesListModel> {
+        return try {
+            Result.success(api.getFavoriteMovies())
+        } catch (e: java.lang.Exception) {
+            Result.failure(e)
         }
-    }.flowOn(Dispatchers.IO)
+    }
 
-    suspend fun addFavoriteMovie(id: String) = flow {
-        try {
-            emit(Result.success(api.addFavoriteMovie(id)))
-        } catch (e: Exception) {
-            Log.e("a", e.message.toString())
-            emit(Result.failure(Throwable(e)))
-        }
-    }.flowOn(Dispatchers.IO)
+    suspend fun addFavoriteMovie(id: String) {
+        api.addFavoriteMovie(id)
+    }
 
-    suspend fun deleteFavoriteMovie(id: String) = flow {
-        try {
-            emit(Result.success(api.deleteFavoriteMovie(id)))
-        } catch (e: Exception) {
-            Log.e("a", e.message.toString())
-            emit(Result.failure(Throwable(e)))
-        }
-    }.flowOn(Dispatchers.IO)
+    suspend fun deleteFavoriteMovie(id: String) {
+        api.deleteFavoriteMovie(id)
+    }
 }

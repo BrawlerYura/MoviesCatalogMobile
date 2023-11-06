@@ -91,23 +91,21 @@ class FilmScreenViewModel(
         setState { copy(isLoading = true) }
         viewModelScope.launch(Dispatchers.IO) {
             getFilmDetailsUseCase.invoke(id)
-                .collect { result ->
-                    result.onSuccess {
-                        setState {
-                            copy(
-                                isLoaded = true,
-                                movieDetails = formatDateUseCase.formatCreateDateTime(it),
-                                currentFilmRating = calculateFilmRating(it.reviews)
-                            )
-                        }
-                        checkIfWithMyReview(it)
-                        checkIfFavorite(id = it.id)
-                    }.onFailure {
-                        setState {
-                            copy(
-                                isLoaded = false
-                            )
-                        }
+                .onSuccess {
+                    setState {
+                        copy(
+                            isLoaded = true,
+                            movieDetails = formatDateUseCase.formatCreateDateTime(it),
+                            currentFilmRating = calculateFilmRating(it.reviews)
+                        )
+                    }
+                    checkIfWithMyReview(it)
+                    checkIfFavorite(id = it.id)
+                }.onFailure {
+                    setState {
+                        copy(
+                            isLoaded = false
+                        )
                     }
                 }
         }
@@ -138,72 +136,30 @@ class FilmScreenViewModel(
     private fun addToFavorite(id: String) {
         viewModelScope.launch(Dispatchers.IO) {
             addToFavoriteUseCase.invoke(id)
-                .collect { result ->
-                    result.onSuccess {
-                        setState {
-                            copy(
-                                isAddingSuccess = true,
-                                isMyFavorite = true
-                            )
-                        }
-                    }.onFailure {
-                        setState {
-                            copy(
-                                isAddingSuccess = false
-                            )
-                        }
-                    }
-                }
         }
     }
 
     private fun deleteFavorite(id: String) {
         viewModelScope.launch(Dispatchers.IO) {
             deleteFavoriteMovieUseCase.invoke(id)
-                .collect { result ->
-                    result.onSuccess {
-                        setState {
-                            copy(
-                                isDeletingSuccess = true,
-                                isMyFavorite = false
-                            )
-                        }
-                    }.onFailure {
-                        setState {
-                            copy(
-                                isDeletingSuccess = false
-                            )
-                        }
-                    }
-                }
         }
     }
 
     private fun checkIfFavorite(id: String) {
         viewModelScope.launch(Dispatchers.IO) {
             getFavoriteMoviesUseCase.invoke()
-                .collect { result ->
-                    result.onSuccess {
-                        if (it.movies != null) {
-                            it.movies.forEach {
-                                if (id == it.id) {
-                                    setState {
-                                        copy(
-                                            isMyFavorite = true
-                                        )
-                                    }
+                .onSuccess {
+                        it.movies?.forEach {
+                            if (id == it.id) {
+                                setState {
+                                    copy(
+                                        isMyFavorite = true
+                                    )
                                 }
                             }
-                        } else {
-                            setState {
-                                copy(
-                                    isMyFavorite = false
-                                )
-                            }
-                        }
-                    }.onFailure {
-
                     }
+                }.onFailure {
+
                 }
         }
     }
@@ -242,13 +198,6 @@ class FilmScreenViewModel(
     private fun addMyReview(reviewModifyModel: ReviewModifyModel, filmId: String) {
         viewModelScope.launch(Dispatchers.IO) {
             addReviewUseCase.invoke(reviewModifyModel, filmId)
-                .collect { result ->
-                    result.onSuccess {
-                        loadFilmDetails(filmId)
-                    }.onFailure {
-
-                    }
-                }
         }
     }
 
@@ -259,13 +208,6 @@ class FilmScreenViewModel(
     ) {
         viewModelScope.launch(Dispatchers.IO) {
             putReviewUseCase.invoke(reviewModifyModel, filmId, reviewId)
-                .collect { result ->
-                    result.onSuccess {
-                        loadFilmDetails(filmId)
-                    }.onFailure {
-
-                    }
-                }
         }
     }
 

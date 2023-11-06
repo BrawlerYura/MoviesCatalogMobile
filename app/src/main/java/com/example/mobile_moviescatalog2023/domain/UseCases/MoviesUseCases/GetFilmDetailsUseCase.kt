@@ -7,6 +7,7 @@ import kotlinx.coroutines.flow.Flow
 class GetFilmDetailsUseCase(
     private val repository: MovieRepository
 ) {
-    suspend fun invoke(id: String): Flow<Result<MovieDetailsModel>> =
-        repository.getMovieDetails(id)
+    suspend fun invoke(id: String): Result<MovieDetailsModel> {
+        return repository.getMovieDetails(id)
+    }
 }

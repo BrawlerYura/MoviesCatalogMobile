@@ -52,34 +52,38 @@ class MainScreenViewModel(
     }
 
     private fun updateMoviesList() {
-        setState { copy(isUpdatingList = true) }
         viewModelScope.launch(Dispatchers.IO) {
-            getMoviesUseCase.invoke(state.value.currentMoviePage)
-                .collect { result ->
-                    result.onSuccess {
-                        setState {
-                            copy(
-                                movieList = state.value.movieList + it.movies,
-                                currentMoviePage = state.value.currentMoviePage + 1,
-                                isUpdatingList = false
-                            )
-                        }
-                        it.movies.forEach {
+            if(!state.value.isUpdatingList) {
+                setState {
+                    copy(isUpdatingList = true)
+                }
+                getMoviesUseCase.invoke(state.value.currentMoviePage)
+                    .onSuccess {
+                        if(it != null) {
                             setState {
                                 copy(
-                                    filmRatingsList = filmRatingsList + calculateFilmRating(it.reviews)
+                                    movieList = state.value.movieList + it.movies,
+                                    currentMoviePage = state.value.currentMoviePage + 1,
+                                    isUpdatingList = false
+                                )
+                            }
+                            it.movies.forEach {
+                                setState {
+                                    copy(
+                                        filmRatingsList = filmRatingsList + calculateFilmRating(it.reviews)
+                                    )
+                                }
+                            }
+                        }
+                        }.onFailure {
+                            setState {
+                                copy(
+                                    isUpdatingList = false
                                 )
                             }
                         }
-                    }.onFailure {
-                        setState {
-                            copy(
-                                isUpdatingList = false
-                            )
-                        }
                     }
-                }
-        }
+            }
     }
 
     private fun getMovies() {
@@ -90,16 +94,15 @@ class MainScreenViewModel(
         }
         viewModelScope.launch(Dispatchers.IO) {
             getMoviesUseCase.invoke(1)
-                .collect { result ->
-                    result.onSuccess {
+                .onSuccess {
                         setState {
                             copy(
-                                isRequestingMoviePage = false,
-                                isSuccess = true,
                                 movieCarouselList = it.movies.take(4),
                                 movieList = it.movies.drop(4),
                                 currentMoviePage = state.value.currentMoviePage + 1,
                                 pageCount = it.pageInfo.pageCount,
+                                isRequestingMoviePage = false,
+                                isSuccess = true,
                                 isUpdatingList = false
                             )
                         }
@@ -121,18 +124,10 @@ class MainScreenViewModel(
                         }
                     }
                 }
-        }
     }
 
     private suspend fun getMyId() {
         getMyIdUseCase.invoke()
-            .collect { result ->
-                result.onSuccess {
-                    Network.userId = it.id
-                }.onFailure {
-
-                }
-            }
     }
 
     private fun calculateFilmRating(reviews: List<ReviewShortModel>?): FilmRating? {

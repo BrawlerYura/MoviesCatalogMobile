@@ -8,25 +8,24 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
+import retrofit2.Response
 
 class MovieRepository(
     private val api: MovieApi
 ) {
-    suspend fun getMovies(page: Int): Flow<Result<MoviesModel>> = flow {
-        try {
-            emit(Result.success(api.getMovies(page)))
-        } catch (e: Exception) {
-            Log.e("a", e.message.toString())
-            emit(Result.failure(Throwable(e)))
+    suspend fun getMovies(page: Int): Result<MoviesModel> {
+        return try {
+            Result.success(api.getMovies(page))
+        } catch (e: java.lang.Exception) {
+            Result.failure(e)
         }
-    }.flowOn(Dispatchers.IO)
+    }
 
-    suspend fun getMovieDetails(id: String): Flow<Result<MovieDetailsModel>> = flow {
-        try {
-            emit(Result.success(api.getDetails(id)))
-        } catch (e: Exception) {
-            Log.e("a", e.message.toString())
-            emit(Result.failure(Throwable(e)))
+    suspend fun getMovieDetails(id: String): Result<MovieDetailsModel> {
+        return try {
+            Result.success(api.getDetails(id))
+        } catch (e: java.lang.Exception) {
+            Result.failure(e)
         }
-    }.flowOn(Dispatchers.IO)
+    }
 }

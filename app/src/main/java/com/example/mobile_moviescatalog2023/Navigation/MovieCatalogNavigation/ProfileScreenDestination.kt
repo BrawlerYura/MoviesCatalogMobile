@@ -3,7 +3,7 @@ package com.example.mobile_moviescatalog2023.Navigation.MovieCatalogNavigation
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import com.example.mobile_moviescatalog2023.Navigation.Screen
-import com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.MainScreen.MovieNavigationContract
+ 
 import com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.ProfileScreen.Composables.ProfileScreen
 import com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.ProfileScreen.ProfileScreenContract
 import com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.ProfileScreen.ProfileScreenViewModel

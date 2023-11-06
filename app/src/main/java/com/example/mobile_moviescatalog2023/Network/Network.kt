@@ -12,7 +12,7 @@ import retrofit2.converter.moshi.MoshiConverterFactory
 import java.util.concurrent.TimeUnit
 
 object Network {
-    private val BASE_URL = "https://react-midterm.kreosoft.space/"
+    private const val BASE_URL = "https://react-midterm.kreosoft.space/"
 
     private fun getHttpClient(): OkHttpClient {
         val client = OkHttpClient.Builder().apply {

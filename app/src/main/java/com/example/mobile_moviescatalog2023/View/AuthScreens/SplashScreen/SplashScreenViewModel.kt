@@ -1,14 +1,17 @@
 package com.example.mobile_moviescatalog2023.View.AuthScreens.SplashScreen
 
+import android.content.Context
+import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.example.mobile_moviescatalog2023.Network.Network
+import com.example.mobile_moviescatalog2023.Network.User.UserRepository
 import com.example.mobile_moviescatalog2023.View.Base.BaseViewModel
-import com.example.mobile_moviescatalog2023.domain.UseCases.UserUseCases.GetProfileUseCase
+import com.example.mobile_moviescatalog2023.domain.UseCases.UserUseCases.CheckTokenUseCase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class SplashScreenViewModel (
-    private val getProfileUseCase: GetProfileUseCase
+    private val checkTokenUseCase: CheckTokenUseCase
 ) : BaseViewModel<SplashContract.Event, SplashContract.State, SplashContract.Effect>() {
 
     init{ getToken() }
@@ -27,18 +30,17 @@ class SplashScreenViewModel (
     }
 
     private fun getToken() {
-
+        Log.e("dadasd", "sdasd")
         viewModelScope.launch(Dispatchers.IO) {
-            getProfileUseCase.invoke()
-                .collect { result ->
-                    result.onSuccess {
-                        Network.userId = it.id
-                        setState { copy(isSuccessGetToken = true) }
-
-                    }.onFailure {
-                        setState { copy(isError = true) }
-                    }
+            checkTokenUseCase.invoke()
+            .onSuccess {
+                    Network.userId = it.id
+                    setState { copy(isSuccessGetToken = true) }
+                }.onFailure {
+                    Log.e("dadasd", "sdasd")
+                    setState { copy(isError = true) }
                 }
+
         }
     }
 }

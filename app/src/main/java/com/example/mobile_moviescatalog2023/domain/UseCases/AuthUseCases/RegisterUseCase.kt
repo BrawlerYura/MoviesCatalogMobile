@@ -8,6 +8,7 @@ import kotlinx.coroutines.flow.Flow
 class RegisterUseCase(
     private val repository: AuthRepository
 ) {
-    suspend fun invoke(body: RegisterRequestBody): Flow<Result<TokenModel>> =
-        repository.register(body)
+    suspend fun invoke(body: RegisterRequestBody): Result<TokenModel?> {
+        return repository.register(body)
+    }
 }

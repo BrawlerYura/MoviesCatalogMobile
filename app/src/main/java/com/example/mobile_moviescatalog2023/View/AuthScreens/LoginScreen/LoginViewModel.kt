@@ -1,9 +1,11 @@
 package com.example.mobile_moviescatalog2023.View.AuthScreens.LoginScreen
 
 import android.content.Context
+import android.util.Log
 import androidx.compose.ui.hapticfeedback.HapticFeedback
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.lifecycle.viewModelScope
+import com.example.mobile_moviescatalog2023.Network.Network
 import com.example.mobile_moviescatalog2023.domain.Entities.RequestBodies.LoginRequestBody
 import com.example.mobile_moviescatalog2023.TokenManager.TokenManager
 import com.example.mobile_moviescatalog2023.View.Base.BaseViewModel
@@ -68,19 +70,22 @@ class LoginViewModel(
         val loginBody = LoginRequestBody(state.value.login, state.value.password)
 
         viewModelScope.launch(Dispatchers.IO) {
-                loginUseCase.invoke(loginBody)
-                .collect { result ->
-                    result.onSuccess {
+
+            loginUseCase.invoke(loginBody)
+                .onSuccess {
+                    if(it != null) {
+                        Log.e("a", it.token)
                         TokenManager(context).saveToken(it.token)
+                        Network.token = it.token
                         setState { copy(isSuccess = true) }
                         MainScope().launch {
                             setEffect { LoginContract.Effect.Navigation.ToMain }
                         }
-                    }.onFailure {
-                        setState { copy(isSuccess = false, errorMessage = "Неверный логин или пароль") }
-                        haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                     }
-                }
+            } .onFailure {
+                setState { copy(isSuccess = false, errorMessage = "Неверный логин или пароль") }
+                haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+            }
         }
     }
 }

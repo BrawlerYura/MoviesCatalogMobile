@@ -8,11 +8,17 @@ import com.example.mobile_moviescatalog2023.TokenManager.TokenManager
 import com.example.mobile_moviescatalog2023.domain.Entities.Models.ProfileModel
 import kotlinx.coroutines.flow.first
 
-class GetProfileUseCase(
-    private val repository: UserRepository
+class CheckTokenUseCase(
+    private val repository: UserRepository,
+    context: Context
 ) {
+    private val dataStore = TokenManager(context)
 
     suspend fun invoke(): Result<ProfileModel> {
+
+        val tokenValue = dataStore.getToken.first()
+        Network.token = tokenValue.toString()
+
         return repository.getProfile()
     }
 }

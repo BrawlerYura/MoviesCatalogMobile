@@ -1,11 +1,14 @@
 package com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.ProfileScreen
 
+import android.util.Log
 import androidx.compose.ui.hapticfeedback.HapticFeedback
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.lifecycle.viewModelScope
+import com.example.mobile_moviescatalog2023.Network.Network
 import com.example.mobile_moviescatalog2023.domain.Entities.Models.ProfileModel
 import com.example.mobile_moviescatalog2023.View.Base.BaseViewModel
 import com.example.mobile_moviescatalog2023.domain.UseCases.FormatDateUseCase
+import com.example.mobile_moviescatalog2023.domain.UseCases.UserUseCases.CheckTokenUseCase
 import com.example.mobile_moviescatalog2023.domain.UseCases.UserUseCases.GetProfileUseCase
 import com.example.mobile_moviescatalog2023.domain.UseCases.UserUseCases.LogoutUseCase
 import com.example.mobile_moviescatalog2023.domain.UseCases.UserUseCases.PutProfileUseCase
@@ -117,38 +120,38 @@ class ProfileScreenViewModel(
     }
 
     private fun loadUserDetails() {
+        Log.e("a", Network.token)
         viewModelScope.launch(Dispatchers.IO) {
             getProfileUseCase.invoke()
-                .collect { result ->
-                    result.onSuccess {
-                        setState {
-                            copy(
+                .onSuccess {
+                    setState {
+                        copy(
+                            id = it.id,
+                            nickName = it.nickName,
+                            email = it.email,
+                            userIconUrl = it.avatarLink,
+                            name = it.name,
+                            gender = it.gender,
+                            birthDate = formatDateUseCase.formatDateFromApi(it.birthDate),
+                            profileModel = ProfileModel(
                                 id = it.id,
                                 nickName = it.nickName,
                                 email = it.email,
-                                userIconUrl = it.avatarLink,
+                                avatarLink = it.avatarLink,
                                 name = it.name,
                                 gender = it.gender,
-                                birthDate = formatDateUseCase.formatDateFromApi(it.birthDate),
-                                profileModel = ProfileModel(
-                                    id = it.id,
-                                    nickName = it.nickName,
-                                    email = it.email,
-                                    avatarLink = it.avatarLink,
-                                    name = it.name,
-                                    gender = it.gender,
-                                    birthDate = formatDateUseCase.formatDateFromApi(it.birthDate)
-                                ),
-                                isEnable = false
-                            )
-                        }
+                                birthDate = formatDateUseCase.formatDateFromApi(it.birthDate)
+                            ),
+                            isEnable = false
+                        )
+                    }
                     }.onFailure {
+                    Log.e("a", Network.token)
                         setState {
                             copy()
                         }
                     }
                 }
-        }
     }
 
     private fun putUserDetails(haptic: HapticFeedback) {
@@ -163,18 +166,7 @@ class ProfileScreenViewModel(
         )
         viewModelScope.launch(Dispatchers.IO) {
             putProfileUseCase.invoke(profileModel)
-                .collect { result ->
-                    result.onSuccess {
-                        setState {
-                            copy(isSuccess = true, profileModel = profileModel)
-                        }
-                    }.onFailure {
-                        setState {
-                            copy(isSuccess = false, errorMessage = "Указаны некорректные данные")
-                        }
-                        haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                    }
-                }
+            haptic.performHapticFeedback(HapticFeedbackType.LongPress)
         }
     }
 

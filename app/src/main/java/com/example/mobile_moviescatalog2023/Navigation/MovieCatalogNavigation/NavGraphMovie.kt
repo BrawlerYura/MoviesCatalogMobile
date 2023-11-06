@@ -7,7 +7,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import androidx.navigation.navigation
 import com.example.mobile_moviescatalog2023.Navigation.Screen
-import com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.MainScreen.MovieNavigationContract
+ 
 
 fun NavGraphBuilder.NavGraphMovie(
     navController: NavHostController

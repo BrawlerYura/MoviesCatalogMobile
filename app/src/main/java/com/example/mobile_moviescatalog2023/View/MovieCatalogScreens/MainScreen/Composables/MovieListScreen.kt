@@ -28,14 +28,6 @@ fun MovieListScreen(
 ) {
     val lazyListState = rememberLazyListState()
 
-    if (
-        !lazyListState.canScrollForward &&
-        (state.currentMoviePage - 1 < state.pageCount) &&
-        !state.isUpdatingList
-    ) {
-        onUpdateListRequested()
-    }
-
     LazyColumn(
         state = lazyListState,
         modifier = Modifier.fillMaxWidth()
@@ -65,6 +57,13 @@ fun MovieListScreen(
                 FilmCard(item, state.filmRatingsList[index], onNavigationRequested)
             }
         }
+    }
+
+    if (
+        !lazyListState.canScrollForward &&
+        (state.currentMoviePage - 1 < state.pageCount)
+    ) {
+        onUpdateListRequested()
     }
 }
 

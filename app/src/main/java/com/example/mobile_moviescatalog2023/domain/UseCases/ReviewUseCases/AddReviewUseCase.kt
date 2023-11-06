@@ -9,6 +9,7 @@ import kotlinx.coroutines.flow.Flow
 class AddReviewUseCase(
     private val repository: ReviewRepository
 ) {
-    suspend fun invoke(reviewModifyModel: ReviewModifyModel, filmId: String): Flow<Result<Unit>> =
+    suspend fun invoke(reviewModifyModel: ReviewModifyModel, filmId: String) {
         repository.addReview(reviewModifyModel, filmId)
+    }
 }
