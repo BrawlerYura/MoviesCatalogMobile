@@ -3,7 +3,7 @@ package com.example.mobile_moviescatalog2023.Navigation.MovieCatalogNavigation
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import com.example.mobile_moviescatalog2023.Navigation.Screen
- 
+
 import com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.ProfileScreen.Composables.ProfileScreen
 import com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.ProfileScreen.ProfileScreenContract
 import com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.ProfileScreen.ProfileScreenViewModel
@@ -12,11 +12,11 @@ import org.koin.androidx.compose.getViewModel
 @Composable
 fun ProfileScreenDestination(
     navController: NavHostController
-    ) {
+) {
     val viewModel = getViewModel<ProfileScreenViewModel>()
     ProfileScreen(
         state = viewModel.state.value,
-        onEventSent = { event ->  viewModel.setEvent(event) },
+        onEventSent = { event -> viewModel.setEvent(event) },
         effectFlow = viewModel.effect,
         onNavigationRequested = { navigationEffect ->
             when (navigationEffect) {

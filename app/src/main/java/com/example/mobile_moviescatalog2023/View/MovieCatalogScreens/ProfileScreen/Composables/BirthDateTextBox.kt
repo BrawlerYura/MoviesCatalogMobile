@@ -70,6 +70,7 @@ fun BirthDateTextBox(
         val maxLength = 10
         OutlinedTextField(
             value = state.birthDate,
+            readOnly = true,
             isError = state.isSuccess == false,
             colors = OutlinedTextFieldDefaults.colors(
                 errorContainerColor = Color(0xFFE64646).copy(alpha = 0.1f)

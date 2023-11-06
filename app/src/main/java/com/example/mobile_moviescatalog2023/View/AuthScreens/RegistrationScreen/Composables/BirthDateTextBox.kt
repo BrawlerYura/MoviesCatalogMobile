@@ -66,6 +66,7 @@ fun BirthDateTextBox(
         val maxLength = 10
         OutlinedTextField(
             value = state.birthDate,
+            readOnly = true,
             colors = TextFieldDefaults.outlinedTextFieldColors(),
             textStyle = TextStyle(
                 fontFamily = interFamily,

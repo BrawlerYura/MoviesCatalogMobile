@@ -136,12 +136,22 @@ class FilmScreenViewModel(
     private fun addToFavorite(id: String) {
         viewModelScope.launch(Dispatchers.IO) {
             addToFavoriteUseCase.invoke(id)
+            setState {
+                copy(
+                    isMyFavorite = true
+                )
+            }
         }
     }
 
     private fun deleteFavorite(id: String) {
         viewModelScope.launch(Dispatchers.IO) {
             deleteFavoriteMovieUseCase.invoke(id)
+            setState {
+                copy(
+                    isMyFavorite = false
+                )
+            }
         }
     }
 
@@ -198,6 +208,7 @@ class FilmScreenViewModel(
     private fun addMyReview(reviewModifyModel: ReviewModifyModel, filmId: String) {
         viewModelScope.launch(Dispatchers.IO) {
             addReviewUseCase.invoke(reviewModifyModel, filmId)
+            loadFilmDetails(filmId)
         }
     }
 
@@ -208,6 +219,7 @@ class FilmScreenViewModel(
     ) {
         viewModelScope.launch(Dispatchers.IO) {
             putReviewUseCase.invoke(reviewModifyModel, filmId, reviewId)
+            loadFilmDetails(filmId)
         }
     }
 
