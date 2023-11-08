@@ -19,6 +19,10 @@ class CheckTokenUseCase(
         val tokenValue = dataStore.getToken.first()
         Network.token = tokenValue.toString()
 
-        return repository.getProfile()
+        return try {
+            Result.success(repository.getProfile())
+        } catch (e: java.lang.Exception) {
+            Result.failure(e)
+        }
     }
 }

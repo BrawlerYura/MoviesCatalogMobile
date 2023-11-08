@@ -116,13 +116,11 @@ class RegistrationPasswordViewModel(
             viewModelScope.launch(Dispatchers.IO) {
                 registerUseCase.invoke(registrationBody)
                     .onSuccess {
-                        if (it != null) {
-                            TokenManager(context).saveToken(it.token)
-                            Network.token = it.token
-                            setState { copy(isSuccess = true) }
-                            MainScope().launch {
-                                setEffect { RegistrationPasswordContract.Effect.Navigation.ToMain }
-                            }
+                        TokenManager(context).saveToken(it.token)
+                        Network.token = it.token
+                        setState { copy(isSuccess = true) }
+                        MainScope().launch {
+                            setEffect { RegistrationPasswordContract.Effect.Navigation.ToMain }
                         }
                     }.onFailure {
                         setState {

@@ -10,12 +10,14 @@ import com.example.mobile_moviescatalog2023.View.AuthScreens.LoginScreen.LoginCo
 import com.example.mobile_moviescatalog2023.View.Base.BaseViewModel
 import com.example.mobile_moviescatalog2023.domain.Entities.Models.ThreeFavoriteMovies
 import com.example.mobile_moviescatalog2023.domain.UseCases.FavoriteMoviesUseCases.GetFavoriteMoviesUseCase
+import com.example.mobile_moviescatalog2023.domain.UseCases.FromListToPartsMovieUseCase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 class FavoriteScreenViewModel(
-    private val getFavoriteMoviesUseCase :GetFavoriteMoviesUseCase
+    private val getFavoriteMoviesUseCase :GetFavoriteMoviesUseCase,
+    private val fromListToPartsMovieUseCase: FromListToPartsMovieUseCase
 ): BaseViewModel<FavoriteScreenContract.Event, FavoriteScreenContract.State, FavoriteScreenContract.Effect>() {
 
     init{ getFavoriteMovies() }
@@ -35,56 +37,17 @@ class FavoriteScreenViewModel(
 
     private fun getFavoriteMovies() {
         viewModelScope.launch(Dispatchers.IO) {
-            getFavoriteMoviesUseCase.invoke().onSuccess {
-                        it.movies?.forEach {
-                            Log.e("a", it.name ?: "")
-                        }
-                        setState { copy(
-                            favoriteMovieList = fromListToPartsMovies(it.movies),
-                            isSuccess = true
-                        ) }
-                    }.onFailure {
-                        setState { copy(
-                            isSuccess = false
-                        ) }
-                    }
+            getFavoriteMoviesUseCase.invoke()
+                .onSuccess {
+                    setState { copy(
+                        favoriteMovieList = fromListToPartsMovieUseCase.fromListToPartsMovies(it.movies),
+                        isSuccess = true
+                    ) }
+                }.onFailure {
+                    setState { copy(
+                        isSuccess = false
+                    ) }
                 }
-    }
-
-    private fun fromListToPartsMovies(movies: List<MovieElementModel>?): List<ThreeFavoriteMovies>? {
-        val listFavoriteMovies: MutableList<ThreeFavoriteMovies> = mutableListOf()
-        return if(movies != null) {
-            var index = 0
-            while(index < movies.count()) {
-                val threeFavoriteMovies = when(movies.count() - index) {
-                    2 -> {
-                        ThreeFavoriteMovies(
-                            firstMovie = movies[index],
-                            secondMovie = movies[index + 1],
-                            thirdMovie = null
-                        )
-                    }
-                    1 -> {
-                        ThreeFavoriteMovies(
-                            firstMovie = null,
-                            secondMovie = null,
-                            thirdMovie = movies[index]
-                        )
-                    }
-                    else -> {
-                        ThreeFavoriteMovies(
-                            firstMovie = movies[index],
-                            secondMovie = movies[index + 1],
-                            thirdMovie = movies[index + 2]
-                        )
-                    }
-                }
-                index += 3
-                listFavoriteMovies += threeFavoriteMovies
             }
-            listFavoriteMovies
-        } else {
-            null
-        }
     }
 }

@@ -9,7 +9,11 @@ import kotlinx.coroutines.flow.first
 class PutProfileUseCase(
     private val repository: UserRepository
 ) {
-    suspend fun invoke(profileModel: ProfileModel) {
-        repository.putProfile(profileModel)
+    suspend fun invoke(profileModel: ProfileModel): Result<Unit> {
+        return try {
+            Result.success(repository.putProfile(profileModel))
+        } catch (e: java.lang.Exception) {
+            Result.failure(e)
+        }
     }
 }

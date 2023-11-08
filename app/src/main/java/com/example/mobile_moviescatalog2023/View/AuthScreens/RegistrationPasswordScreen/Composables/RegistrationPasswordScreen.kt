@@ -32,6 +32,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.TextStyle
@@ -48,11 +49,11 @@ import com.example.mobile_moviescatalog2023.R
 import com.example.mobile_moviescatalog2023.View.AuthScreens.LoginScreen.Composables.LoginHeader
 import com.example.mobile_moviescatalog2023.View.AuthScreens.LoginScreen.LoginContract
 import com.example.mobile_moviescatalog2023.View.AuthScreens.RegistrationPasswordScreen.Composables.BottomRegistrationText
-import com.example.mobile_moviescatalog2023.View.AuthScreens.RegistrationPasswordScreen.Composables.CompleteSignUpButton
 import com.example.mobile_moviescatalog2023.View.AuthScreens.RegistrationPasswordScreen.Composables.PasswordTextBox
 import com.example.mobile_moviescatalog2023.View.AuthScreens.RegistrationPasswordScreen.Composables.RepeatPasswordTextBox
 import com.example.mobile_moviescatalog2023.View.AuthScreens.RegistrationPasswordScreen.RegistrationPasswordContract
 import com.example.mobile_moviescatalog2023.View.Base.SIDE_EFFECTS_KEY
+import com.example.mobile_moviescatalog2023.View.Common.MyButton
 import com.example.mobile_moviescatalog2023.ui.theme.FilmusTheme
 import com.example.mobile_moviescatalog2023.ui.theme.interFamily
 import kotlinx.coroutines.flow.Flow
@@ -114,7 +115,14 @@ fun RegistrationPasswordScreen(
 
                 RepeatPasswordTextBox(state, onEventSent)
 
-                CompleteSignUpButton(state) { haptic -> onEventSent(RegistrationPasswordContract.Event.SignUp(haptic)) }
+                val haptic = LocalHapticFeedback.current
+                MyButton(
+                    isEnabled = state.isPasswordValid == true && state.isRepPasswordValid == true,
+                    onEventSent = { onEventSent(RegistrationPasswordContract.Event.SignUp(haptic)) },
+                    text = stringResource(R.string.finish_registration_button),
+                    backgroundColor = MaterialTheme.colorScheme.primary,
+                    contentColor = MaterialTheme.colorScheme.onPrimary
+                    )
             }
             BottomRegistrationText { onEventSent(RegistrationPasswordContract.Event.NavigationToLogin) }
         }

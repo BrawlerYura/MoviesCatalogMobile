@@ -45,8 +45,6 @@ fun FilmShortDetails(
             Box(
                 modifier = Modifier
                     .align(Alignment.CenterStart)
-                    .height(20.dp)
-                    .width(37.dp)
                     .clip(RoundedCornerShape(5.dp))
                     .background(color = state.currentFilmRating.color)
             ) {
@@ -59,6 +57,7 @@ fun FilmShortDetails(
                         color = Color(0xFF1D1D1D)
                     ),
                     modifier = Modifier.align(Alignment.Center)
+                        .padding(horizontal = 14.dp, vertical = 4.dp)
                 )
             }
         }

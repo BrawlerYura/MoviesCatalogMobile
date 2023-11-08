@@ -6,7 +6,11 @@ import kotlinx.coroutines.flow.Flow
 class AddToFavoriteUseCase(
     private val repository: FavoriteMoviesRepository
 ) {
-    suspend fun invoke(id: String) {
-        repository.addFavoriteMovie(id)
+    suspend fun invoke(id: String): Result<Unit> {
+        return try {
+            Result.success(repository.addFavoriteMovie(id))
+        } catch (e: java.lang.Exception) {
+            Result.failure(e)
+        }
     }
 }

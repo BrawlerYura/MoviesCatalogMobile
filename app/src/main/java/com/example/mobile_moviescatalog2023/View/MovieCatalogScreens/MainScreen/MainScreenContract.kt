@@ -28,7 +28,8 @@ class MainScreenContract {
         val isRequestingMoviePage: Boolean,
         val isSuccess: Boolean,
         val pageCount: Int,
-        val isUpdatingList: Boolean
+        val isUpdatingList: Boolean,
+        val myRating: List<FilmRating?>
     ) : ViewState
 
     sealed class Effect : ViewSideEffect {

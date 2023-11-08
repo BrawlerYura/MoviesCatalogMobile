@@ -1,4 +1,4 @@
-package com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.ProfileScreen.Composables
+package com.example.mobile_moviescatalog2023.View.Common
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.background
@@ -25,24 +25,21 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.mobile_moviescatalog2023.R
-import com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.ProfileScreen.ProfileScreenContract
+import com.example.mobile_moviescatalog2023.View.AuthScreens.RegistrationScreen.RegistrationContract
 import com.example.mobile_moviescatalog2023.ui.theme.interFamily
 
 @SuppressLint("SuspiciousIndentation")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun GenderTextBox(
-    state: ProfileScreenContract.State,
-    onEventSent: (event: ProfileScreenContract.Event) -> Unit
+fun ChooseGenderBox(
+    currentIndex: Int,
+    onSaveEvent: (index: Int) -> Unit
 ) {
     Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp),
+        modifier = Modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.Start
     ) {
         Text(
@@ -70,15 +67,15 @@ fun GenderTextBox(
                         .weight(1f)
                         .padding(2.dp),
                     onClick = {
-                        onEventSent(ProfileScreenContract.Event.SaveGenderEvent(index))
+                        onSaveEvent(index)
                     },
                     colors = CardDefaults.cardColors(
-                        containerColor = if (state.gender == index) {
+                        containerColor = if (currentIndex == index) {
                             MaterialTheme.colorScheme.onBackground
                         } else {
                             MaterialTheme.colorScheme.surface
                         },
-                        contentColor = if (state.gender == index)
+                        contentColor = if (currentIndex == index)
                             Color(0xFF404040)
                         else
                             Color(0xFF909499)
@@ -98,13 +95,4 @@ fun GenderTextBox(
             }
         }
     }
-}
-
-@Preview(showBackground = true)
-@Composable
-private fun GenderTextBoxPreview() {
-    GenderTextBox(
-        state = profileStatePreview,
-        onEventSent = { }
-    )
 }

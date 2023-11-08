@@ -8,52 +8,72 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
+import com.example.mobile_moviescatalog2023.R
+import com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.FilmScreen.Composables.FilmReviewComposables.calculateRatingColor
+import com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.MainScreen.MainScreenContract
 import com.example.mobile_moviescatalog2023.domain.Entities.Models.GenreModel
 import com.example.mobile_moviescatalog2023.domain.Entities.Models.MovieElementModel
 import com.example.mobile_moviescatalog2023.domain.Entities.Models.ReviewShortModel
-import com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.MainScreen.MainScreenContract
 import com.example.mobile_moviescatalog2023.ui.theme.interFamily
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun FilmCard(
     item: MovieElementModel,
-    filmRating: FilmRating?,
+    index: Int,
+    state: MainScreenContract.State,
     onNavigationRequested: (id: String) -> Unit
 ) {
+
+    val filmRating: FilmRating? = remember {
+        try {
+            state.filmRatingsList[index]
+        } catch (e: Exception) {
+            null
+        }
+    }
+    val myRating: FilmRating? = remember {
+        try {
+            state.myRating[index]
+        } catch (e: Exception) {
+            null
+        }
+    }
     Row(
         modifier = Modifier
-            .padding(bottom = 16.dp, start = 16.dp, end = 16.dp).fillMaxWidth().height(130.dp)
+            .padding(bottom = 16.dp, start = 16.dp, end = 16.dp).fillMaxWidth()
             .clickable {
                 onNavigationRequested(item.id)
             }
     ) {
-        Box(modifier = Modifier.fillMaxHeight().width(95.dp)) {
+        Box(modifier = Modifier.width(95.dp)) {
             AsyncImage(
                 model = item.poster,
                 contentDescription = null,
-                modifier = Modifier.fillMaxSize().clip(RoundedCornerShape(3.dp)),
+                modifier = Modifier.fillMaxWidth().clip(RoundedCornerShape(3.dp)),
                 contentScale = ContentScale.Crop
             )
 
@@ -62,8 +82,6 @@ fun FilmCard(
                     modifier = Modifier
                         .padding(2.dp)
                         .align(Alignment.TopStart)
-                        .height(20.dp)
-                        .width(37.dp)
                         .clip(RoundedCornerShape(5.dp))
                         .background(color = filmRating.color)
                 ) {
@@ -76,6 +94,7 @@ fun FilmCard(
                             color = Color(0xFF1D1D1D)
                         ),
                         modifier = Modifier.align(Alignment.Center)
+                            .padding(horizontal = 8.dp, vertical = 2.dp)
                     )
                 }
             }
@@ -95,8 +114,45 @@ fun FilmCard(
                         fontSize = 16.sp,
                         color = MaterialTheme.colorScheme.onBackground
                     ),
-                    modifier = Modifier.align(Alignment.TopStart)
+                    modifier = Modifier.align(Alignment.TopStart).padding(
+                        end = if(myRating != null) {
+                            50.dp
+                        } else {
+                            0.dp
+                        }
+                    )
                 )
+                if(myRating != null) {
+                    Box(
+                        modifier = Modifier
+                            .height(26.dp)
+                            .clip(RoundedCornerShape(35.dp))
+                            .background(myRating.color)
+                            .align(Alignment.TopEnd)
+                    ) {
+                        Row(
+                            horizontalArrangement = Arrangement.Absolute.spacedBy(4.dp),
+                            modifier = Modifier.padding(4.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Icon(
+                                painterResource(R.drawable.small_star),
+                                null,
+                                tint = Color.White
+                            )
+                            Text(
+                                text = myRating.rating,
+                                style = TextStyle(
+                                    fontFamily = interFamily,
+                                    fontWeight = FontWeight.W500,
+                                    fontSize = 15.sp,
+                                    color = Color.White,
+                                    textAlign = TextAlign.Center
+                                )
+                            )
+                        }
+                    }
+                }
             }
             Text(
                 text = item.year.toString() + " · " + item.country,
@@ -108,11 +164,9 @@ fun FilmCard(
                 ),
                 modifier = Modifier.padding(bottom = 10.dp)
             )
-            Box(modifier = Modifier.fillMaxSize()) {
-                FlowRow(
-                    horizontalArrangement = Arrangement.spacedBy(4.dp),
-                    modifier = Modifier.fillMaxSize()
-                ) {
+            FlowRow(
+                horizontalArrangement = Arrangement.spacedBy(4.dp),
+                content = {
                     val itemModifier = Modifier
                         .padding(bottom = 4.dp)
                         .clip(RoundedCornerShape(5.dp))
@@ -134,53 +188,10 @@ fun FilmCard(
                         }
                     }
                 }
-            }
+            )
         }
     }
 }
-
-private fun calculateFilmRating(reviews: List<ReviewShortModel>?): FilmRating? {
-    if(reviews == null) {
-        return null
-    } else {
-
-        var sumScore: Int = 0
-        reviews.forEach {
-            sumScore += it.rating
-        }
-
-        val rating = (sumScore.toDouble() / reviews.count())
-
-        val color = when {
-            rating >= 0.0 && rating < 3.0 -> {
-                Color(0xFFE64646)
-            }
-            rating >= 3.0 && rating < 4.0 -> {
-                Color(0xFFF05C44)
-            }
-            rating >= 4.0 && rating < 5.0 -> {
-                Color(0xFFFFA000)
-            }
-            rating >= 5.0 && rating < 7.0 -> {
-                Color(0xFFFFD54F)
-            }
-            rating >= 7.0 && rating < 9.0 -> {
-                Color(0xFFA3CD4A)
-            }
-            else -> {
-                Color(0xFF4BB34B)
-            }
-        }
-
-        return FilmRating(
-            rating = if (rating != 10.0)
-            { rating.toString().substring(startIndex = 0, endIndex = 3) }
-            else { rating.toString().substring(startIndex = 0, endIndex = 4) },
-            color = color
-        )
-    }
-}
-
 data class FilmRating (
     val rating: String,
     val color: Color
@@ -192,41 +203,43 @@ private fun FilmCardPreview() {
     val genres = listOf(
         GenreModel(
             id = "",
-            name = "боевик"
+            name = "треш"
         ),
         GenreModel(
             id = "",
-            name = "приключения"
+            name = "расчленёнка"
+        ),
+        GenreModel(
+            id = "",
+            name = "Бабанов"
         )
     )
 
     val reviews = listOf(
         ReviewShortModel(
             id = "",
-            rating = 7
+            rating = -100
         ),
         ReviewShortModel(
             id = "",
-            rating = 9
+            rating = -10
         ),
     )
     val movieElementModel =
         MovieElementModel(
-            id = "27e0d4f4-6e31-4053-a2be-08d9b9f3d2a2",
-            name = "Пираты Карибского моря: Проклятие Черной жемчужины",
+            id = "",
+            name = "Сдача коллока у Лешки Михайловича",
             poster = null,
-            year = 2003,
-            country = "США",
+            year = 2023,
+            country = "Россия",
             genres = genres,
             reviews = reviews,
         )
 
     FilmCard(
         item =  movieElementModel,
-        filmRating = FilmRating(
-            rating = "9.2",
-            color = Color.Green
-        ),
+        index = 0,
+        state = mainStatePreview,
         onNavigationRequested = { }
     )
 }

@@ -4,7 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import com.example.mobile_moviescatalog2023.Navigation.Screen
 import com.example.mobile_moviescatalog2023.View.AuthScreens.RegistrationScreen.RegistrationContract
-import com.example.mobile_moviescatalog2023.View.AuthScreens.RegistrationScreen.Composables.RegistrationScreen
+import com.example.mobile_moviescatalog2023.View.AuthScreens.RegistrationScreen.RegistrationScreen
 import com.example.mobile_moviescatalog2023.View.AuthScreens.RegistrationScreen.RegistrationViewModel
 import org.koin.androidx.compose.getViewModel
 

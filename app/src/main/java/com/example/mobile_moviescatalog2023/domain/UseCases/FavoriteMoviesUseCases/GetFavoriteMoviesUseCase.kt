@@ -9,6 +9,10 @@ class GetFavoriteMoviesUseCase(
     private val repository: FavoriteMoviesRepository
 ) {
     suspend fun invoke(): Result<MoviesListModel> {
-        return repository.getFavoriteMovies()
+        return try {
+            Result.success(repository.getFavoriteMovies())
+        } catch (e: java.lang.Exception) {
+            Result.failure(e)
+        }
     }
 }

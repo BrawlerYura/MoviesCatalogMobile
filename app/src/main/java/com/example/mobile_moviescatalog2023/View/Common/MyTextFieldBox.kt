@@ -1,4 +1,4 @@
-package com.example.mobile_moviescatalog2023.View.AuthScreens.RegistrationScreen.Composables
+package com.example.mobile_moviescatalog2023.View.Common
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -15,6 +15,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -22,20 +23,26 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.mobile_moviescatalog2023.R
-import com.example.mobile_moviescatalog2023.View.AuthScreens.RegistrationScreen.RegistrationContract
+import com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.ProfileScreen.Composables.profileStatePreview
+import com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.ProfileScreen.ProfileScreenContract
 import com.example.mobile_moviescatalog2023.ui.theme.interFamily
 
 @Composable
-fun NameTextBox(
-    state: RegistrationContract.State,
-    onEventSent: (event: RegistrationContract.Event) -> Unit
+fun MyTextFieldBox(
+    value: String,
+    isError: Boolean,
+    isValid: Boolean,
+    onSaveEvent: (text: String) -> Unit,
+    headerText: String,
+    errorText: String
 ) {
     Column(
-        modifier = Modifier.fillMaxWidth().padding(bottom = 15.dp),
+        modifier = Modifier
+            .fillMaxWidth(),
         horizontalAlignment = Alignment.Start
     ) {
         Text(
-            text = stringResource(R.string.name_label),
+            text = headerText,
             style = TextStyle(
                 fontFamily = interFamily,
                 fontWeight = FontWeight.W500,
@@ -44,10 +51,11 @@ fun NameTextBox(
             ),
             modifier = Modifier.padding(bottom = 8.dp)
         )
-
         OutlinedTextField(
-            value = state.name,
+            value = value,
+            isError = isError,
             colors = OutlinedTextFieldDefaults.colors(
+                errorContainerColor = Color(0xFFE64646).copy(alpha = 0.1f)
             ),
             textStyle = TextStyle(
                 fontFamily = interFamily,
@@ -55,13 +63,13 @@ fun NameTextBox(
                 fontSize = 15.sp
             ),
             onValueChange = {
-                onEventSent(RegistrationContract.Event.SaveNameEvent(it))
+                onSaveEvent(it)
             },
             singleLine = true,
             trailingIcon = {
-                if (state.name.isNotEmpty()) {
+                if (value.isNotEmpty()) {
                     IconButton(onClick = {
-                        onEventSent(RegistrationContract.Event.SaveNameEvent(""))
+                        onSaveEvent("")
                     }) {
                         Icon(
                             imageVector = Icons.Outlined.Close,
@@ -74,9 +82,9 @@ fun NameTextBox(
             modifier = Modifier.fillMaxWidth()
         )
 
-        if(state.isNameValid == false) {
+        if(isValid) {
             Text(
-                text = stringResource(R.string.invalid_name_message),
+                text = errorText,
                 style = TextStyle(
                     fontFamily = interFamily,
                     fontWeight = FontWeight.W400,
@@ -91,9 +99,13 @@ fun NameTextBox(
 
 @Preview(showBackground = true)
 @Composable
-fun NameTextBoxPreview() {
-    NameTextBox(
-        state = registrationStatePreview,
-        onEventSent = { }
+private fun MailTextBoxPreview() {
+    MyTextFieldBox(
+        value = "value",
+        isError = true,
+        isValid = false,
+        onSaveEvent = { },
+        headerText = "Электронная почта",
+        errorText = "Неверно введена почта"
     )
 }

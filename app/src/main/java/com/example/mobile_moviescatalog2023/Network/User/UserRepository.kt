@@ -11,12 +11,8 @@ import retrofit2.Response
 class UserRepository(
     private val api: UserApi
 ) {
-    suspend fun getProfile(): Result<ProfileModel> {
-        return try {
-            Result.success(api.getProfile())
-        } catch (e: java.lang.Exception) {
-            Result.failure(e)
-        }
+    suspend fun getProfile(): ProfileModel {
+        return api.getProfile()
     }
 
     suspend fun putProfile(body: ProfileModel) {

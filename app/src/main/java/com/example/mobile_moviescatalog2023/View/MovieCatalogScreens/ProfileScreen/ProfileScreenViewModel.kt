@@ -1,16 +1,13 @@
 package com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.ProfileScreen
 
-import android.util.Log
 import androidx.compose.ui.hapticfeedback.HapticFeedback
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.lifecycle.viewModelScope
-import com.example.mobile_moviescatalog2023.Network.Network
 import com.example.mobile_moviescatalog2023.domain.Entities.Models.ProfileModel
 import com.example.mobile_moviescatalog2023.View.Base.BaseViewModel
 import com.example.mobile_moviescatalog2023.domain.UseCases.FormatDateUseCase
-import com.example.mobile_moviescatalog2023.domain.UseCases.UserUseCases.CheckTokenUseCase
 import com.example.mobile_moviescatalog2023.domain.UseCases.UserUseCases.GetProfileUseCase
-import com.example.mobile_moviescatalog2023.domain.UseCases.UserUseCases.LogoutUseCase
+import com.example.mobile_moviescatalog2023.domain.UseCases.AuthUseCases.LogoutUseCase
 import com.example.mobile_moviescatalog2023.domain.UseCases.UserUseCases.PutProfileUseCase
 import com.example.mobile_moviescatalog2023.domain.UseCases.ValidationUseCase
 import kotlinx.coroutines.Dispatchers
@@ -25,7 +22,9 @@ class ProfileScreenViewModel(
     private val validationUseCase: ValidationUseCase
 ) : BaseViewModel<ProfileScreenContract.Event, ProfileScreenContract.State, ProfileScreenContract.Effect>() {
 
-    init { loadUserDetails() }
+    init {
+        loadUserDetails()
+    }
 
     override fun setInitialState() = ProfileScreenContract.State(
         id = "",
@@ -38,7 +37,11 @@ class ProfileScreenViewModel(
         isSuccess = null,
         errorMessage = null,
         profileModel = null,
-        isEnable = false
+        isEnable = false,
+        isCancelEnable = false,
+        isNameValid = true,
+        isEmailValid = true,
+        isBirthDateValid = true
     )
 
     override fun handleEvents(event: ProfileScreenContract.Event) {
@@ -63,64 +66,93 @@ class ProfileScreenViewModel(
 
     private fun saveName(name: String) {
         setState { copy(name = name) }
+        checkIfButtonsEnable()
         if (validationUseCase.checkIfNameValid(state.value.name)) {
-            checkIfProfileModelMatches()
+            setState { copy(isNameValid = true) }
         } else {
-            setState { copy(isEnable = false) }
+            setState { copy(isNameValid = false, isEnable = false) }
         }
     }
 
     private fun saveGender(gender: Int) {
         setState { copy(gender = gender) }
+        checkIfButtonsEnable()
     }
 
     private fun saveEmail(email: String) {
         setState { copy(email = email) }
+        checkIfButtonsEnable()
         if (validationUseCase.checkIfEmailValid(state.value.email)) {
-            checkIfProfileModelMatches()
+            setState { copy(isEmailValid = true) }
         } else {
-            setState { copy(isEnable = false) }
+            setState { copy(isEmailValid = false, isEnable = false) }
         }
     }
 
     private fun saveUserIconUrl(userIconUrl: String) {
         setState { copy(userIconUrl = userIconUrl) }
-        checkIfProfileModelMatches()
+        checkIfButtonsEnable()
     }
 
     private fun saveBirthDate(birthDate: String) {
         setState { copy(birthDate = birthDate) }
+        checkIfButtonsEnable()
         if (validationUseCase.checkIfBirthDateValid(state.value.birthDate)) {
-            checkIfProfileModelMatches()
+            setState { copy(isBirthDateValid = true) }
+        } else {
+            setState { copy(isBirthDateValid = false, isEnable = false) }
+        }
+    }
+
+    private fun checkIfButtonsEnable() {
+        checkIfCancelButtonEnable()
+        checkIfPutButtonEnable()
+    }
+
+    private fun checkIfCancelButtonEnable() {
+        if (state.value.profileModel != null) {
+            if (checkIfDetailsMatches()) {
+                setState { copy(isCancelEnable = true) }
+            } else {
+                setState { copy(isCancelEnable = false) }
+            }
+        }
+    }
+
+    private fun checkIfPutButtonEnable() {
+        if(
+            state.value.isBirthDateValid &&
+            state.value.isEmailValid &&
+            state.value.isNameValid
+            ) {
+            if (state.value.profileModel != null) {
+                if (checkIfDetailsMatches()) {
+                    setState { copy(isEnable = true) }
+                } else {
+                    setState { copy(isEnable = false) }
+                }
+            }
         } else {
             setState { copy(isEnable = false) }
         }
     }
 
-    private fun checkIfProfileModelMatches() {
-        if (state.value.profileModel != null) {
-            if (!validationUseCase.checkIfProfileModelMatches(
-                    newProfileModel = ProfileModel(
-                        id = state.value.id,
-                        nickName = state.value.nickName,
-                        email = state.value.email,
-                        avatarLink = state.value.userIconUrl,
-                        name = state.value.name,
-                        gender = state.value.gender,
-                        birthDate = state.value.birthDate
-                    ),
-                    state.value.profileModel!!
-                )
-            ) {
-                setState { copy(isEnable = true) }
-            } else {
-                setState { copy(isEnable = false) }
-            }
-        }
+    private fun checkIfDetailsMatches(): Boolean {
+        return !validationUseCase.checkIfProfileModelMatches(
+            newProfileModel = ProfileModel(
+                id = state.value.id,
+                nickName = state.value.nickName,
+                email = state.value.email,
+                avatarLink = state.value.userIconUrl,
+                name = state.value.name,
+                gender = state.value.gender,
+                birthDate = state.value.birthDate
+            ),
+            state.value.profileModel!!
+        )
     }
 
     private fun loadUserDetails() {
-        Log.e("a", Network.token)
         viewModelScope.launch(Dispatchers.IO) {
             getProfileUseCase.invoke()
                 .onSuccess {
@@ -142,16 +174,18 @@ class ProfileScreenViewModel(
                                 gender = it.gender,
                                 birthDate = formatDateUseCase.formatDateFromApi(it.birthDate)
                             ),
-                            isEnable = false
+                            isEnable = false,
+                            isCancelEnable = false,
+                            isSuccess = null,
+                            isNameValid = true,
+                            isEmailValid = true,
+                            isBirthDateValid = true
                         )
                     }
-                    }.onFailure {
-                    Log.e("a", Network.token)
-                        setState {
-                            copy()
-                        }
-                    }
+                }.onFailure {
+
                 }
+        }
     }
 
     private fun putUserDetails(haptic: HapticFeedback) {
@@ -166,7 +200,31 @@ class ProfileScreenViewModel(
         )
         viewModelScope.launch(Dispatchers.IO) {
             putProfileUseCase.invoke(profileModel)
-            haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                .onSuccess {
+                    setState {
+                        copy(
+                            isEnable = false,
+                            isCancelEnable = false,
+                            profileModel = ProfileModel(
+                                id = state.value.id,
+                                nickName = state.value.nickName,
+                                email = state.value.email,
+                                avatarLink = state.value.userIconUrl,
+                                name = state.value.name,
+                                gender = state.value.gender,
+                                birthDate = state.value.birthDate
+                            )
+                        )
+                    }
+                }.onFailure {
+                    setState {
+                        copy(
+                            isSuccess = false,
+                            errorMessage = "Указаны некорректные данные"
+                        )
+                    }
+                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                }
         }
     }
 

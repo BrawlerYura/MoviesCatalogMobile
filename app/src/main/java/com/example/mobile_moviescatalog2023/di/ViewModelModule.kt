@@ -13,12 +13,30 @@ import org.koin.dsl.module
 import org.koin.androidx.viewmodel.dsl.viewModel
 
 val ViewModelModule = module {
-    viewModel { SplashScreenViewModel( checkTokenUseCase = get()) }
+    viewModel { SplashScreenViewModel(checkTokenUseCase = get()) }
     viewModel { LoginViewModel(androidContext(), loginUseCase = get(), validationUseCase = get()) }
     viewModel { RegistrationViewModel(formatDateUseCase = get(), validationUseCase = get()) }
-    viewModel { RegistrationPasswordViewModel(androidContext(), registerUseCase = get(), validationUseCase = get()) }
-    viewModel { MainScreenViewModel(getMoviesUseCase = get(), getMyIdUseCase = get()) }
-    viewModel { FavoriteScreenViewModel(getFavoriteMoviesUseCase = get()) }
+    viewModel {
+        RegistrationPasswordViewModel(
+            androidContext(),
+            registerUseCase = get(),
+            validationUseCase = get()
+        )
+    }
+    viewModel {
+        MainScreenViewModel(
+            getMoviesUseCase = get(),
+            getMyIdUseCase = get(),
+            getFilmDetailsUseCase = get(),
+            calculateRatingUseCase = get()
+        )
+    }
+    viewModel {
+        FavoriteScreenViewModel(
+            getFavoriteMoviesUseCase = get(),
+            fromListToPartsMovieUseCase = get()
+        )
+    }
 
     viewModel {
         ProfileScreenViewModel(
@@ -39,7 +57,8 @@ val ViewModelModule = module {
             deleteReviewUseCase = get(),
             addReviewUseCase = get(),
             putReviewUseCase = get(),
-            formatDateUseCase = get()
+            formatDateUseCase = get(),
+            calculateRatingUseCase = get()
         )
     }
 }

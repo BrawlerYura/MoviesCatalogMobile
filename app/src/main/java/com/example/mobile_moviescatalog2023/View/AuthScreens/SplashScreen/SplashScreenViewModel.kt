@@ -30,14 +30,12 @@ class SplashScreenViewModel (
     }
 
     private fun getToken() {
-        Log.e("dadasd", "sdasd")
         viewModelScope.launch(Dispatchers.IO) {
             checkTokenUseCase.invoke()
             .onSuccess {
                     Network.userId = it.id
                     setState { copy(isSuccessGetToken = true) }
                 }.onFailure {
-                    Log.e("dadasd", "sdasd")
                     setState { copy(isError = true) }
                 }
 

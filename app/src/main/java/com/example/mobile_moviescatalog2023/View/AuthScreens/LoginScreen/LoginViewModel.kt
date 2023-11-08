@@ -73,14 +73,12 @@ class LoginViewModel(
 
             loginUseCase.invoke(loginBody)
                 .onSuccess {
-                    if(it != null) {
-                        Log.e("a", it.token)
-                        TokenManager(context).saveToken(it.token)
-                        Network.token = it.token
-                        setState { copy(isSuccess = true) }
-                        MainScope().launch {
-                            setEffect { LoginContract.Effect.Navigation.ToMain }
-                        }
+                    Log.e("a", it.token)
+                    TokenManager(context).saveToken(it.token)
+                    Network.token = it.token
+                    setState { copy(isSuccess = true) }
+                    MainScope().launch {
+                        setEffect { LoginContract.Effect.Navigation.ToMain }
                     }
             } .onFailure {
                 setState { copy(isSuccess = false, errorMessage = "Неверный логин или пароль") }

@@ -8,6 +8,10 @@ class GetMyIdUseCase(
     private val repository: UserRepository
 ) {
     suspend fun invoke(): Result<ProfileModel> {
-        return repository.getProfile()
+        return try {
+            Result.success(repository.getProfile())
+        } catch (e: java.lang.Exception) {
+            Result.failure(e)
+        }
     }
 }

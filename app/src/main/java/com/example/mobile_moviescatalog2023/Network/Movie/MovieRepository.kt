@@ -13,19 +13,11 @@ import retrofit2.Response
 class MovieRepository(
     private val api: MovieApi
 ) {
-    suspend fun getMovies(page: Int): Result<MoviesModel> {
-        return try {
-            Result.success(api.getMovies(page))
-        } catch (e: java.lang.Exception) {
-            Result.failure(e)
-        }
+    suspend fun getMovies(page: Int): MoviesModel {
+        return api.getMovies(page)
     }
 
-    suspend fun getMovieDetails(id: String): Result<MovieDetailsModel> {
-        return try {
-            Result.success(api.getDetails(id))
-        } catch (e: java.lang.Exception) {
-            Result.failure(e)
-        }
+    suspend fun getMovieDetails(id: String): MovieDetailsModel {
+        return api.getDetails(id)
     }
 }

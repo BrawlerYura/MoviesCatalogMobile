@@ -40,7 +40,11 @@ class ProfileScreenContract {
         val isSuccess: Boolean?,
         val errorMessage: String?,
         val profileModel: ProfileModel?,
-        val isEnable: Boolean
+        val isEnable: Boolean,
+        val isCancelEnable: Boolean,
+        val isNameValid: Boolean,
+        val isEmailValid: Boolean,
+        val isBirthDateValid: Boolean
     ) : ViewState
 
     sealed class Effect : ViewSideEffect {

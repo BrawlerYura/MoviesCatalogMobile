@@ -15,6 +15,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.hapticfeedback.HapticFeedback
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -25,6 +27,7 @@ import com.example.mobile_moviescatalog2023.R
 import com.example.mobile_moviescatalog2023.View.AuthScreens.LoginScreen.LoginContract
 import com.example.mobile_moviescatalog2023.View.AuthScreens.SplashScreen.SplashContract
 import com.example.mobile_moviescatalog2023.View.Base.SIDE_EFFECTS_KEY
+import com.example.mobile_moviescatalog2023.View.Common.MyButton
 import com.example.mobile_moviescatalog2023.ui.theme.FilmusTheme
 import com.example.mobile_moviescatalog2023.ui.theme.interFamily
 import kotlinx.coroutines.flow.Flow
@@ -81,7 +84,14 @@ fun LoginScreen(
 
                 PasswordTextBox(state, onEventSent)
 
-                SignInButton(state) { haptic -> onEventSent(LoginContract.Event.SignIn(haptic)) }
+                val haptic = LocalHapticFeedback.current
+                MyButton(
+                    isEnabled = state.buttonEnabled,
+                    onEventSent = { onEventSent(LoginContract.Event.SignIn(haptic)) },
+                    text = stringResource(R.string.login_button),
+                    backgroundColor = MaterialTheme.colorScheme.primary,
+                    contentColor = MaterialTheme.colorScheme.onPrimary
+                )
             }
             LoginBottomText { onEventSent(LoginContract.Event.NavigationToRegistration) }
         }

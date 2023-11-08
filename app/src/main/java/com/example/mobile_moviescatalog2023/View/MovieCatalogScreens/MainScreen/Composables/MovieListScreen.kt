@@ -53,9 +53,7 @@ fun MovieListScreen(
             )
         }
         itemsIndexed(state.movieList) { index, item ->
-            if(state.filmRatingsList.isNotEmpty()) {
-                FilmCard(item, state.filmRatingsList[index], onNavigationRequested)
-            }
+            FilmCard(item, index, state, onNavigationRequested)
         }
     }
 

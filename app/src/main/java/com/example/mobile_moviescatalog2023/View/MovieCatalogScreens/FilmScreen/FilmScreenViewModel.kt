@@ -1,13 +1,11 @@
 package com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.FilmScreen
 
-import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.viewModelScope
 import com.example.mobile_moviescatalog2023.domain.Entities.Models.MovieDetailsModel
 import com.example.mobile_moviescatalog2023.domain.Entities.Models.ReviewModifyModel
 import com.example.mobile_moviescatalog2023.Network.Network
 import com.example.mobile_moviescatalog2023.View.Base.BaseViewModel
-import com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.MainScreen.Composables.FilmRating
-import com.example.mobile_moviescatalog2023.domain.Entities.Models.ReviewModel
+import com.example.mobile_moviescatalog2023.domain.UseCases.CalculateRatingUseCase
 import com.example.mobile_moviescatalog2023.domain.UseCases.FavoriteMoviesUseCases.AddToFavoriteUseCase
 import com.example.mobile_moviescatalog2023.domain.UseCases.FavoriteMoviesUseCases.DeleteFavoriteMovieUseCase
 import com.example.mobile_moviescatalog2023.domain.UseCases.FavoriteMoviesUseCases.GetFavoriteMoviesUseCase
@@ -27,7 +25,8 @@ class FilmScreenViewModel(
     private val deleteReviewUseCase: DeleteReviewUseCase,
     private val addReviewUseCase: AddReviewUseCase,
     private val putReviewUseCase: PutReviewUseCase,
-    private val formatDateUseCase: FormatDateUseCase
+    private val formatDateUseCase: FormatDateUseCase,
+    private val calculateRatingUseCase: CalculateRatingUseCase
 ) : BaseViewModel<FilmScreenContract.Event, FilmScreenContract.State, FilmScreenContract.Effect>() {
 
     override fun setInitialState() = FilmScreenContract.State(
@@ -96,7 +95,7 @@ class FilmScreenViewModel(
                         copy(
                             isLoaded = true,
                             movieDetails = formatDateUseCase.formatCreateDateTime(it),
-                            currentFilmRating = calculateFilmRating(it.reviews)
+                            currentFilmRating = calculateRatingUseCase.calculateFilmRating(it.reviews)
                         )
                     }
                     checkIfWithMyReview(it)
@@ -136,22 +135,30 @@ class FilmScreenViewModel(
     private fun addToFavorite(id: String) {
         viewModelScope.launch(Dispatchers.IO) {
             addToFavoriteUseCase.invoke(id)
-            setState {
-                copy(
-                    isMyFavorite = true
-                )
-            }
+                .onSuccess {
+                    setState {
+                        copy(
+                            isMyFavorite = true
+                        )
+                    }
+                } .onFailure {
+
+                }
         }
     }
 
     private fun deleteFavorite(id: String) {
         viewModelScope.launch(Dispatchers.IO) {
             deleteFavoriteMovieUseCase.invoke(id)
-            setState {
-                copy(
-                    isMyFavorite = false
-                )
-            }
+                .onSuccess {
+                    setState {
+                        copy(
+                            isMyFavorite = false
+                        )
+                    }
+                }.onFailure {
+
+                }
         }
     }
 
@@ -201,14 +208,24 @@ class FilmScreenViewModel(
     private fun deleteMyReview(filmId: String, reviewId: String) {
         viewModelScope.launch(Dispatchers.IO) {
             deleteReviewUseCase.invoke(filmId, reviewId)
-            loadFilmDetails(filmId)
+                .onSuccess {
+                    loadFilmDetails(filmId)
+                    setState { copy(isWithMyReview = false) }
+                } .onFailure {
+
+                }
         }
     }
 
     private fun addMyReview(reviewModifyModel: ReviewModifyModel, filmId: String) {
         viewModelScope.launch(Dispatchers.IO) {
             addReviewUseCase.invoke(reviewModifyModel, filmId)
-            loadFilmDetails(filmId)
+                .onSuccess {
+                    loadFilmDetails(filmId)
+                }
+                .onFailure {
+
+                }
         }
     }
 
@@ -220,55 +237,6 @@ class FilmScreenViewModel(
         viewModelScope.launch(Dispatchers.IO) {
             putReviewUseCase.invoke(reviewModifyModel, filmId, reviewId)
             loadFilmDetails(filmId)
-        }
-    }
-
-    private fun calculateFilmRating(reviews: List<ReviewModel>?): FilmRating? {
-        if (reviews == null) {
-            return null
-        } else {
-
-            var sumScore: Int = 0
-            reviews.forEach {
-                sumScore += it.rating
-            }
-
-            val rating = (sumScore.toDouble() / reviews.count())
-
-            val color = when {
-                rating >= 0.0 && rating < 3.0 -> {
-                    Color(0xFFE64646)
-                }
-
-                rating >= 3.0 && rating < 4.0 -> {
-                    Color(0xFFF05C44)
-                }
-
-                rating >= 4.0 && rating < 5.0 -> {
-                    Color(0xFFFFA000)
-                }
-
-                rating >= 5.0 && rating < 7.0 -> {
-                    Color(0xFFFFD54F)
-                }
-
-                rating >= 7.0 && rating < 9.0 -> {
-                    Color(0xFFA3CD4A)
-                }
-
-                else -> {
-                    Color(0xFF4BB34B)
-                }
-            }
-
-            return FilmRating(
-                rating = if (rating != 10.0) {
-                    rating.toString().substring(startIndex = 0, endIndex = 3)
-                } else {
-                    rating.toString().substring(startIndex = 0, endIndex = 4)
-                },
-                color = color
-            )
         }
     }
 }

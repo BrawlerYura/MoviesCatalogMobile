@@ -13,12 +13,8 @@ class FavoriteMoviesRepository(
     private val api: FavoriteMoviesApi
 ) {
 
-    suspend fun getFavoriteMovies(): Result<MoviesListModel> {
-        return try {
-            Result.success(api.getFavoriteMovies())
-        } catch (e: java.lang.Exception) {
-            Result.failure(e)
-        }
+    suspend fun getFavoriteMovies(): MoviesListModel {
+        return api.getFavoriteMovies()
     }
 
     suspend fun addFavoriteMovie(id: String) {

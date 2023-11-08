@@ -8,6 +8,10 @@ class GetMoviesUseCase(
     private val repository: MovieRepository
 ) {
     suspend fun invoke(page: Int): Result<MoviesModel> {
-        return repository.getMovies(page)
+        return try {
+            Result.success(repository.getMovies(page))
+        } catch (e: java.lang.Exception) {
+            Result.failure(e)
+        }
     }
 }

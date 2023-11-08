@@ -1,52 +1,34 @@
 package com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.ProfileScreen.Composables
 
-import android.annotation.SuppressLint
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Arrangement.Absolute.spacedBy
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Close
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.mobile_moviescatalog2023.R
 import com.example.mobile_moviescatalog2023.View.Base.SIDE_EFFECTS_KEY
-import com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.BottomNavigationBar
-import com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.MainScreen.MainScreenContract
- 
+import com.example.mobile_moviescatalog2023.View.Common.ChooseGenderBox
+import com.example.mobile_moviescatalog2023.View.Common.MyBirthDateTextBox
+import com.example.mobile_moviescatalog2023.View.Common.MyButton
+import com.example.mobile_moviescatalog2023.View.Common.MyTextFieldBox
+import com.example.mobile_moviescatalog2023.View.Common.BottomNavigationBar
 import com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.ProfileScreen.ProfileScreenContract
 import com.example.mobile_moviescatalog2023.ui.theme.FilmusTheme
 import com.example.mobile_moviescatalog2023.ui.theme.interFamily
@@ -91,13 +73,101 @@ fun ProfileScreen(
                 verticalArrangement = spacedBy(15.dp)
             ) {
                 ProfileBox(state)
-                MailTextBox(state, onEventSent)
-                ProfileIconUrlBox(state, onEventSent)
-                NameTextBox(state, onEventSent)
-                GenderTextBox(state, onEventSent)
-                BirthDateTextBox(state, onEventSent)
-                SaveUserDetailsButton(state, onEventSent)
-                CancellButton(onEventSent)
+
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp),
+                    verticalArrangement = spacedBy(15.dp)
+                ) {
+                    MyTextFieldBox(
+                        value = state.email,
+                        isError = state.isSuccess == false,
+                        isValid = state.isEmailValid == false,
+                        onSaveEvent = { text ->
+                            onEventSent(ProfileScreenContract.Event.SaveEmailEvent(text))
+                        },
+                        headerText = stringResource(R.string.email_label),
+                        errorText = stringResource(R.string.invalid_email_message)
+                    )
+
+                    MyTextFieldBox(
+                        value = state.userIconUrl ?: "",
+                        isError = state.isSuccess == false,
+                        isValid = false,
+                        onSaveEvent = { text ->
+                            onEventSent(ProfileScreenContract.Event.SaveUserIconUrl(text))
+                        },
+                        headerText = stringResource(R.string.url_to_profile_icon),
+                        errorText = ""
+                    )
+
+                    MyTextFieldBox(
+                        value = state.name,
+                        isError = state.isSuccess == false,
+                        isValid = state.isNameValid == false,
+                        onSaveEvent = { text ->
+                            onEventSent(ProfileScreenContract.Event.SaveNameEvent(text))
+                        },
+                        headerText = stringResource(R.string.name_label),
+                        errorText = stringResource(R.string.invalid_name_message)
+                    )
+
+                    ChooseGenderBox(
+                        currentIndex = state.gender,
+                        onSaveEvent = { gender ->
+                            onEventSent(ProfileScreenContract.Event.SaveGenderEvent(gender))
+                        }
+                    )
+
+                    MyBirthDateTextBox(
+                        value = state.birthDate,
+                        isValid = state.isBirthDateValid == false,
+                        isError = state.isSuccess == false,
+                        onSaveDateEvent = { date ->
+                            onEventSent(
+                                ProfileScreenContract.Event.SaveBirthDateWithFormatEvent(
+                                    date
+                                )
+                            )
+                        },
+                        onSaveTextEvent = { text ->
+                            onEventSent(
+                                ProfileScreenContract.Event.SaveBirthDateEvent(text)
+                            )
+                        }
+                    )
+                }
+
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp),
+                    verticalArrangement = spacedBy(15.dp)
+                ) {
+                    val haptic = LocalHapticFeedback.current
+                    MyButton(
+                        isEnabled = state.isEnable,
+                        onEventSent = {
+                            onEventSent(
+                                ProfileScreenContract.Event.PutNewUserDetails(
+                                    haptic
+                                )
+                            )
+                        },
+                        text = stringResource(R.string.save),
+                        backgroundColor = MaterialTheme.colorScheme.primary,
+                        contentColor = MaterialTheme.colorScheme.onPrimary
+                    )
+
+                    MyButton(
+                        isEnabled = state.isCancelEnable,
+                        onEventSent = { onEventSent(ProfileScreenContract.Event.LoadUserDetails) },
+                        text = stringResource(R.string.refuse),
+                        backgroundColor = MaterialTheme.colorScheme.surface,
+                        contentColor = MaterialTheme.colorScheme.primary
+                    )
+                }
 
                 Text(
                     text = stringResource(R.string.logout),
@@ -141,5 +211,9 @@ val profileStatePreview = ProfileScreenContract.State(
     isSuccess = null,
     errorMessage = null,
     profileModel = null,
-    isEnable = true
+    isEnable = true,
+    isCancelEnable = true,
+    isNameValid = true,
+    isEmailValid = true,
+    isBirthDateValid = true
 )

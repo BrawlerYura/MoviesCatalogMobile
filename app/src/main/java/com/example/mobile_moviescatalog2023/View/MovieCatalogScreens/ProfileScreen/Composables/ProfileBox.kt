@@ -36,7 +36,11 @@ fun ProfileBox(
         verticalArrangement = Arrangement.spacedBy(6.dp)
     ) {
         AsyncImage(
-            model = state.userIconUrl ?: R.drawable.logo,
+            model = if(state.userIconUrl != "") {
+                state.userIconUrl ?: R.drawable.logo
+            } else {
+                R.drawable.logo
+                   },
             contentDescription = null,
             modifier = Modifier.height(88.dp).width(88.dp).clip(CircleShape),
             contentScale = ContentScale.Crop

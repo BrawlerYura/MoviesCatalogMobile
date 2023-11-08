@@ -6,7 +6,11 @@ import kotlinx.coroutines.flow.Flow
 class DeleteFavoriteMovieUseCase(
     private val repository: FavoriteMoviesRepository
 ) {
-    suspend fun invoke(id: String) {
-        repository.deleteFavoriteMovie(id)
+    suspend fun invoke(id: String): Result<Unit> {
+        return try {
+            Result.success(repository.deleteFavoriteMovie(id))
+        } catch (e: java.lang.Exception) {
+            Result.failure(e)
+        }
     }
 }

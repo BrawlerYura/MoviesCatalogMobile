@@ -1,41 +1,48 @@
-package com.example.mobile_moviescatalog2023.View.AuthScreens.RegistrationScreen.Composables
+package com.example.mobile_moviescatalog2023.View.Common
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Close
+import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.mobile_moviescatalog2023.R
 import com.example.mobile_moviescatalog2023.View.AuthScreens.RegistrationScreen.RegistrationContract
 import com.example.mobile_moviescatalog2023.ui.theme.interFamily
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LoginTextBox(
-    state: RegistrationContract.State,
-    onEventSent: (event: RegistrationContract.Event) -> Unit
+fun MyBirthDateTextBox(
+    value: String,
+    isValid: Boolean,
+    isError: Boolean,
+    onSaveDateEvent: (date: Long?) -> Unit,
+    onSaveTextEvent: (text: String) -> Unit,
 ) {
+    val openDialog = remember { mutableStateOf(false) }
     Column(
-        modifier = Modifier.fillMaxWidth().padding(bottom = 15.dp),
+        modifier = Modifier.fillMaxWidth().padding(bottom = 20.dp),
         horizontalAlignment = Alignment.Start
     ) {
         Text(
-            text = stringResource(R.string.login_label),
+            text = stringResource(R.string.birth_date),
             style = TextStyle(
                 fontFamily = interFamily,
                 fontWeight = FontWeight.W500,
@@ -44,39 +51,47 @@ fun LoginTextBox(
             ),
             modifier = Modifier.padding(bottom = 8.dp)
         )
+        if (openDialog.value) {
+            MyDatePicker(
+                onDismiss = { openDialog.value = !openDialog.value },
+                onEventSent = { date ->
+                    onSaveDateEvent(date)
+                }
+            )
+        }
 
+        val maxLength = 10
         OutlinedTextField(
-            value = state.login,
-            colors = OutlinedTextFieldDefaults.colors(
-            ),
+            value = value,
+            readOnly = true,
+            colors = TextFieldDefaults.outlinedTextFieldColors(),
+            isError = isError,
             textStyle = TextStyle(
                 fontFamily = interFamily,
                 fontWeight = FontWeight.W400,
                 fontSize = 15.sp
             ),
             onValueChange = {
-                onEventSent(RegistrationContract.Event.SaveLoginEvent(it))
+                if (it.length <= maxLength) {
+                    onSaveTextEvent(it)
+                }
             },
             singleLine = true,
             trailingIcon = {
-                if (state.login.isNotEmpty()) {
-                    IconButton(onClick = {
-                        onEventSent(RegistrationContract.Event.SaveLoginEvent(""))
-                    }) {
-                        Icon(
-                            imageVector = Icons.Outlined.Close,
-                            contentDescription = null
-                        )
-                    }
+                IconButton(onClick = { openDialog.value = true }) {
+                    Icon(
+                        imageVector = Icons.Default.DateRange,
+                        contentDescription = null
+                    )
                 }
             },
             shape = RoundedCornerShape(10.dp),
             modifier = Modifier.fillMaxWidth()
         )
 
-        if(state.isLoginValid == false) {
+        if(isValid) {
             Text(
-                text = stringResource(R.string.invalid_login_message),
+                text = stringResource(R.string.invalid_birth_date_message),
                 style = TextStyle(
                     fontFamily = interFamily,
                     fontWeight = FontWeight.W400,
@@ -87,13 +102,4 @@ fun LoginTextBox(
             )
         }
     }
-}
-
-@Preview(showBackground = true)
-@Composable
-private fun LoginTextBoxPreview() {
-    LoginTextBox(
-        state = registrationStatePreview,
-        onEventSent = { }
-    )
 }
