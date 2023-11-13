@@ -69,7 +69,7 @@ fun FilmCard(
                 onNavigationRequested(item.id)
             }
     ) {
-        Box(modifier = Modifier.width(95.dp)) {
+        Box(modifier = Modifier.width(95.dp).height(130.dp)) {
             AsyncImage(
                 model = item.poster,
                 contentDescription = null,

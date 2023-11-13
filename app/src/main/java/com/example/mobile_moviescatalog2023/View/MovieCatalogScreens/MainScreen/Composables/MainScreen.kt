@@ -1,26 +1,47 @@
 package com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.MainScreen.Composables
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Arrangement.Absolute.spacedBy
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.example.mobile_moviescatalog2023.R
 import com.example.mobile_moviescatalog2023.View.Base.SIDE_EFFECTS_KEY
 import com.example.mobile_moviescatalog2023.domain.Entities.Models.GenreModel
 import com.example.mobile_moviescatalog2023.domain.Entities.Models.MovieElementModel
 import com.example.mobile_moviescatalog2023.domain.Entities.Models.ReviewShortModel
 import com.example.mobile_moviescatalog2023.View.Common.BottomNavigationBar
+import com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.FilmScreen.Composables.shimmerEffect
 import com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.MainScreen.MainScreenContract
 import com.example.mobile_moviescatalog2023.ui.theme.FilmusTheme
+import com.example.mobile_moviescatalog2023.ui.theme.interFamily
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreen(
     state: MainScreenContract.State,
@@ -58,9 +79,76 @@ fun MainScreen(
                         { id -> onEventSent(MainScreenContract.Event.NavigationToFilm(id)) }
                     )
                     else -> {
-                        Box(modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background))
+                        MainLoadingScreen()
                     }
                 }
+            }
+        }
+    }
+}
+
+@Composable
+fun MainLoadingScreen() {
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        verticalArrangement = spacedBy(15.dp),
+        horizontalAlignment = Alignment.Start
+        ) {
+        Box(modifier = Modifier.fillMaxWidth().height(497.dp).shimmerEffect())
+
+        Text(
+            text = "                           ",
+            style = TextStyle(
+                fontFamily = interFamily,
+                fontWeight = FontWeight.W700,
+                fontSize = 24.sp,
+                color = MaterialTheme.colorScheme.onBackground
+            ),
+            modifier = Modifier
+                .padding(
+                start = 16.dp,
+                end = 16.dp
+            )
+                .clip(RoundedCornerShape(5.dp))
+                .shimmerEffect()
+        )
+
+        Row(
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
+            horizontalArrangement = spacedBy(10.dp)
+        ) {
+            Box(modifier = Modifier.width(95.dp).height(130.dp).clip(RoundedCornerShape(5.dp)).shimmerEffect())
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                verticalArrangement = spacedBy(4.dp),
+                horizontalAlignment = Alignment.Start
+            ) {
+                Text(
+                    text =  "                                  " +
+                            "                                  ",
+                    style = TextStyle(
+                        fontFamily = interFamily,
+                        fontWeight = FontWeight.W700,
+                        fontSize = 16.sp,
+                        color = MaterialTheme.colorScheme.onBackground
+                    ),
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(5.dp))
+                        .shimmerEffect()
+                )
+
+                Text(
+                    text = "                 ",
+                    style = TextStyle(
+                        fontFamily = interFamily,
+                        fontWeight = FontWeight.W400,
+                        fontSize = 12.sp,
+                        color = MaterialTheme.colorScheme.onBackground
+                    ),
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(5.dp))
+                        .shimmerEffect()
+                )
             }
         }
     }

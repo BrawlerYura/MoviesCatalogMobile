@@ -11,15 +11,10 @@ class ProfileScreenContract {
 
     sealed class Event : ViewEvent {
         class SaveNameEvent(val name: String) : Event()
-
         class SaveGenderEvent(val gender: Int) : Event()
-
         class SaveEmailEvent(val email: String) : Event()
-
         class SaveBirthDateEvent(val birthDate: String) : Event()
-
         class SaveBirthDateWithFormatEvent(val birthDate: Long?) : Event()
-
         class SaveUserIconUrl(val userIconUrl: String) : Event()
         class PutNewUserDetails(val haptic: HapticFeedback) : Event()
         object LoadUserDetails : Event()

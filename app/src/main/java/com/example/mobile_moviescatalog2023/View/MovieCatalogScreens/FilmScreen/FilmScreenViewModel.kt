@@ -89,24 +89,25 @@ class FilmScreenViewModel(
     private fun loadFilmDetails(id: String) {
         setState { copy(isLoading = true) }
         viewModelScope.launch(Dispatchers.IO) {
-            getFilmDetailsUseCase.invoke(id)
-                .onSuccess {
-                    setState {
-                        copy(
-                            isLoaded = true,
-                            movieDetails = formatDateUseCase.formatCreateDateTime(it),
-                            currentFilmRating = calculateRatingUseCase.calculateFilmRating(it.reviews)
-                        )
-                    }
-                    checkIfWithMyReview(it)
-                    checkIfFavorite(id = it.id)
-                }.onFailure {
-                    setState {
-                        copy(
-                            isLoaded = false
-                        )
-                    }
+            getFilmDetailsUseCase.invoke(id).collect { result ->
+                result.onSuccess {
+                setState {
+                    copy(
+                        isLoaded = true,
+                        movieDetails = formatDateUseCase.formatCreateDateTime(it),
+                        currentFilmRating = calculateRatingUseCase.calculateFilmRating(it.reviews)
+                    )
                 }
+                checkIfWithMyReview(it)
+                checkIfFavorite(id = it.id)
+            }.onFailure {
+                setState {
+                    copy(
+                        isLoaded = false
+                    )
+                }
+            }
+            }
         }
     }
 
@@ -167,13 +168,11 @@ class FilmScreenViewModel(
             getFavoriteMoviesUseCase.invoke()
                 .onSuccess {
                         it.movies?.forEach {
-                            if (id == it.id) {
                                 setState {
                                     copy(
                                         isMyFavorite = true
                                     )
                                 }
-                            }
                     }
                 }.onFailure {
 

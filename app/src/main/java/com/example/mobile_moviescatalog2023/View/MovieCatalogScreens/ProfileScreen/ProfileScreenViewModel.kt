@@ -1,5 +1,6 @@
 package com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.ProfileScreen
 
+import android.util.Log
 import androidx.compose.ui.hapticfeedback.HapticFeedback
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.lifecycle.viewModelScope
@@ -224,6 +225,7 @@ class ProfileScreenViewModel(
                         )
                     }
                     haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                    Log.e("a", it.message ?: "")
                 }
         }
     }

@@ -59,32 +59,33 @@ class MainScreenViewModel(
                 setState {
                     copy(isUpdatingList = true)
                 }
-                getMoviesUseCase.invoke(state.value.currentMoviePage)
-                    .onSuccess {
-                        setState {
-                            copy(
-                                movieList = state.value.movieList + it.movies,
-                                currentMoviePage = state.value.currentMoviePage + 1,
-                                isUpdatingList = false
-                            )
-                        }
-                        it.movies.forEach {
-                            setState {
-                                copy(
-                                    filmRatingsList = filmRatingsList + calculateRatingUseCase.calculateFilmsRating(
-                                        it.reviews
-                                    )
-                                )
-                            }
-                            loadMyFilmReview(it.id)
-                        }
-                    }.onFailure {
-                        setState {
-                            copy(
-                                isUpdatingList = false
-                            )
-                        }
+                getMoviesUseCase.invoke(state.value.currentMoviePage).collect { result ->
+                    result.onSuccess {
+                    setState {
+                        copy(
+                            movieList = state.value.movieList + it.movies,
+                            currentMoviePage = state.value.currentMoviePage + 1,
+                            isUpdatingList = false
+                        )
                     }
+                    it.movies.forEach {
+                        setState {
+                            copy(
+                                filmRatingsList = filmRatingsList + calculateRatingUseCase.calculateFilmsRating(
+                                    it.reviews
+                                )
+                            )
+                        }
+                        loadMyFilmReview(it.id)
+                    }
+                }.onFailure {
+                    setState {
+                        copy(
+                            isUpdatingList = false
+                        )
+                    }
+                }
+                }
             }
         }
     }
@@ -92,8 +93,8 @@ class MainScreenViewModel(
     private fun getMovies() {
         setState { copy(isUpdatingList = true) }
         viewModelScope.launch(Dispatchers.IO) {
-            getMoviesUseCase.invoke(1)
-                .onSuccess {
+            getMoviesUseCase.invoke(1).collect { result ->
+                result.onSuccess {
                     setState {
                         copy(
                             movieCarouselList = it.movies.take(4),
@@ -124,39 +125,41 @@ class MainScreenViewModel(
                         )
                     }
                 }
+            }
         }
     }
 
     private suspend fun loadMyFilmReview(id: String) {
-        getFilmDetailsUseCase.invoke(id)
-            .onSuccess {
-                var flag = false
-                it.reviews?.forEach { review ->
-                    if (!flag && (try {
-                            review.author?.userId == Network.userId
-                        } catch (e: Exception) {
-                            false
-                        })
-                    ) {
-                        setState {
-                            copy(
-                                myRating = myRating + FilmRating(
-                                    review.rating.toString(),
-                                    calculateRatingUseCase.calculateFilmRatingColor(review.rating.toDouble())
-                                )
+        getFilmDetailsUseCase.invoke(id).collect { result ->
+            result.onSuccess {
+            var flag = false
+            it.reviews?.forEach { review ->
+                if (!flag && (try {
+                        review.author?.userId == Network.userId
+                    } catch (e: Exception) {
+                        false
+                    })
+                ) {
+                    setState {
+                        copy(
+                            myRating = myRating + FilmRating(
+                                review.rating.toString(),
+                                calculateRatingUseCase.calculateFilmRatingColor(review.rating.toDouble())
                             )
-                        }
-                        flag = true
+                        )
                     }
-                }
-                if (!flag) {
-                    setState { copy(myRating = myRating + null) }
-                }
-            }.onFailure {
-                setState {
-                    copy(myRating = myRating + null)
+                    flag = true
                 }
             }
+            if (!flag) {
+                setState { copy(myRating = myRating + null) }
+            }
+        }.onFailure {
+            setState {
+                copy(myRating = myRating + null)
+            }
+        }
+        }
     }
 
 
@@ -167,6 +170,4 @@ class MainScreenViewModel(
             }
         }
     }
-
-
 }
