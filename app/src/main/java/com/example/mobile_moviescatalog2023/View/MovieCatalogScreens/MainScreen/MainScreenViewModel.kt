@@ -1,21 +1,25 @@
 package com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.MainScreen
 
+import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.example.mobile_moviescatalog2023.Network.Network
 import com.example.mobile_moviescatalog2023.View.Base.BaseViewModel
 import com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.MainScreen.Composables.FilmRating
 import com.example.mobile_moviescatalog2023.domain.UseCases.CalculateRatingUseCase
+import com.example.mobile_moviescatalog2023.domain.UseCases.HandleErrorUseCase
 import com.example.mobile_moviescatalog2023.domain.UseCases.MoviesUseCases.GetFilmDetailsUseCase
 import com.example.mobile_moviescatalog2023.domain.UseCases.MoviesUseCases.GetMoviesUseCase
 import com.example.mobile_moviescatalog2023.domain.UseCases.UserUseCases.GetMyIdUseCase
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 class MainScreenViewModel(
     private val getMoviesUseCase: GetMoviesUseCase,
     private val getMyIdUseCase: GetMyIdUseCase,
     private val getFilmDetailsUseCase: GetFilmDetailsUseCase,
-    private val calculateRatingUseCase: CalculateRatingUseCase
+    private val calculateRatingUseCase: CalculateRatingUseCase,
+    private val handleErrorUseCase: HandleErrorUseCase
 ) : BaseViewModel<MainScreenContract.Event, MainScreenContract.State, MainScreenContract.Effect>() {
 
     init {
@@ -25,20 +29,21 @@ class MainScreenViewModel(
 
     override fun setInitialState() = MainScreenContract.State(
         currentMoviePage = 1,
-        isRequestingMoviePage = true,
         movieList = listOf(),
-        movieCarouselList = listOf(),
-        isSuccess = false,
+        isError = false,
+        isLoaded = false,
         pageCount = 1,
         isUpdatingList = false,
         filmRatingsList = listOf(),
-        myRating = listOf()
+        myRating = listOf(),
+        isRefreshing = false
     )
 
     override fun handleEvents(event: MainScreenContract.Event) {
         when (event) {
             is MainScreenContract.Event.UpdateMoviesList -> updateMoviesList()
             is MainScreenContract.Event.GetMovies -> getMovies()
+            is MainScreenContract.Event.RefreshMovies -> refreshMovies()
             is MainScreenContract.Event.NavigationToFilm -> setEffect {
                 MainScreenContract.Effect.Navigation.ToFilm(id = event.id)
             }
@@ -61,52 +66,49 @@ class MainScreenViewModel(
                 }
                 getMoviesUseCase.invoke(state.value.currentMoviePage).collect { result ->
                     result.onSuccess {
-                    setState {
-                        copy(
-                            movieList = state.value.movieList + it.movies,
-                            currentMoviePage = state.value.currentMoviePage + 1,
-                            isUpdatingList = false
-                        )
-                    }
-                    it.movies.forEach {
+                        it.movies.forEach {
+                            setState {
+                                copy(
+                                    filmRatingsList = filmRatingsList + calculateRatingUseCase.calculateFilmsRating(
+                                        it.reviews
+                                    )
+                                )
+                            }
+                            loadMyFilmReview(it.id)
+                        }
                         setState {
                             copy(
-                                filmRatingsList = filmRatingsList + calculateRatingUseCase.calculateFilmsRating(
-                                    it.reviews
-                                )
+                                movieList = state.value.movieList + it.movies,
+                                currentMoviePage = state.value.currentMoviePage + 1,
+                                isUpdatingList = false
                             )
                         }
-                        loadMyFilmReview(it.id)
-                    }
-                }.onFailure {
-                    setState {
-                        copy(
-                            isUpdatingList = false
+                    }.onFailure {
+                        handleErrorUseCase.handleError(
+                            error = it.message,
+                            onInputError = { },
+                            onTokenError = {
+                                MainScreenContract.Effect.Navigation.ToIntroducing
+                            },
+                            onOtherError = {
+                                setState {
+                                    copy(
+                                        isUpdatingList = false
+                                    )
+                                }
+                            }
                         )
                     }
-                }
                 }
             }
         }
     }
 
     private fun getMovies() {
-        setState { copy(isUpdatingList = true) }
         viewModelScope.launch(Dispatchers.IO) {
             getMoviesUseCase.invoke(1).collect { result ->
                 result.onSuccess {
-                    setState {
-                        copy(
-                            movieCarouselList = it.movies.take(4),
-                            movieList = it.movies.drop(4),
-                            currentMoviePage = state.value.currentMoviePage + 1,
-                            pageCount = it.pageInfo.pageCount,
-                            isRequestingMoviePage = false,
-                            isSuccess = true,
-                            isUpdatingList = false
-                        )
-                    }
-                    state.value.movieList.forEach {
+                    it.movies.forEach {
                         setState {
                             copy(
                                 filmRatingsList = filmRatingsList + calculateRatingUseCase.calculateFilmsRating(
@@ -116,57 +118,104 @@ class MainScreenViewModel(
                         }
                         loadMyFilmReview(it.id)
                     }
-                }.onFailure {
                     setState {
                         copy(
-                            isRequestingMoviePage = true,
-                            isSuccess = false,
-                            isUpdatingList = false
+                            movieList = it.movies,
+                            currentMoviePage = state.value.currentMoviePage + 1,
+                            pageCount = it.pageInfo.pageCount,
+                            isError = false,
+                            isUpdatingList = false,
+                            isLoaded = true
                         )
                     }
+                }.onFailure {
+                    handleErrorUseCase.handleError(
+                        error = it.message,
+                        onInputError = { },
+                        onTokenError = {
+                            MainScreenContract.Effect.Navigation.ToIntroducing
+                        },
+                        onOtherError = {
+                            setState {
+                                copy(
+                                    isError = true,
+                                    isUpdatingList = false,
+                                    isLoaded = false
+                                )
+                            }
+                        }
+                    )
                 }
             }
+            setState { copy(isRefreshing = false) }
         }
+    }
+
+    private fun refreshMovies() {
+        setState {
+            copy(
+                currentMoviePage = 1,
+                movieList = listOf(),
+                isLoaded = false,
+                isError = false,
+                isUpdatingList = false,
+                filmRatingsList = listOf(),
+                myRating = listOf(),
+                isRefreshing = true
+            )
+        }
+        getMovies()
     }
 
     private suspend fun loadMyFilmReview(id: String) {
         getFilmDetailsUseCase.invoke(id).collect { result ->
             result.onSuccess {
-            var flag = false
-            it.reviews?.forEach { review ->
-                if (!flag && (try {
-                        review.author?.userId == Network.userId
-                    } catch (e: Exception) {
-                        false
-                    })
-                ) {
-                    setState {
-                        copy(
-                            myRating = myRating + FilmRating(
-                                review.rating.toString(),
-                                calculateRatingUseCase.calculateFilmRatingColor(review.rating.toDouble())
+                var flag = false
+                it.reviews?.forEach { review ->
+                    if (!flag && (try {
+                            review.author?.userId == Network.userId
+                        } catch (e: Exception) {
+                            false
+                        })
+                    ) {
+                        setState {
+                            copy(
+                                myRating = myRating + FilmRating(
+                                    review.rating.toString(),
+                                    calculateRatingUseCase.calculateFilmRatingColor(review.rating.toDouble())
+                                )
                             )
-                        )
+                        }
+                        flag = true
                     }
-                    flag = true
                 }
+                if (!flag) {
+                    setState { copy(myRating = myRating + null) }
+                }
+            }.onFailure {
+                handleErrorUseCase.handleError(
+                    error = it.message,
+                    onInputError = { },
+                    onTokenError = {
+                        MainScreenContract.Effect.Navigation.ToIntroducing
+                    },
+                    onOtherError = {
+                        setState {
+                            copy(myRating = myRating + null)
+                        }
+                    }
+                )
             }
-            if (!flag) {
-                setState { copy(myRating = myRating + null) }
-            }
-        }.onFailure {
-            setState {
-                copy(myRating = myRating + null)
-            }
-        }
         }
     }
 
 
     private fun getMyId() {
         viewModelScope.launch(Dispatchers.IO) {
-            getMyIdUseCase.invoke().onSuccess {
-                Network.userId = it.id
+            getMyIdUseCase.invoke().collect { result ->
+                result.onSuccess {
+                    Network.userId = it.id
+                }
             }
         }
     }

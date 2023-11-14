@@ -6,6 +6,7 @@ import com.example.mobile_moviescatalog2023.domain.Entities.Models.ReviewModel
 import com.example.mobile_moviescatalog2023.domain.Entities.Models.ReviewShortModel
 
 class CalculateRatingUseCase {
+
     fun calculateFilmsRating(reviews: List<ReviewShortModel>?): FilmRating? {
         if (reviews == null) {
             return null

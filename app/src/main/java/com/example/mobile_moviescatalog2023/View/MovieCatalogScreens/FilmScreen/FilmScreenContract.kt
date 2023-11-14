@@ -11,6 +11,7 @@ import com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.MainScreen.
 class FilmScreenContract {
 
     sealed class Event : ViewEvent {
+        class RefreshScreen(val id: String) : Event()
         class LoadFilmDetails(val id: String) : Event()
         class AddToFavorite(val id: String) : Event()
         class DeleteFavorite(val id: String) : Event()
@@ -30,7 +31,8 @@ class FilmScreenContract {
 
     data class State(
         val isLoaded: Boolean,
-        val isLoading: Boolean,
+        val isError: Boolean,
+        val isRefreshing: Boolean,
         val movieDetails: MovieDetailsModel,
         val isAddingSuccess: Boolean?,
         val isDeletingSuccess: Boolean?,
@@ -45,6 +47,7 @@ class FilmScreenContract {
     sealed class Effect : ViewSideEffect {
         sealed class Navigation : Effect() {
             object Back : Navigation()
+            object ToIntroducing : Navigation()
         }
     }
 }

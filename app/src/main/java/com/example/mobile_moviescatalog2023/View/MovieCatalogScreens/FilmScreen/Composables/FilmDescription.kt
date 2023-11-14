@@ -32,6 +32,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.mobile_moviescatalog2023.R
+import com.example.mobile_moviescatalog2023.ui.theme.MyTypography
 import com.example.mobile_moviescatalog2023.ui.theme.interFamily
 
 @Composable
@@ -54,12 +55,8 @@ fun FilmDescription(
             ) {
                 Text(
                     text = movieDescription,
-                    style = TextStyle(
-                        fontFamily = interFamily,
-                        fontWeight = FontWeight.W400,
-                        fontSize = 14.sp,
-                        color = MaterialTheme.colorScheme.onBackground
-                    ),
+                    style = MyTypography.bodySmall,
+                    color = MaterialTheme.colorScheme.onBackground,
                     maxLines = if (expanded) Int.MAX_VALUE else 2,
                     modifier = Modifier
                         .fillMaxWidth()
@@ -93,12 +90,8 @@ fun FilmDescription(
                     } else {
                         stringResource(R.string.more)
                     },
-                    style = TextStyle(
-                        fontFamily = interFamily,
-                        fontWeight = FontWeight.W500,
-                        fontSize = 14.sp,
-                        color = MaterialTheme.colorScheme.primary
-                    ),
+                    style = MyTypography.labelMedium,
+                    color = MaterialTheme.colorScheme.primary,
                     maxLines = if (expanded) Int.MAX_VALUE else 3,
                 )
                 if (!expanded) {

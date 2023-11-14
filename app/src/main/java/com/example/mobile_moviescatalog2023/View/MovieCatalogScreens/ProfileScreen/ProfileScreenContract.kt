@@ -17,6 +17,7 @@ class ProfileScreenContract {
         class SaveBirthDateWithFormatEvent(val birthDate: Long?) : Event()
         class SaveUserIconUrl(val userIconUrl: String) : Event()
         class PutNewUserDetails(val haptic: HapticFeedback) : Event()
+        object RefreshScreen : Event()
         object LoadUserDetails : Event()
         object Logout : Event()
         object NavigationToMain : Event()
@@ -32,14 +33,17 @@ class ProfileScreenContract {
         val name: String,
         val gender: Int,
         val birthDate: String,
-        val isSuccess: Boolean?,
+        val isLoaded: Boolean,
+        val isError: Boolean,
+        val isSuccess: Boolean,
         val errorMessage: String?,
         val profileModel: ProfileModel?,
         val isEnable: Boolean,
         val isCancelEnable: Boolean,
         val isNameValid: Boolean,
         val isEmailValid: Boolean,
-        val isBirthDateValid: Boolean
+        val isBirthDateValid: Boolean,
+        val isRefreshing: Boolean
     ) : ViewState
 
     sealed class Effect : ViewSideEffect {

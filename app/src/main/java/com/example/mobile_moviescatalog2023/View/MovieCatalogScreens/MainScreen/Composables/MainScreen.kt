@@ -1,7 +1,6 @@
 package com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.MainScreen.Composables
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement.Absolute.spacedBy
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -11,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -18,28 +18,35 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.mobile_moviescatalog2023.R
 import com.example.mobile_moviescatalog2023.View.Base.SIDE_EFFECTS_KEY
 import com.example.mobile_moviescatalog2023.domain.Entities.Models.GenreModel
 import com.example.mobile_moviescatalog2023.domain.Entities.Models.MovieElementModel
 import com.example.mobile_moviescatalog2023.domain.Entities.Models.ReviewShortModel
 import com.example.mobile_moviescatalog2023.View.Common.BottomNavigationBar
-import com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.FilmScreen.Composables.shimmerEffect
+import com.example.mobile_moviescatalog2023.View.Common.NetworkErrorScreen
+import com.example.mobile_moviescatalog2023.View.Common.PreviewStateBuilder.mainStatePreview
 import com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.MainScreen.MainScreenContract
 import com.example.mobile_moviescatalog2023.ui.theme.FilmusTheme
 import com.example.mobile_moviescatalog2023.ui.theme.interFamily
+import eu.bambooapps.material3.pullrefresh.PullRefreshIndicator
+import eu.bambooapps.material3.pullrefresh.pullRefresh
+import eu.bambooapps.material3.pullrefresh.rememberPullRefreshState
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -56,98 +63,62 @@ fun MainScreen(
                 is MainScreenContract.Effect.Navigation.ToFilm -> onNavigationRequested(effect)
                 is MainScreenContract.Effect.Navigation.ToFavorite -> onNavigationRequested(effect)
                 is MainScreenContract.Effect.Navigation.ToProfile -> onNavigationRequested(effect)
+                is MainScreenContract.Effect.Navigation.ToIntroducing -> onNavigationRequested(effect)
             }
         }?.collect()
     }
+
+    val refreshState = rememberPullRefreshState(
+        refreshing = state.isRefreshing,
+        onRefresh = {
+            onEventSent(MainScreenContract.Event.RefreshMovies)
+        }
+    )
+
+    val lazyListState = rememberLazyListState()
+    val coroutineScope = rememberCoroutineScope()
 
     FilmusTheme {
         Scaffold(
             bottomBar = {
                 BottomNavigationBar(
-                    onNavigationToMainRequested = { },
+                    onNavigationToMainRequested = {
+                        coroutineScope.launch {
+                            lazyListState.animateScrollToItem(index = 0)
+                        }
+                    },
                     onNavigationToProfileRequested = { onEventSent(MainScreenContract.Event.NavigationToProfile) },
                     onNavigationToFavoriteRequested = { onEventSent(MainScreenContract.Event.NavigationToFavorite) },
                     currentScreen = 0
                 )
             }
         ) {
-            Box(modifier = Modifier.padding(it)) {
+            Box(
+                modifier = Modifier
+                    .padding(it)
+                    .pullRefresh(refreshState)
+            ) {
                 when {
-                    state.isSuccess -> MovieListScreen(
-                        state,
-                        { onEventSent(MainScreenContract.Event.UpdateMoviesList) },
-                        { id -> onEventSent(MainScreenContract.Event.NavigationToFilm(id)) }
-                    )
+                    state.isLoaded -> {
+                        MovieListScreen(
+                            state,
+                            lazyListState,
+                            { onEventSent(MainScreenContract.Event.UpdateMoviesList) },
+                            { id -> onEventSent(MainScreenContract.Event.NavigationToFilm(id)) }
+                        )
+                    }
+                    state.isError -> {
+                        NetworkErrorScreen { onEventSent(MainScreenContract.Event.RefreshMovies) }
+                    }
                     else -> {
-                        MainLoadingScreen()
+                        MainSkeletonScreen()
                     }
                 }
-            }
-        }
-    }
-}
-
-@Composable
-fun MainLoadingScreen() {
-    Column(
-        modifier = Modifier.fillMaxSize(),
-        verticalArrangement = spacedBy(15.dp),
-        horizontalAlignment = Alignment.Start
-        ) {
-        Box(modifier = Modifier.fillMaxWidth().height(497.dp).shimmerEffect())
-
-        Text(
-            text = "                           ",
-            style = TextStyle(
-                fontFamily = interFamily,
-                fontWeight = FontWeight.W700,
-                fontSize = 24.sp,
-                color = MaterialTheme.colorScheme.onBackground
-            ),
-            modifier = Modifier
-                .padding(
-                start = 16.dp,
-                end = 16.dp
-            )
-                .clip(RoundedCornerShape(5.dp))
-                .shimmerEffect()
-        )
-
-        Row(
-            modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
-            horizontalArrangement = spacedBy(10.dp)
-        ) {
-            Box(modifier = Modifier.width(95.dp).height(130.dp).clip(RoundedCornerShape(5.dp)).shimmerEffect())
-            Column(
-                modifier = Modifier.fillMaxWidth(),
-                verticalArrangement = spacedBy(4.dp),
-                horizontalAlignment = Alignment.Start
-            ) {
-                Text(
-                    text =  "                                  " +
-                            "                                  ",
-                    style = TextStyle(
-                        fontFamily = interFamily,
-                        fontWeight = FontWeight.W700,
-                        fontSize = 16.sp,
-                        color = MaterialTheme.colorScheme.onBackground
-                    ),
+                PullRefreshIndicator(
+                    refreshing = state.isRefreshing,
+                    state = refreshState,
                     modifier = Modifier
-                        .clip(RoundedCornerShape(5.dp))
-                        .shimmerEffect()
-                )
-
-                Text(
-                    text = "                 ",
-                    style = TextStyle(
-                        fontFamily = interFamily,
-                        fontWeight = FontWeight.W400,
-                        fontSize = 12.sp,
-                        color = MaterialTheme.colorScheme.onBackground
-                    ),
-                    modifier = Modifier
-                        .clip(RoundedCornerShape(5.dp))
-                        .shimmerEffect()
+                        .align(Alignment.TopCenter)
                 )
             }
         }
@@ -165,54 +136,3 @@ private fun MainScreenPreview() {
         onNavigationRequested = { }
     )
 }
-
-private val genres = listOf(
-    GenreModel(
-        id = "",
-        name = "боевик"
-    ),
-    GenreModel(
-        id = "",
-        name = "приключения"
-    )
-)
-
-private val reviews = listOf(
-    ReviewShortModel(
-        id = "",
-        rating = 7
-    ),
-    ReviewShortModel(
-        id = "",
-        rating = 9
-    ),
-)
-private val movieElementModel =
-    MovieElementModel(
-        id = "27e0d4f4-6e31-4053-a2be-08d9b9f3d2a2",
-        name = "Пираты Карибского моря: Проклятие Черной жемчужины",
-        poster = null,
-        year = 2003,
-        country = "США",
-        genres = genres,
-        reviews = reviews,
-    )
-
-val mainStatePreview = MainScreenContract.State (
-    currentMoviePage = 1,
-    isRequestingMoviePage = false,
-    movieList = listOf(
-        movieElementModel
-    ),
-    movieCarouselList = listOf(
-        movieElementModel,
-        movieElementModel,
-        movieElementModel,
-        movieElementModel
-    ),
-    isSuccess = true,
-    pageCount = 1,
-    isUpdatingList = false,
-    myRating = listOf(),
-    filmRatingsList = listOf()
-)

@@ -6,13 +6,16 @@ import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.lifecycle.viewModelScope
 import com.example.mobile_moviescatalog2023.domain.Entities.Models.ProfileModel
 import com.example.mobile_moviescatalog2023.View.Base.BaseViewModel
+import com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.MainScreen.MainScreenContract
 import com.example.mobile_moviescatalog2023.domain.UseCases.FormatDateUseCase
 import com.example.mobile_moviescatalog2023.domain.UseCases.UserUseCases.GetProfileUseCase
 import com.example.mobile_moviescatalog2023.domain.UseCases.AuthUseCases.LogoutUseCase
+import com.example.mobile_moviescatalog2023.domain.UseCases.HandleErrorUseCase
 import com.example.mobile_moviescatalog2023.domain.UseCases.UserUseCases.PutProfileUseCase
 import com.example.mobile_moviescatalog2023.domain.UseCases.ValidationUseCase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 class ProfileScreenViewModel(
@@ -20,7 +23,8 @@ class ProfileScreenViewModel(
     private val putProfileUseCase: PutProfileUseCase,
     private val logoutUseCase: LogoutUseCase,
     private val formatDateUseCase: FormatDateUseCase,
-    private val validationUseCase: ValidationUseCase
+    private val validationUseCase: ValidationUseCase,
+    private val handleErrorUseCase: HandleErrorUseCase,
 ) : BaseViewModel<ProfileScreenContract.Event, ProfileScreenContract.State, ProfileScreenContract.Effect>() {
 
     init {
@@ -35,18 +39,22 @@ class ProfileScreenViewModel(
         name = "",
         gender = 0,
         birthDate = "",
-        isSuccess = null,
+        isSuccess = true,
+        isLoaded = false,
+        isError = false,
         errorMessage = null,
         profileModel = null,
         isEnable = false,
         isCancelEnable = false,
         isNameValid = true,
         isEmailValid = true,
-        isBirthDateValid = true
+        isBirthDateValid = true,
+        isRefreshing = true
     )
 
     override fun handleEvents(event: ProfileScreenContract.Event) {
         when (event) {
+            is ProfileScreenContract.Event.RefreshScreen -> refreshScreen()
             is ProfileScreenContract.Event.SaveEmailEvent -> saveEmail(email = event.email)
             is ProfileScreenContract.Event.SaveUserIconUrl -> saveUserIconUrl(userIconUrl = event.userIconUrl)
             is ProfileScreenContract.Event.SaveNameEvent -> saveName(name = event.name)
@@ -63,6 +71,32 @@ class ProfileScreenViewModel(
             is ProfileScreenContract.Event.NavigationToFavorite -> setEffect { ProfileScreenContract.Effect.Navigation.ToFavorite }
             is ProfileScreenContract.Event.NavigationToIntroducing -> setEffect { ProfileScreenContract.Effect.Navigation.ToIntroducing }
         }
+    }
+
+    private fun refreshScreen() {
+        setState {
+            copy(
+                id = "",
+                nickName = null,
+                email = "",
+                userIconUrl = null,
+                name = "",
+                gender = 0,
+                birthDate = "",
+                isLoaded = false,
+                isError = false,
+                errorMessage = null,
+                profileModel = null,
+                isEnable = false,
+                isSuccess = true,
+                isCancelEnable = false,
+                isNameValid = true,
+                isEmailValid = true,
+                isBirthDateValid = true,
+                isRefreshing = true
+            )
+        }
+        loadUserDetails()
     }
 
     private fun saveName(name: String) {
@@ -121,11 +155,11 @@ class ProfileScreenViewModel(
     }
 
     private fun checkIfPutButtonEnable() {
-        if(
+        if (
             state.value.isBirthDateValid &&
             state.value.isEmailValid &&
             state.value.isNameValid
-            ) {
+        ) {
             if (state.value.profileModel != null) {
                 if (checkIfDetailsMatches()) {
                     setState { copy(isEnable = true) }
@@ -155,37 +189,54 @@ class ProfileScreenViewModel(
 
     private fun loadUserDetails() {
         viewModelScope.launch(Dispatchers.IO) {
-            getProfileUseCase.invoke()
-                .onSuccess {
-                    setState {
-                        copy(
+            getProfileUseCase.invoke().collect { result ->
+                result.onSuccess {
+                setState {
+                    copy(
+                        id = it.id,
+                        nickName = it.nickName,
+                        email = it.email,
+                        userIconUrl = it.avatarLink,
+                        name = it.name,
+                        gender = it.gender,
+                        birthDate = formatDateUseCase.formatDateFromApi(it.birthDate),
+                        profileModel = ProfileModel(
                             id = it.id,
                             nickName = it.nickName,
                             email = it.email,
-                            userIconUrl = it.avatarLink,
+                            avatarLink = it.avatarLink,
                             name = it.name,
                             gender = it.gender,
-                            birthDate = formatDateUseCase.formatDateFromApi(it.birthDate),
-                            profileModel = ProfileModel(
-                                id = it.id,
-                                nickName = it.nickName,
-                                email = it.email,
-                                avatarLink = it.avatarLink,
-                                name = it.name,
-                                gender = it.gender,
-                                birthDate = formatDateUseCase.formatDateFromApi(it.birthDate)
-                            ),
-                            isEnable = false,
-                            isCancelEnable = false,
-                            isSuccess = null,
-                            isNameValid = true,
-                            isEmailValid = true,
-                            isBirthDateValid = true
-                        )
-                    }
-                }.onFailure {
-
+                            birthDate = formatDateUseCase.formatDateFromApi(it.birthDate)
+                        ),
+                        isEnable = false,
+                        isCancelEnable = false,
+                        isLoaded = true,
+                        isError = false,
+                        isSuccess = true,
+                        isNameValid = true,
+                        isEmailValid = true,
+                        isBirthDateValid = true,
+                        isRefreshing = false
+                    )
                 }
+            }.onFailure {
+                    handleErrorUseCase.handleError(
+                        error = it.message,
+                        onInputError = { },
+                        onTokenError = {
+                            setEffect { ProfileScreenContract.Effect.Navigation.ToIntroducing }
+                        },
+                        onOtherError = {
+                            setState { copy(
+                                isLoaded = false,
+                                isError = true,
+                            ) }
+                        }
+                    )
+            }
+                setState { copy(isRefreshing = false) }
+            }
         }
     }
 
@@ -199,39 +250,54 @@ class ProfileScreenViewModel(
             gender = state.value.gender,
             birthDate = formatDateUseCase.formatDateToApi(state.value.birthDate)
         )
-        viewModelScope.launch(Dispatchers.IO) {
-            putProfileUseCase.invoke(profileModel)
-                .onSuccess {
-                    setState {
-                        copy(
-                            isEnable = false,
-                            isCancelEnable = false,
-                            profileModel = ProfileModel(
-                                id = state.value.id,
-                                nickName = state.value.nickName,
-                                email = state.value.email,
-                                avatarLink = state.value.userIconUrl,
-                                name = state.value.name,
-                                gender = state.value.gender,
-                                birthDate = state.value.birthDate
-                            )
+        viewModelScope.launch(Dispatchers.Main) {
+            putProfileUseCase.invoke(profileModel).collect { result ->
+                result.onSuccess {
+                setState {
+                    copy(
+                        isEnable = false,
+                        isCancelEnable = false,
+                        isSuccess = true,
+                        profileModel = ProfileModel(
+                            id = state.value.id,
+                            nickName = state.value.nickName,
+                            email = state.value.email,
+                            avatarLink = state.value.userIconUrl,
+                            name = state.value.name,
+                            gender = state.value.gender,
+                            birthDate = state.value.birthDate
                         )
-                    }
-                }.onFailure {
-                    setState {
-                        copy(
-                            isSuccess = false,
-                            errorMessage = "Указаны некорректные данные"
-                        )
-                    }
-                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                    Log.e("a", it.message ?: "")
+                    )
                 }
+            }.onFailure {
+                    handleErrorUseCase.handleError(
+                        error = it.message,
+                        onInputError = {
+                            setState {
+                                copy(
+                                    isSuccess = false,
+                                    errorMessage = "Указаны некорректные данные"
+                                )
+                            }
+                            haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                        },
+                        onTokenError = {
+                            setEffect { ProfileScreenContract.Effect.Navigation.ToIntroducing }
+                        },
+                        onOtherError = {
+                            setState { copy(
+                                isLoaded = false,
+                                isError = true,
+                            ) }
+                        }
+                    )
+            }
+            }
         }
     }
 
     private fun logout() {
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(Dispatchers.Main) {
             logoutUseCase.invoke()
             MainScope().launch {
                 setEffect { ProfileScreenContract.Effect.Navigation.ToIntroducing }

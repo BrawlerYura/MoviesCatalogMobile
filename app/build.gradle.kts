@@ -84,4 +84,5 @@ dependencies {
     implementation("com.squareup.retrofit2:converter-moshi:2.4.0")
     implementation("io.coil-kt:coil-compose:2.4.0")
     implementation("javax.inject:javax.inject:1")
+    implementation("eu.bambooapps:compose-material3-pullrefresh:1.0.1")
 }

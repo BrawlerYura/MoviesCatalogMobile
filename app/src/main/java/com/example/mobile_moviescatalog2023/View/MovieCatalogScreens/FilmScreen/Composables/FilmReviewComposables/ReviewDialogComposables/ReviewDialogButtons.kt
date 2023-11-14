@@ -18,8 +18,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.mobile_moviescatalog2023.domain.Entities.Models.ReviewModifyModel
 import com.example.mobile_moviescatalog2023.R
-import com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.FilmScreen.Composables.filmScreensPreviewState
+import com.example.mobile_moviescatalog2023.View.Common.PreviewStateBuilder.filmScreensPreviewState
 import com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.FilmScreen.FilmScreenContract
+import com.example.mobile_moviescatalog2023.ui.theme.MyTypography
 import com.example.mobile_moviescatalog2023.ui.theme.interFamily
 
 @Composable
@@ -70,13 +71,9 @@ fun ReviewDialogButtons(
     ) {
         Text(
             text = stringResource(R.string.save),
-            style = TextStyle(
-                fontFamily = interFamily,
-                fontWeight = FontWeight.W600,
-                fontSize = 15.sp,
-                color = MaterialTheme.colorScheme.onPrimary,
-                textAlign = TextAlign.Center
-            ),
+            style = MyTypography.titleSmall,
+            color = MaterialTheme.colorScheme.onPrimary,
+            textAlign = TextAlign.Center
         )
     }
 
@@ -92,13 +89,9 @@ fun ReviewDialogButtons(
     ) {
         Text(
             text = stringResource(R.string.refuse),
-            style = TextStyle(
-                fontFamily = interFamily,
-                fontWeight = FontWeight.W600,
-                fontSize = 15.sp,
-                color = MaterialTheme.colorScheme.primary,
-                textAlign = TextAlign.Center
-            ),
+            style = MyTypography.titleSmall,
+            color = MaterialTheme.colorScheme.primary,
+            textAlign = TextAlign.Center
         )
     }
 }

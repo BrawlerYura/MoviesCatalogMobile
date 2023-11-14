@@ -18,8 +18,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.mobile_moviescatalog2023.R
-import com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.FilmScreen.Composables.filmScreensPreviewState
+import com.example.mobile_moviescatalog2023.View.Common.PreviewStateBuilder.filmScreensPreviewState
 import com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.FilmScreen.FilmScreenContract
+import com.example.mobile_moviescatalog2023.ui.theme.MyTypography
 import com.example.mobile_moviescatalog2023.ui.theme.interFamily
 
 @Composable
@@ -43,13 +44,9 @@ fun IsAnonymousCheckBox(
 
         Text(
             text = stringResource(R.string.anonymous_check_box),
-            style = TextStyle(
-                fontFamily = interFamily,
-                fontWeight = FontWeight.W500,
-                fontSize = 15.sp,
-                color =  MaterialTheme.colorScheme.onBackground,
-                textAlign = TextAlign.Center
-            )
+            style = MyTypography.labelLarge,
+            color =  MaterialTheme.colorScheme.onBackground,
+            textAlign = TextAlign.Center
         )
     }
 }

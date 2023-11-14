@@ -9,6 +9,7 @@ import com.example.mobile_moviescatalog2023.domain.Entities.RequestBodies.Regist
 import com.example.mobile_moviescatalog2023.TokenManager.TokenManager
 import com.example.mobile_moviescatalog2023.View.Base.BaseViewModel
 import com.example.mobile_moviescatalog2023.domain.UseCases.AuthUseCases.RegisterUseCase
+import com.example.mobile_moviescatalog2023.domain.UseCases.HandleErrorUseCase
 import com.example.mobile_moviescatalog2023.domain.UseCases.ValidationUseCase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
@@ -17,7 +18,8 @@ import kotlinx.coroutines.launch
 class RegistrationPasswordViewModel(
     private val context: Context,
     private val registerUseCase: RegisterUseCase,
-    private val validationUseCase: ValidationUseCase
+    private val validationUseCase: ValidationUseCase,
+    private val handleErrorUseCase: HandleErrorUseCase
 ) : BaseViewModel<
         RegistrationPasswordContract.Event,
         RegistrationPasswordContract.State,
@@ -50,32 +52,16 @@ class RegistrationPasswordViewModel(
         }
     }
 
-    private fun loadRegisterRequestBody(registerRequestBody: RegisterRequestBody) {
-        setState {
-            copy(
-                userName = registerRequestBody.userName,
-                name = registerRequestBody.name,
-                email = registerRequestBody.email,
-                birthDate = registerRequestBody.birthDate,
-                gender = registerRequestBody.gender,
-                isBodyLoaded = true
-            )
-        }
-    }
-
     override fun setInitialState() = RegistrationPasswordContract.State(
         password = "",
         repPassword = "",
-        userName = "",
-        name = "",
-        email = "",
-        birthDate = "",
-        gender = 0,
         isSuccess = null,
         isPasswordValid = null,
         isRepPasswordValid = null,
+        isError = false,
         errorMessage = null,
-        isBodyLoaded = false
+        isBodyLoaded = false,
+        isLoading = false
     )
 
     override fun handleEvents(event: RegistrationPasswordContract.Event) {
@@ -84,18 +70,14 @@ class RegistrationPasswordViewModel(
             is RegistrationPasswordContract.Event.SaveRepeatedPasswordEvent -> saveRepeatedPassword(
                 event.repPassword
             )
-
-            is RegistrationPasswordContract.Event.SignUp -> signUp(haptic = event.haptic)
-            is RegistrationPasswordContract.Event.LoadRegisterRequestBody -> loadRegisterRequestBody(
-                event.registerRequestBody
-            )
-
+            is RegistrationPasswordContract.Event.SignUp -> signUp(haptic = event.haptic, body = event.body)
             is RegistrationPasswordContract.Event.NavigationToLogin -> setEffect { RegistrationPasswordContract.Effect.Navigation.ToLogin }
             is RegistrationPasswordContract.Event.NavigationBack -> setEffect { RegistrationPasswordContract.Effect.Navigation.Back }
         }
     }
 
-    private fun signUp(haptic: HapticFeedback) {
+    private fun signUp(haptic: HapticFeedback, body: RegisterRequestBody) {
+        setState { copy(isLoading = true) }
         if (!validationUseCase.checkIfPasswordEqualsRepeatedPassword(
                 state.value.password,
                 state.value.repPassword
@@ -104,33 +86,37 @@ class RegistrationPasswordViewModel(
             setState { copy(isSuccess = false, errorMessage = "Пароли не совпадают") }
             haptic.performHapticFeedback(HapticFeedbackType.LongPress)
         } else {
-            val registrationBody = RegisterRequestBody(
-                userName = state.value.userName,
-                name = state.value.name,
-                password = state.value.password,
-                email = state.value.email,
-                birthDate = state.value.birthDate,
-                gender = state.value.gender
-            )
 
             viewModelScope.launch(Dispatchers.IO) {
-                registerUseCase.invoke(registrationBody)
-                    .onSuccess {
+                registerUseCase.invoke(body).collect { result ->
+                    result.onSuccess {
                         TokenManager(context).saveToken(it.token)
                         Network.token = it.token
-                        setState { copy(isSuccess = true) }
+                        setState { copy(isSuccess = true, isError = false) }
                         MainScope().launch {
                             setEffect { RegistrationPasswordContract.Effect.Navigation.ToMain }
                         }
                     }.onFailure {
-                        setState {
-                            copy(
-                                isSuccess = false,
-                                errorMessage = "Указаны некорректные данные"
-                            )
-                        }
-                        haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                        handleErrorUseCase.handleError(
+                            error = it.message ?: "",
+                            onTokenError = { },
+                            onInputError = {
+                                setState {
+                                    copy(
+                                        isSuccess = false,
+                                        errorMessage = "Указаны некорректные данные",
+                                        isLoading = false,
+                                        isError = false
+                                    )
+                                }
+                                haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                            },
+                            onOtherError = {
+                                setState { copy(isError = true, isLoading = false) }
+                            }
+                        )
                     }
+                }
             }
         }
     }

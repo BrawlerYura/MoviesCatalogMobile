@@ -25,6 +25,7 @@ import androidx.navigation.NavHostController
 import com.example.mobile_moviescatalog2023.R
 import com.example.mobile_moviescatalog2023.View.AuthScreens.LoginScreen.LoginContract
 import com.example.mobile_moviescatalog2023.View.Base.SIDE_EFFECTS_KEY
+import com.example.mobile_moviescatalog2023.View.Common.NetworkErrorScreen
 import com.example.mobile_moviescatalog2023.ui.theme.FilmusTheme
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import kotlinx.coroutines.Dispatchers
@@ -51,24 +52,31 @@ fun SplashScreen(
         }?.collect()
     }
 
-    FilmusTheme {
-        Box(modifier = Modifier.fillMaxSize().background(Color.Black)) {
-            Image(
-                painterResource(R.drawable.launch_screen_bg),
-                contentDescription = null,
-                modifier = Modifier.fillMaxSize(),
-                contentScale = ContentScale.Crop
-            )
-            Image(
-                painterResource(R.drawable.logo),
-                contentDescription = null,
-                modifier = Modifier.align(Alignment.Center)
-            )
-        }
-
         when {
-            state.isSuccessGetToken -> onEventSent(SplashContract.Event.OnTokenLoadedSuccess)
+            state.isNetworkError -> {
+                NetworkErrorScreen {
+                    onEventSent(SplashContract.Event.GetToken)
+                }
+            }
             state.isError -> onEventSent(SplashContract.Event.OnTokenLoadedFailed)
+            else -> {
+                FilmusTheme {
+                    Box(modifier = Modifier
+                        .fillMaxSize()
+                        .background(Color.Black)) {
+                        Image(
+                            painterResource(R.drawable.launch_screen_bg),
+                            contentDescription = null,
+                            modifier = Modifier.fillMaxSize(),
+                            contentScale = ContentScale.Crop
+                        )
+                        Image(
+                            painterResource(R.drawable.logo),
+                            contentDescription = null,
+                            modifier = Modifier.align(Alignment.Center)
+                        )
+                    }
+            }
         }
     }
 }
@@ -78,7 +86,7 @@ fun SplashScreen(
 private fun SplashScreenPreview() {
     SplashScreen(
         state = SplashContract.State (
-            isSuccessGetToken = false,
+            isNetworkError = false,
             isError = false
         ),
         onEventSent = { },

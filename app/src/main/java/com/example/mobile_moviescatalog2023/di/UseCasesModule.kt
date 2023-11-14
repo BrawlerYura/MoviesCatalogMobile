@@ -17,6 +17,7 @@ import com.example.mobile_moviescatalog2023.domain.UseCases.UserUseCases.GetProf
 import com.example.mobile_moviescatalog2023.domain.UseCases.AuthUseCases.LogoutUseCase
 import com.example.mobile_moviescatalog2023.domain.UseCases.CalculateRatingUseCase
 import com.example.mobile_moviescatalog2023.domain.UseCases.FromListToPartsMovieUseCase
+import com.example.mobile_moviescatalog2023.domain.UseCases.HandleErrorUseCase
 import com.example.mobile_moviescatalog2023.domain.UseCases.UserUseCases.PutProfileUseCase
 import com.example.mobile_moviescatalog2023.domain.UseCases.ValidationUseCase
 import org.koin.android.ext.koin.androidContext
@@ -42,4 +43,5 @@ val UseCasesModule = module {
     single { ValidationUseCase() }
     single { FromListToPartsMovieUseCase() }
     single { CalculateRatingUseCase() }
+    single { HandleErrorUseCase() }
 }

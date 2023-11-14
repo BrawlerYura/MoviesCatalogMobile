@@ -14,8 +14,8 @@ class SplashContract {
     }
 
     data class State (
-        val isSuccessGetToken: Boolean,
-        val isError: Boolean
+        val isError: Boolean,
+        val isNetworkError: Boolean
     ) : ViewState
 
     sealed class Effect : ViewSideEffect {

@@ -61,4 +61,6 @@
     <string name="invalid_email_message">Неверная почта</string>
     <string name="invalid_password_message">Поле пароля не должно быть пустым</string>
     <string name="passwords_dont_match">Пароли не совпадают</string>
+    <string name="retry_button">Попробовать снова</string>
+    <string name="network_error_text">Ошибка интернет соединения</string>
 </resources>

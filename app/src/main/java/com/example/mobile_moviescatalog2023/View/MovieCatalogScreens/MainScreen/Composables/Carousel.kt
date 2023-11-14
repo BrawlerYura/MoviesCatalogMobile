@@ -29,24 +29,25 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.example.mobile_moviescatalog2023.R
 import com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.MainScreen.MainScreenContract
+import com.example.mobile_moviescatalog2023.domain.Entities.Models.MovieElementModel
 import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun Carousel(
-    state: MainScreenContract.State,
+    movieCarouselList: List<MovieElementModel>,
     onNavigationRequested: (id: String) -> Unit
 ) {
 
-    val pagerState = rememberPagerState(initialPage = 0, pageCount = { state.movieCarouselList.size })
+    val pagerState = rememberPagerState(initialPage = 0, pageCount = { movieCarouselList.size })
 
     LaunchedEffect(pagerState) {
-        while (true) {
-            delay(5000)
-            pagerState.animateScrollToPage(
-                page = (pagerState.currentPage + 1) % pagerState.pageCount,
-                animationSpec = tween(500)
-            )
+            while (true) {
+                delay(5000)
+                pagerState.animateScrollToPage(
+                    page = (pagerState.currentPage + 1) % 4,
+                    animationSpec = tween(500)
+                )
         }
     }
 
@@ -61,11 +62,11 @@ fun Carousel(
             verticalAlignment = Alignment.CenterVertically,
         ) { page ->
             AsyncImage(
-                model = state.movieCarouselList[page].poster,
+                model = movieCarouselList[page].poster,
                 contentDescription = null,
                 modifier = Modifier.fillMaxSize()
                     .clickable {
-                        onNavigationRequested(state.movieCarouselList[page].id)
+                        onNavigationRequested(movieCarouselList[page].id)
                     },
                 contentScale = ContentScale.Crop
             )
@@ -82,7 +83,7 @@ fun Carousel(
                     .padding(8.dp),
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
             ) {
-                repeat(state.movieCarouselList.size) { pageIndex ->
+                repeat(movieCarouselList.size) { pageIndex ->
                     Box(
                         modifier = Modifier
                             .size(8.dp)

@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -14,6 +15,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.mobile_moviescatalog2023.ui.theme.MyTypography
 import com.example.mobile_moviescatalog2023.ui.theme.interFamily
 
 @Composable
@@ -42,12 +44,7 @@ fun MyButton(
     ) {
         Text(
             text = text,
-            style = TextStyle(
-                fontFamily = interFamily,
-                fontWeight = FontWeight.W600,
-                fontSize = 15.sp,
-                textAlign = TextAlign.Center
-            ),
+            style = MyTypography.titleSmall,
         )
     }
 }

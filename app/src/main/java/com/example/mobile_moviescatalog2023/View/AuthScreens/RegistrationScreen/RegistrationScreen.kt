@@ -30,6 +30,7 @@ import com.example.mobile_moviescatalog2023.View.Common.MyBirthDateTextBox
 import com.example.mobile_moviescatalog2023.View.Common.MyButton
 import com.example.mobile_moviescatalog2023.View.Common.MyTextFieldBox
 import com.example.mobile_moviescatalog2023.ui.theme.FilmusTheme
+import com.example.mobile_moviescatalog2023.ui.theme.MyTypography
 import com.example.mobile_moviescatalog2023.ui.theme.interFamily
 
 @Composable
@@ -58,12 +59,8 @@ fun RegistrationScreen(
 
                 Text(
                     text = stringResource(R.string.registration_button),
-                    style = TextStyle(
-                        fontFamily = interFamily,
-                        fontWeight = FontWeight.W700,
-                        fontSize = 20.sp,
-                        color = MaterialTheme.colorScheme.onBackground
-                    ),
+                    style = MyTypography.titleMedium,
+                    color = MaterialTheme.colorScheme.onBackground,
                     modifier = Modifier.padding(bottom = 15.dp)
                 )
 

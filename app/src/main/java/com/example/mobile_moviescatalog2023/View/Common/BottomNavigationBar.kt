@@ -41,22 +41,16 @@ fun BottomNavigationBar(
                     onClick = {
                         when (index) {
                             0 -> {
-                                if(currentScreen != 0){
                                     onNavigationToMainRequested()
                                 }
-                            }
 
                             1 -> {
-                                if(currentScreen != 1) {
                                     onNavigationToFavoriteRequested()
                                 }
-                            }
 
                             else -> {
-                                if(currentScreen != 2) {
                                     onNavigationToProfileRequested()
                                 }
-                            }
                         }
                     },
                     icon = {

@@ -22,6 +22,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -32,9 +33,10 @@ import androidx.compose.ui.unit.sp
 import com.example.mobile_moviescatalog2023.domain.Entities.Models.ReviewModel
 import com.example.mobile_moviescatalog2023.domain.Entities.Models.UserShortModel
 import com.example.mobile_moviescatalog2023.R
+import com.example.mobile_moviescatalog2023.View.Common.PreviewStateBuilder.filmScreensPreviewState
 import com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.FilmScreen.Composables.FilmReviewComposables.ReviewDialogComposables.ReviewDialog
-import com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.FilmScreen.Composables.filmScreensPreviewState
 import com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.FilmScreen.FilmScreenContract
+import com.example.mobile_moviescatalog2023.ui.theme.MyTypography
 import com.example.mobile_moviescatalog2023.ui.theme.interFamily
 
 @Composable
@@ -59,7 +61,33 @@ fun ReviewTrailingIcons(
                 )
                 .height(26.dp)
                 .clip(RoundedCornerShape(35.dp))
-                .background(calculateRatingColor(it.rating))
+                .background(
+                    when (it.rating) {
+                        in 0 until 3 -> {
+                            Color(0xFFE64646)
+                        }
+
+                        in 3 until 4 -> {
+                            Color(0xFFF05C44)
+                        }
+
+                        in 4 until 6 -> {
+                            Color(0xFFFFA000)
+                        }
+
+                        in 6 until 8 -> {
+                            Color(0xFFFFD54F)
+                        }
+
+                        in 8 until 9 -> {
+                            Color(0xFFA3CD4A)
+                        }
+
+                        else -> {
+                            Color(0xFF4BB34B)
+                        }
+                    }
+                )
                 .align(Alignment.TopEnd)
         ) {
             Row(
@@ -73,13 +101,9 @@ fun ReviewTrailingIcons(
                 )
                 Text(
                     text = it.rating.toString(),
-                    style = TextStyle(
-                        fontFamily = interFamily,
-                        fontWeight = FontWeight.W500,
-                        fontSize = 15.sp,
-                        color = MaterialTheme.colorScheme.onBackground,
-                        textAlign = TextAlign.Center
-                    )
+                    style = MyTypography.labelLarge,
+                    color = MaterialTheme.colorScheme.onBackground,
+                    textAlign = TextAlign.Center
                 )
             }
         }

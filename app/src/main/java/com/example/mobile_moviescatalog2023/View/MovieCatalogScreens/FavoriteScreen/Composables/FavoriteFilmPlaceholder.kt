@@ -16,6 +16,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.mobile_moviescatalog2023.R
+import com.example.mobile_moviescatalog2023.ui.theme.MyTypography
 import com.example.mobile_moviescatalog2023.ui.theme.interFamily
 
 @Composable
@@ -23,25 +24,17 @@ fun FavoriteFilmsPlaceholder() {
     Column(modifier = Modifier.fillMaxWidth().padding(top = 100.dp).padding(horizontal = 16.dp)) {
         Text(
             text = stringResource(R.string.no_favorite_movies),
-            style = TextStyle(
-                fontFamily = interFamily,
-                fontWeight = FontWeight.W700,
-                fontSize = 23.sp,
-                color = MaterialTheme.colorScheme.onBackground,
-                textAlign = TextAlign.Center
-            ),
+            style = MyTypography.titleLarge,
+            color = MaterialTheme.colorScheme.onBackground,
+            textAlign = TextAlign.Center,
             modifier = Modifier.align(Alignment.CenterHorizontally)
         )
 
         Text(
             text = stringResource(R.string.choose_favorite_film),
-            style = TextStyle(
-                fontFamily = interFamily,
-                fontWeight = FontWeight.W400,
-                fontSize = 15.sp,
-                color = MaterialTheme.colorScheme.onBackground,
-                textAlign = TextAlign.Center
-            ),
+            style = MyTypography.bodyMedium,
+            color = MaterialTheme.colorScheme.onBackground,
+            textAlign = TextAlign.Center,
             modifier = Modifier.align(Alignment.CenterHorizontally)
                 .padding(top = 5.dp)
         )

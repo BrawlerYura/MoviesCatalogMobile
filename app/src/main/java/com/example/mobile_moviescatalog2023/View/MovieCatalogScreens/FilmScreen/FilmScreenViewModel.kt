@@ -1,20 +1,24 @@
 package com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.FilmScreen
 
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.lifecycle.viewModelScope
 import com.example.mobile_moviescatalog2023.domain.Entities.Models.MovieDetailsModel
 import com.example.mobile_moviescatalog2023.domain.Entities.Models.ReviewModifyModel
 import com.example.mobile_moviescatalog2023.Network.Network
 import com.example.mobile_moviescatalog2023.View.Base.BaseViewModel
+import com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.ProfileScreen.ProfileScreenContract
 import com.example.mobile_moviescatalog2023.domain.UseCases.CalculateRatingUseCase
 import com.example.mobile_moviescatalog2023.domain.UseCases.FavoriteMoviesUseCases.AddToFavoriteUseCase
 import com.example.mobile_moviescatalog2023.domain.UseCases.FavoriteMoviesUseCases.DeleteFavoriteMovieUseCase
 import com.example.mobile_moviescatalog2023.domain.UseCases.FavoriteMoviesUseCases.GetFavoriteMoviesUseCase
 import com.example.mobile_moviescatalog2023.domain.UseCases.FormatDateUseCase
+import com.example.mobile_moviescatalog2023.domain.UseCases.HandleErrorUseCase
 import com.example.mobile_moviescatalog2023.domain.UseCases.MoviesUseCases.GetFilmDetailsUseCase
 import com.example.mobile_moviescatalog2023.domain.UseCases.ReviewUseCases.AddReviewUseCase
 import com.example.mobile_moviescatalog2023.domain.UseCases.ReviewUseCases.DeleteReviewUseCase
 import com.example.mobile_moviescatalog2023.domain.UseCases.ReviewUseCases.PutReviewUseCase
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 class FilmScreenViewModel(
@@ -26,12 +30,13 @@ class FilmScreenViewModel(
     private val addReviewUseCase: AddReviewUseCase,
     private val putReviewUseCase: PutReviewUseCase,
     private val formatDateUseCase: FormatDateUseCase,
-    private val calculateRatingUseCase: CalculateRatingUseCase
+    private val calculateRatingUseCase: CalculateRatingUseCase,
+    private val handleErrorUseCase: HandleErrorUseCase
 ) : BaseViewModel<FilmScreenContract.Event, FilmScreenContract.State, FilmScreenContract.Effect>() {
-
     override fun setInitialState() = FilmScreenContract.State(
         isLoaded = false,
-        isLoading = false,
+        isError = false,
+        isRefreshing = false,
         movieDetails = MovieDetailsModel(
             id = "",
             name = null,
@@ -60,6 +65,7 @@ class FilmScreenViewModel(
 
     override fun handleEvents(event: FilmScreenContract.Event) {
         when (event) {
+            is FilmScreenContract.Event.RefreshScreen -> refreshScreen(id = event.id)
             is FilmScreenContract.Event.LoadFilmDetails -> loadFilmDetails(id = event.id)
             is FilmScreenContract.Event.AddToFavorite -> addToFavorite(id = event.id)
             is FilmScreenContract.Event.DeleteFavorite -> deleteFavorite(id = event.id)
@@ -86,28 +92,72 @@ class FilmScreenViewModel(
         }
     }
 
+    private fun refreshScreen(id: String) {
+        setState {
+            copy(
+                isLoaded = false,
+                isError = false,
+                isRefreshing = true,
+                movieDetails = MovieDetailsModel(
+                    id = "",
+                    name = null,
+                    poster = null,
+                    year = 0,
+                    country = null,
+                    genres = null,
+                    reviews = null,
+                    time = 0,
+                    tagline = null,
+                    description = null,
+                    director = null,
+                    budget = null,
+                    fees = null,
+                    ageLimit = 0
+                ),
+                isAddingSuccess = null,
+                isDeletingSuccess = null,
+                isMyFavorite = false,
+                isWithMyReview = false,
+                myReviewTextField = "",
+                myRating = 1,
+                isAnonymous = false,
+                currentFilmRating = null
+            )
+        }
+        loadFilmDetails(id)
+    }
     private fun loadFilmDetails(id: String) {
-        setState { copy(isLoading = true) }
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(Dispatchers.Main) {
             getFilmDetailsUseCase.invoke(id).collect { result ->
                 result.onSuccess {
-                setState {
-                    copy(
-                        isLoaded = true,
-                        movieDetails = formatDateUseCase.formatCreateDateTime(it),
-                        currentFilmRating = calculateRatingUseCase.calculateFilmRating(it.reviews)
-                    )
-                }
                 checkIfWithMyReview(it)
                 checkIfFavorite(id = it.id)
+                    setState {
+                        copy(
+                            isLoaded = true,
+                            movieDetails = formatDateUseCase.formatCreateDateTime(it),
+                            currentFilmRating = calculateRatingUseCase.calculateFilmRating(it.reviews)
+                        )
+                    }
             }.onFailure {
-                setState {
-                    copy(
-                        isLoaded = false
+                    handleErrorUseCase.handleError(
+                        error = it.message,
+                        onInputError = {},
+                        onTokenError = {
+                            setEffect { FilmScreenContract.Effect.Navigation.ToIntroducing }
+                        },
+                        onOtherError = {
+                            setState {
+                                copy(
+                                    isLoaded = false,
+                                    isError = true
+                                )
+                            }
+                        }
                     )
-                }
             }
             }
+            setState {copy(isRefreshing = false)}
         }
     }
 
@@ -135,48 +185,78 @@ class FilmScreenViewModel(
 
     private fun addToFavorite(id: String) {
         viewModelScope.launch(Dispatchers.IO) {
-            addToFavoriteUseCase.invoke(id)
-                .onSuccess {
-                    setState {
-                        copy(
-                            isMyFavorite = true
-                        )
-                    }
-                } .onFailure {
-
+            addToFavoriteUseCase.invoke(id).collect { result ->
+                result.onSuccess {
+                setState {
+                    copy(
+                        isMyFavorite = true
+                    )
                 }
+            }.onFailure {
+                    handleErrorUseCase.handleError(
+                        error = it.message,
+                        onInputError = {},
+                        onTokenError = {
+                            setEffect { FilmScreenContract.Effect.Navigation.ToIntroducing }
+                        },
+                        onOtherError = {
+
+                        }
+                    )
+            }
+            }
         }
     }
 
     private fun deleteFavorite(id: String) {
         viewModelScope.launch(Dispatchers.IO) {
-            deleteFavoriteMovieUseCase.invoke(id)
-                .onSuccess {
+            deleteFavoriteMovieUseCase.invoke(id).collect { result ->
+                result.onSuccess {
                     setState {
                         copy(
                             isMyFavorite = false
                         )
                     }
                 }.onFailure {
+                    handleErrorUseCase.handleError(
+                        error = it.message,
+                        onInputError = {},
+                        onTokenError = {
+                            setEffect { FilmScreenContract.Effect.Navigation.ToIntroducing }
+                        },
+                        onOtherError = {
 
+                        }
+                    )
                 }
+            }
         }
     }
 
-    private fun checkIfFavorite(id: String) {
-        viewModelScope.launch(Dispatchers.IO) {
-            getFavoriteMoviesUseCase.invoke()
-                .onSuccess {
-                        it.movies?.forEach {
-                                setState {
-                                    copy(
-                                        isMyFavorite = true
-                                    )
-                                }
+    private suspend fun checkIfFavorite(id: String) {
+        getFavoriteMoviesUseCase.invoke().collect { result ->
+            result.onSuccess {
+                it.movies?.forEach {
+                    if (it.id == id) {
+                        setState {
+                            copy(
+                                isMyFavorite = true
+                            )
+                        }
                     }
-                }.onFailure {
-
                 }
+            }.onFailure {
+                handleErrorUseCase.handleError(
+                    error = it.message,
+                    onInputError = {},
+                    onTokenError = {
+                        setEffect { FilmScreenContract.Effect.Navigation.ToIntroducing }
+                    },
+                    onOtherError = {
+
+                    }
+                )
+            }
         }
     }
 
@@ -206,25 +286,45 @@ class FilmScreenViewModel(
 
     private fun deleteMyReview(filmId: String, reviewId: String) {
         viewModelScope.launch(Dispatchers.IO) {
-            deleteReviewUseCase.invoke(filmId, reviewId)
-                .onSuccess {
+            deleteReviewUseCase.invoke(filmId, reviewId).collect { result ->
+                result.onSuccess {
                     loadFilmDetails(filmId)
                     setState { copy(isWithMyReview = false) }
-                } .onFailure {
+                }.onFailure {
+                    handleErrorUseCase.handleError(
+                        error = it.message,
+                        onInputError = {},
+                        onTokenError = {
+                            setEffect { FilmScreenContract.Effect.Navigation.ToIntroducing }
+                        },
+                        onOtherError = {
 
+                        }
+                    )
                 }
+            }
         }
     }
 
     private fun addMyReview(reviewModifyModel: ReviewModifyModel, filmId: String) {
         viewModelScope.launch(Dispatchers.IO) {
-            addReviewUseCase.invoke(reviewModifyModel, filmId)
-                .onSuccess {
+            addReviewUseCase.invoke(reviewModifyModel, filmId).collect { result ->
+                result.onSuccess {
                     loadFilmDetails(filmId)
                 }
-                .onFailure {
+                    .onFailure {
+                        handleErrorUseCase.handleError(
+                            error = it.message,
+                            onInputError = {},
+                            onTokenError = {
+                                setEffect { FilmScreenContract.Effect.Navigation.ToIntroducing }
+                            },
+                            onOtherError = {
 
-                }
+                            }
+                        )
+                    }
+            }
         }
     }
 

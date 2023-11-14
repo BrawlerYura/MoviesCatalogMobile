@@ -13,14 +13,22 @@ import org.koin.dsl.module
 import org.koin.androidx.viewmodel.dsl.viewModel
 
 val ViewModelModule = module {
-    viewModel { SplashScreenViewModel(checkTokenUseCase = get()) }
-    viewModel { LoginViewModel(androidContext(), loginUseCase = get(), validationUseCase = get()) }
+    viewModel { SplashScreenViewModel(checkTokenUseCase = get(), handleErrorUseCase = get()) }
+    viewModel {
+        LoginViewModel(
+            androidContext(),
+            loginUseCase = get(),
+            validationUseCase = get(),
+            handleErrorUseCase = get()
+        )
+    }
     viewModel { RegistrationViewModel(formatDateUseCase = get(), validationUseCase = get()) }
     viewModel {
         RegistrationPasswordViewModel(
             androidContext(),
             registerUseCase = get(),
-            validationUseCase = get()
+            validationUseCase = get(),
+            handleErrorUseCase = get()
         )
     }
     viewModel {
@@ -28,13 +36,17 @@ val ViewModelModule = module {
             getMoviesUseCase = get(),
             getMyIdUseCase = get(),
             getFilmDetailsUseCase = get(),
-            calculateRatingUseCase = get()
+            calculateRatingUseCase = get(),
+            handleErrorUseCase = get()
         )
     }
     viewModel {
         FavoriteScreenViewModel(
             getFavoriteMoviesUseCase = get(),
-            fromListToPartsMovieUseCase = get()
+            fromListToPartsMovieUseCase = get(),
+            calculateRatingUseCase = get(),
+            getFilmDetailsUseCase = get(),
+            handleErrorUseCase = get()
         )
     }
 
@@ -44,7 +56,8 @@ val ViewModelModule = module {
             putProfileUseCase = get(),
             logoutUseCase = get(),
             formatDateUseCase = get(),
-            validationUseCase = get()
+            validationUseCase = get(),
+            handleErrorUseCase = get()
         )
     }
 
@@ -58,7 +71,8 @@ val ViewModelModule = module {
             addReviewUseCase = get(),
             putReviewUseCase = get(),
             formatDateUseCase = get(),
-            calculateRatingUseCase = get()
+            calculateRatingUseCase = get(),
+            handleErrorUseCase = get()
         )
     }
 }

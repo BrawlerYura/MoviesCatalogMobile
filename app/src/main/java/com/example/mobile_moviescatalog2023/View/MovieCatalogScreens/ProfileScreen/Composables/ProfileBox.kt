@@ -21,6 +21,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.example.mobile_moviescatalog2023.R
+import com.example.mobile_moviescatalog2023.View.Common.PreviewStateBuilder.profileStatePreview
 import com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.ProfileScreen.ProfileScreenContract
 import com.example.mobile_moviescatalog2023.ui.theme.interFamily
 

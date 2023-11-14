@@ -22,9 +22,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.mobile_moviescatalog2023.R
-import com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.ProfileScreen.Composables.profileStatePreview
-import com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.ProfileScreen.ProfileScreenContract
+import com.example.mobile_moviescatalog2023.ui.theme.MyTypography
 import com.example.mobile_moviescatalog2023.ui.theme.interFamily
 
 @Composable
@@ -43,12 +41,8 @@ fun MyTextFieldBox(
     ) {
         Text(
             text = headerText,
-            style = TextStyle(
-                fontFamily = interFamily,
-                fontWeight = FontWeight.W500,
-                fontSize = 15.sp,
-                color = MaterialTheme.colorScheme.onBackground
-            ),
+            style = MyTypography.labelLarge,
+            color = MaterialTheme.colorScheme.onBackground,
             modifier = Modifier.padding(bottom = 8.dp)
         )
         OutlinedTextField(
@@ -85,12 +79,8 @@ fun MyTextFieldBox(
         if(isValid) {
             Text(
                 text = errorText,
-                style = TextStyle(
-                    fontFamily = interFamily,
-                    fontWeight = FontWeight.W400,
-                    fontSize = 14.sp,
-                    color = MaterialTheme.colorScheme.error
-                ),
+                style = MyTypography.bodySmall,
+                color = MaterialTheme.colorScheme.error,
                 modifier = Modifier.padding(top = 5.dp)
             )
         }

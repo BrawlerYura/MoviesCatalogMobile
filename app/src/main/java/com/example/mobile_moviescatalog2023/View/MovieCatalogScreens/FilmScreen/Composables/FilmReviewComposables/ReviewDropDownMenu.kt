@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.mobile_moviescatalog2023.R
+import com.example.mobile_moviescatalog2023.ui.theme.MyTypography
 import com.example.mobile_moviescatalog2023.ui.theme.interFamily
 
 @Composable
@@ -42,13 +43,9 @@ fun Menu(
             text = {
                 Text(
                     text = stringResource(R.string.edit),
-                    style = TextStyle(
-                        fontFamily = interFamily,
-                        fontWeight = FontWeight.W700,
-                        fontSize = 16.sp,
-                        color = MaterialTheme.colorScheme.onBackground,
-                        textAlign = TextAlign.Center
-                    ),
+                    style = MyTypography.bodyLarge,
+                    color = MaterialTheme.colorScheme.onBackground,
+                    textAlign = TextAlign.Center,
                     modifier = Modifier.align(Alignment.Start)
                 )
             },
@@ -69,13 +66,9 @@ fun Menu(
             text = {
                 Text(
                     text = stringResource(R.string.delete),
-                    style = TextStyle(
-                        fontFamily = interFamily,
-                        fontWeight = FontWeight.W700,
-                        fontSize = 16.sp,
-                        color =  MaterialTheme.colorScheme.error,
-                        textAlign = TextAlign.Center
-                    ),
+                    style = MyTypography.bodyLarge,
+                    color =  MaterialTheme.colorScheme.error,
+                    textAlign = TextAlign.Center,
                     modifier = Modifier.align(Alignment.Start)
                 )
             },

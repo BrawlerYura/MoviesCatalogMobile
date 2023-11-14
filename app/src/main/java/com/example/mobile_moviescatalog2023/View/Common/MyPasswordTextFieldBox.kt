@@ -1,4 +1,4 @@
-package com.example.mobile_moviescatalog2023.View.AuthScreens.RegistrationPasswordScreen.Composables
+package com.example.mobile_moviescatalog2023.View.Common
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -32,36 +32,37 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.mobile_moviescatalog2023.R
-import com.example.mobile_moviescatalog2023.View.AuthScreens.RegistrationPasswordScreen.RegistrationPasswordContract
-import com.example.mobile_moviescatalog2023.View.LoginScreens.RegistrationScreen.repeatPasswordStatePreview
+import com.example.mobile_moviescatalog2023.View.AuthScreens.LoginScreen.Composables.loginStatePreview
+import com.example.mobile_moviescatalog2023.View.AuthScreens.LoginScreen.LoginContract
+import com.example.mobile_moviescatalog2023.ui.theme.MyTypography
 import com.example.mobile_moviescatalog2023.ui.theme.interFamily
 
 @Composable
-fun PasswordTextBox(
-    state: RegistrationPasswordContract.State,
-    onEventSent: (event: RegistrationPasswordContract.Event) -> Unit,
+fun MyPasswordTextFieldBox(
+    value: String,
+    isError: Boolean,
+    isValid: Boolean,
+    onSaveEvent: (text: String) -> Unit,
+    headerText: String,
+    errorText: String
 ) {
     Column(
         modifier = Modifier.fillMaxWidth().padding(bottom = 15.dp),
         horizontalAlignment = Alignment.Start
     ) {
         Text(
-            text = stringResource(R.string.password_label),
-            style = TextStyle(
-                fontFamily = interFamily,
-                fontWeight = FontWeight.W500,
-                fontSize = 15.sp,
-                color = MaterialTheme.colorScheme.onBackground
-            ),
+            text = headerText,
+            style = MyTypography.labelLarge,
+            color = MaterialTheme.colorScheme.onBackground,
             modifier = Modifier.padding(bottom = 8.dp)
         )
 
         var isTextHidden by remember { mutableStateOf(true) }
         OutlinedTextField(
-            value = state.repPassword,
+            value = value,
             keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Password),
             visualTransformation =  if (isTextHidden) PasswordVisualTransformation() else VisualTransformation.None,
-            isError = state.isSuccess == false,
+            isError = isError,
             colors = OutlinedTextFieldDefaults.colors(
                 errorContainerColor = Color(0xFFE64646).copy(alpha = 0.1f)
             ),
@@ -71,7 +72,7 @@ fun PasswordTextBox(
                 fontSize = 15.sp
             ),
             onValueChange = {
-                onEventSent(RegistrationPasswordContract.Event.SaveRepeatedPasswordEvent(it))
+                onSaveEvent(it)
             },
             singleLine = true,
             trailingIcon = {
@@ -90,14 +91,27 @@ fun PasswordTextBox(
             shape = RoundedCornerShape(10.dp),
             modifier = Modifier.fillMaxWidth()
         )
+
+        if(isValid) {
+            Text(
+                text = errorText,
+                style = MyTypography.bodySmall,
+                color = MaterialTheme.colorScheme.error,
+                modifier = Modifier.padding(top = 8.dp)
+            )
+        }
     }
 }
 
 @Preview(showBackground = true)
 @Composable
 private fun PasswordTextBoxPreview() {
-    PasswordTextBox(
-        state = repeatPasswordStatePreview,
-        onEventSent = { }
+    MyPasswordTextFieldBox(
+        value = "value",
+        isError = true,
+        isValid = false,
+        onSaveEvent = { },
+        headerText = "Пароль",
+        errorText = "Неверный пароль"
     )
 }

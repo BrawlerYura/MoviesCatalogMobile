@@ -32,7 +32,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.example.mobile_moviescatalog2023.R
-import com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.FilmScreen.Composables.FilmReviewComposables.calculateRatingColor
+import com.example.mobile_moviescatalog2023.View.Common.MyRatingCard
+import com.example.mobile_moviescatalog2023.View.Common.PreviewStateBuilder.mainStatePreview
+import com.example.mobile_moviescatalog2023.View.Common.PreviewStateBuilder.movieElementModel
 import com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.MainScreen.MainScreenContract
 import com.example.mobile_moviescatalog2023.domain.Entities.Models.GenreModel
 import com.example.mobile_moviescatalog2023.domain.Entities.Models.MovieElementModel
@@ -62,6 +64,7 @@ fun FilmCard(
             null
         }
     }
+
     Row(
         modifier = Modifier
             .padding(bottom = 16.dp, start = 16.dp, end = 16.dp).fillMaxWidth()
@@ -123,35 +126,7 @@ fun FilmCard(
                     )
                 )
                 if(myRating != null) {
-                    Box(
-                        modifier = Modifier
-                            .height(26.dp)
-                            .clip(RoundedCornerShape(35.dp))
-                            .background(myRating.color)
-                            .align(Alignment.TopEnd)
-                    ) {
-                        Row(
-                            horizontalArrangement = Arrangement.Absolute.spacedBy(4.dp),
-                            modifier = Modifier.padding(4.dp),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Icon(
-                                painterResource(R.drawable.small_star),
-                                null,
-                                tint = Color.White
-                            )
-                            Text(
-                                text = myRating.rating,
-                                style = TextStyle(
-                                    fontFamily = interFamily,
-                                    fontWeight = FontWeight.W500,
-                                    fontSize = 15.sp,
-                                    color = Color.White,
-                                    textAlign = TextAlign.Center
-                                )
-                            )
-                        }
-                    }
+                    MyRatingCard(myRating)
                 }
             }
             Text(
@@ -200,42 +175,6 @@ data class FilmRating (
 @Preview(showBackground = true)
 @Composable
 private fun FilmCardPreview() {
-    val genres = listOf(
-        GenreModel(
-            id = "",
-            name = "треш"
-        ),
-        GenreModel(
-            id = "",
-            name = "расчленёнка"
-        ),
-        GenreModel(
-            id = "",
-            name = "Бабанов"
-        )
-    )
-
-    val reviews = listOf(
-        ReviewShortModel(
-            id = "",
-            rating = -100
-        ),
-        ReviewShortModel(
-            id = "",
-            rating = -10
-        ),
-    )
-    val movieElementModel =
-        MovieElementModel(
-            id = "",
-            name = "Сдача коллока у Лешки Михайловича",
-            poster = null,
-            year = 2023,
-            country = "Россия",
-            genres = genres,
-            reviews = reviews,
-        )
-
     FilmCard(
         item =  movieElementModel,
         index = 0,

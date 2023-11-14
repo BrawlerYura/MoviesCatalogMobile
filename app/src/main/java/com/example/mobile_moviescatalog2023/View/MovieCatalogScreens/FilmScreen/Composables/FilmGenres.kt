@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.mobile_moviescatalog2023.domain.Entities.Models.GenreModel
 import com.example.mobile_moviescatalog2023.R
+import com.example.mobile_moviescatalog2023.ui.theme.MyTypography
 import com.example.mobile_moviescatalog2023.ui.theme.interFamily
 
 @OptIn(ExperimentalLayoutApi::class)
@@ -37,13 +38,9 @@ fun FilmGenres(
         ) {
             Text(
                 text = stringResource(R.string.genres),
-                style = TextStyle(
-                    fontFamily = interFamily,
-                    fontWeight = FontWeight.W700,
-                    fontSize = 16.sp,
-                    color = MaterialTheme.colorScheme.onBackground,
-                    textAlign = TextAlign.Center
-                )
+                style = MyTypography.bodyLarge,
+                color = MaterialTheme.colorScheme.onBackground,
+                textAlign = TextAlign.Center
             )
 
             FlowRow(
@@ -59,12 +56,8 @@ fun FilmGenres(
                     ) {
                         Text(
                             text = it.name ?: "",
-                            style = TextStyle(
-                                fontFamily = interFamily,
-                                fontWeight = FontWeight.W500,
-                                fontSize = 15.sp,
-                                color = MaterialTheme.colorScheme.onBackground
-                            ),
+                            style = MyTypography.labelLarge,
+                            color = MaterialTheme.colorScheme.onBackground,
                             modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp)
                         )
                     }

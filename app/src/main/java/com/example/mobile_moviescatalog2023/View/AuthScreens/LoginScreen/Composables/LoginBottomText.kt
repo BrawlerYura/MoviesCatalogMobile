@@ -18,6 +18,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.mobile_moviescatalog2023.R
 import com.example.mobile_moviescatalog2023.View.AuthScreens.LoginScreen.LoginContract
+import com.example.mobile_moviescatalog2023.ui.theme.MyTypography
 import com.example.mobile_moviescatalog2023.ui.theme.interFamily
 
 @Composable
@@ -26,21 +27,13 @@ fun LoginBottomText(onNavigationRequested: () -> Unit) {
         Row(modifier = Modifier.align(Alignment.BottomCenter)) {
             Text(
                 text = stringResource(R.string.no_account_question),
-                style = TextStyle(
-                    fontFamily = interFamily,
-                    fontWeight = FontWeight.W600,
-                    fontSize = 15.sp,
-                    color = MaterialTheme.colorScheme.onBackground
-                ),
+                style = MyTypography.titleSmall,
+                color = MaterialTheme.colorScheme.onBackground
             )
             Text(
                 text = stringResource(R.string.registration_prompt),
-                style = TextStyle(
-                    fontFamily = interFamily,
-                    fontWeight = FontWeight.W600,
-                    fontSize = 15.sp,
-                    color = MaterialTheme.colorScheme.primary,
-                ),
+                style = MyTypography.titleSmall,
+                color = MaterialTheme.colorScheme.primary,
                 modifier = Modifier.clickable {
                     onNavigationRequested()
                 }

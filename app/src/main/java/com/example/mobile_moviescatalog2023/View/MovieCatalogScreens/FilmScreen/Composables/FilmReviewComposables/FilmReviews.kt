@@ -18,8 +18,9 @@ import androidx.compose.ui.unit.sp
 import com.example.mobile_moviescatalog2023.domain.Entities.Models.ReviewModel
 import com.example.mobile_moviescatalog2023.domain.Entities.Models.UserShortModel
 import com.example.mobile_moviescatalog2023.Network.Network
-import com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.FilmScreen.Composables.filmScreensPreviewState
+import com.example.mobile_moviescatalog2023.View.Common.PreviewStateBuilder.filmScreensPreviewState
 import com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.FilmScreen.FilmScreenContract
+import com.example.mobile_moviescatalog2023.ui.theme.MyTypography
 import com.example.mobile_moviescatalog2023.ui.theme.interFamily
 
 @Composable
@@ -56,24 +57,16 @@ fun FilmReviews(
 
                 Text(
                     text = it.reviewText ?: "",
-                    style = TextStyle(
-                        fontFamily = interFamily,
-                        fontWeight = FontWeight.W400,
-                        fontSize = 14.sp,
-                        color = MaterialTheme.colorScheme.onBackground,
-                        textAlign = TextAlign.Start
-                    )
+                    style = MyTypography.bodySmall,
+                    color = MaterialTheme.colorScheme.onBackground,
+                    textAlign = TextAlign.Start
                 )
 
                 Text(
                     text = it.createDateTime,
-                    style = TextStyle(
-                        fontFamily = interFamily,
-                        fontWeight = FontWeight.W500,
-                        fontSize = 12.sp,
-                        color = MaterialTheme.colorScheme.onSurface,
-                        textAlign = TextAlign.Start
-                    ),
+                    style = MyTypography.labelSmall,
+                    color = MaterialTheme.colorScheme.onSurface,
+                    textAlign = TextAlign.Start,
                     modifier = Modifier.padding(bottom = 20.dp)
                 )
             }

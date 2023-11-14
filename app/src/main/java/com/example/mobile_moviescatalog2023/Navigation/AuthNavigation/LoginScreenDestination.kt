@@ -19,9 +19,7 @@ fun LoginScreenDestination(navController: NavHostController) {
             when (navigationEffect) {
                 is LoginContract.Effect.Navigation.ToMain -> {
                     navController.navigate(Screen.Main.route) {
-                        popUpTo(Screen.Introducing.route) {
-                            inclusive = true
-                        }
+                        popUpTo(0)
                     }
                 }
 

@@ -8,12 +8,18 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -29,15 +35,24 @@ import com.example.mobile_moviescatalog2023.domain.Entities.Models.ReviewShortMo
 import com.example.mobile_moviescatalog2023.R
 import com.example.mobile_moviescatalog2023.View.Base.SIDE_EFFECTS_KEY
 import com.example.mobile_moviescatalog2023.View.Common.BottomNavigationBar
+import com.example.mobile_moviescatalog2023.View.Common.NetworkErrorScreen
+import com.example.mobile_moviescatalog2023.View.Common.PreviewStateBuilder.movieElementModel
 import com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.FavoriteScreen.FavoriteScreenContract
+import com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.MainScreen.Composables.FilmRating
+import com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.MainScreen.MainScreenContract
 
 import com.example.mobile_moviescatalog2023.domain.Entities.Models.ThreeFavoriteMovies
 import com.example.mobile_moviescatalog2023.ui.theme.FilmusTheme
 import com.example.mobile_moviescatalog2023.ui.theme.interFamily
+import eu.bambooapps.material3.pullrefresh.PullRefreshIndicator
+import eu.bambooapps.material3.pullrefresh.pullRefresh
+import eu.bambooapps.material3.pullrefresh.rememberPullRefreshState
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FavoriteScreen(
     state: FavoriteScreenContract.State,
@@ -51,59 +66,133 @@ fun FavoriteScreen(
             when (effect) {
                 is FavoriteScreenContract.Effect.Navigation.ToFilm -> onNavigationRequested(effect)
                 is FavoriteScreenContract.Effect.Navigation.ToMain -> onNavigationRequested(effect)
-                is FavoriteScreenContract.Effect.Navigation.ToProfile -> onNavigationRequested(effect)
+                is FavoriteScreenContract.Effect.Navigation.ToProfile -> onNavigationRequested(
+                    effect
+                )
+                is FavoriteScreenContract.Effect.Navigation.ToIntroducing -> onNavigationRequested(effect)
             }
         }?.collect()
     }
+    val lazyListState = rememberLazyListState()
+    val coroutineScope = rememberCoroutineScope()
 
     FilmusTheme {
         Scaffold(
             bottomBar = {
                 BottomNavigationBar(
-                    onNavigationToMainRequested = { onEventSent(FavoriteScreenContract.Event.NavigationToMain) },
-                    onNavigationToProfileRequested = { onEventSent(FavoriteScreenContract.Event.NavigationToProfile) },
-                    onNavigationToFavoriteRequested = { },
+                    onNavigationToMainRequested = {
+                        onEventSent(FavoriteScreenContract.Event.NavigationToMain)
+                        },
+                    onNavigationToProfileRequested = {
+                        onEventSent(FavoriteScreenContract.Event.NavigationToProfile)
+                        },
+                    onNavigationToFavoriteRequested = {
+                        coroutineScope.launch {
+                            lazyListState.animateScrollToItem(index = 0)
+                        }
+                    },
                     currentScreen = 1
                 )
             }
         ) {
-            Box(modifier = Modifier.padding(it)) {
-                LazyColumn(
-                    modifier = Modifier.fillMaxSize(),
-                    verticalArrangement = spacedBy(20.dp)
-                ) {
-                    item {
-                        Box(modifier = Modifier.fillMaxWidth())
-                        {
-                            Text(
-                                text = stringResource(R.string.favorite),
-                                style = TextStyle(
-                                    fontFamily = interFamily,
-                                    fontWeight = FontWeight.W700,
-                                    fontSize = 24.sp,
-                                    color = MaterialTheme.colorScheme.onBackground,
-                                    textAlign = TextAlign.Center
-                                ),
-                                modifier = Modifier.align(Alignment.Center).padding(top = 16.dp)
-                            )
-                        }
-                    }
-                    if (state.favoriteMovieList?.isEmpty() == false) {
-                        items(state.favoriteMovieList) {
-                            FavoriteFilmCard(
-                                it
-                            ) { id -> onEventSent(FavoriteScreenContract.Event.NavigationToFilm(id)) }
-                        }
-                    } else {
-                        item {
-                            FavoriteFilmsPlaceholder()
-                        }
-                    }
-                    item {
-                        Spacer(modifier = Modifier.height(5.dp))
+            val refreshState = rememberPullRefreshState(
+                refreshing = state.isRefreshing,
+                onRefresh = {
+                    onEventSent(FavoriteScreenContract.Event.RefreshScreen)
+                }
+            )
+            Box(
+                modifier = Modifier
+                    .padding(it)
+                    .pullRefresh(refreshState)
+            ) {
+                when {
+                    state.isLoaded -> { FavoriteMoviesListScreen(state, onEventSent, lazyListState) }
+                    state.isError -> { NetworkErrorScreen {
+                        onEventSent(FavoriteScreenContract.Event.RefreshScreen)
+                    } }
+                    else -> {
+                        FavoriteFilmsPlaceholder()
                     }
                 }
+                PullRefreshIndicator(
+                    refreshing = state.isRefreshing,
+                    state = refreshState,
+                    modifier = Modifier
+                        .align(Alignment.TopCenter)
+                )
             }
+        }
+    }
+}
+
+@Composable
+fun FavoriteMoviesListScreen(
+    state: FavoriteScreenContract.State,
+    onEventSent: (event: FavoriteScreenContract.Event) -> Unit,
+    lazyListState: LazyListState
+) {
+    LazyColumn(
+        modifier = Modifier.fillMaxSize(),
+        verticalArrangement = spacedBy(20.dp),
+        state = lazyListState
+    ) {
+        item {
+            Box(modifier = Modifier.fillMaxWidth())
+            {
+                Text(
+                    text = stringResource(R.string.favorite),
+                    style =
+                    TextStyle(
+                        fontFamily = interFamily,
+                        fontWeight = FontWeight.W700,
+                        fontSize = 24.sp,
+                        color = MaterialTheme.colorScheme.onBackground,
+                        textAlign = TextAlign.Center
+                    ),
+                    modifier = Modifier
+                        .align(Alignment.Center)
+                        .padding(top = 16.dp)
+                )
+            }
+        }
+        if (state.favoriteMovieList?.isEmpty() == false) {
+            itemsIndexed(state.favoriteMovieList) {index, item ->
+                FavoriteFilmCard(
+                    item = item,
+                    firstMyRating=
+                    try {
+                        state.myRating[index * 3]
+                    } catch (e: Exception) {
+                        null
+                    },
+                    secondMyRating =
+                    try {
+                        state.myRating[index * 3 + 1]
+                    } catch (e: Exception) {
+                        null
+                    },
+                    thirdMyRating =
+                    try {
+                        state.myRating[index * 3 + 2]
+                    } catch (e: Exception) {
+                        null
+                    },
+                ) { id ->
+                    onEventSent(
+                        FavoriteScreenContract.Event.NavigationToFilm(
+                            id
+                        )
+                    )
+                }
+            }
+        } else {
+            item {
+                FavoriteFilmsPlaceholder()
+            }
+        }
+        item {
+            Spacer(modifier = Modifier.height(5.dp))
         }
     }
 }
@@ -111,37 +200,6 @@ fun FavoriteScreen(
 @Preview(showBackground = true)
 @Composable
 private fun FavoriteScreenPreview() {
-    val genres = listOf(
-        GenreModel(
-            id = "",
-            name = "боевик"
-        ),
-        GenreModel(
-            id = "",
-            name = "приключения"
-        )
-    )
-
-    val reviews = listOf(
-        ReviewShortModel(
-            id = "",
-            rating = 7
-        ),
-        ReviewShortModel(
-            id = "",
-            rating = 9
-        ),
-    )
-    val movieElementModel =
-        MovieElementModel(
-            id = "27e0d4f4-6e31-4053-a2be-08d9b9f3d2a2",
-            name = "Пираты Карибского моря: Проклятие Черной жемчужины",
-            poster = null,
-            year = 2003,
-            country = "США",
-            genres = genres,
-            reviews = reviews,
-        )
     FavoriteScreen(
         state = FavoriteScreenContract.State(
             favoriteMovieList = listOf(
@@ -156,7 +214,10 @@ private fun FavoriteScreenPreview() {
                     thirdMovie = movieElementModel
                 ),
             ),
-            isSuccess = true
+            isLoaded = true,
+            isError = false,
+            isRefreshing = false,
+            myRating = listOf()
         ),
         onEventSent = { },
         effectFlow = null,

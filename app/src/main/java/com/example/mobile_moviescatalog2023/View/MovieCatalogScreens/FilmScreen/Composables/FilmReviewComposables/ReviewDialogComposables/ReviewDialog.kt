@@ -25,8 +25,9 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.example.mobile_moviescatalog2023.R
-import com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.FilmScreen.Composables.filmScreensPreviewState
+import com.example.mobile_moviescatalog2023.View.Common.PreviewStateBuilder.filmScreensPreviewState
 import com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.FilmScreen.FilmScreenContract
+import com.example.mobile_moviescatalog2023.ui.theme.MyTypography
 import com.example.mobile_moviescatalog2023.ui.theme.interFamily
 
 @Composable
@@ -68,13 +69,9 @@ fun ReviewDialog(
                 ) {
                     Text(
                         text = stringResource(R.string.make_review),
-                        style = TextStyle(
-                            fontFamily = interFamily,
-                            fontWeight = FontWeight.W700,
-                            fontSize = 20.sp,
-                            color =  MaterialTheme.colorScheme.onBackground,
-                            textAlign = TextAlign.Center
-                        ),
+                        style = MyTypography.titleMedium,
+                        color =  MaterialTheme.colorScheme.onBackground,
+                        textAlign = TextAlign.Center,
                     )
 
                     Spacer(modifier = Modifier.height(5.dp))
@@ -85,11 +82,7 @@ fun ReviewDialog(
                         value = state.myReviewTextField,
                         colors = OutlinedTextFieldDefaults.colors(
                         ),
-                        textStyle = TextStyle(
-                            fontFamily = interFamily,
-                            fontWeight = FontWeight.W400,
-                            fontSize = 15.sp
-                        ),
+                        textStyle = MyTypography.bodyMedium,
                         onValueChange = {
                             onEventSent(FilmScreenContract.Event.SaveReviewText(it))
                         },

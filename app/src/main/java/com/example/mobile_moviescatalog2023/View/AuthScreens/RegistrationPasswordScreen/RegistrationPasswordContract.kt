@@ -12,8 +12,7 @@ class RegistrationPasswordContract {
     sealed class Event : ViewEvent {
         class SavePasswordEvent(val password: String) : Event()
         class SaveRepeatedPasswordEvent(val repPassword: String) : Event()
-        class SignUp(val haptic: HapticFeedback) : Event()
-        class LoadRegisterRequestBody(val registerRequestBody: RegisterRequestBody) : Event()
+        class SignUp(val haptic: HapticFeedback, val body: RegisterRequestBody) : Event()
         object NavigationToLogin : Event()
         object NavigationBack : Event()
     }
@@ -21,16 +20,13 @@ class RegistrationPasswordContract {
     data class State(
         val password: String,
         val repPassword: String,
-        val userName: String,
-        val name: String,
-        val email: String,
-        val birthDate: String,
-        val gender: Int,
         val isSuccess: Boolean?,
         val isPasswordValid: Boolean?,
         val isRepPasswordValid: Boolean?,
         val errorMessage: String?,
-        val isBodyLoaded: Boolean
+        val isBodyLoaded: Boolean,
+        val isLoading: Boolean,
+        val isError: Boolean
     ) : ViewState
 
     sealed class Effect : ViewSideEffect {

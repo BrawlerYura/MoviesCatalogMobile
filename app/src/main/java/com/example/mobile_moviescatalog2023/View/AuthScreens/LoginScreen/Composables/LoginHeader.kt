@@ -28,6 +28,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.mobile_moviescatalog2023.R
 import com.example.mobile_moviescatalog2023.View.AuthScreens.LoginScreen.LoginContract
+import com.example.mobile_moviescatalog2023.ui.theme.MyTypography
 import com.example.mobile_moviescatalog2023.ui.theme.interFamily
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -67,12 +68,8 @@ fun LoginHeader(onNavigationRequested: () -> Unit) {
         )
         Text(
             text = stringResource(R.string.app_name),
-            style = TextStyle(
-                fontFamily = interFamily,
-                fontWeight = FontWeight.W600,
-                fontSize = 17.sp,
-                color = MaterialTheme.colorScheme.primary
-            ),
+            style = MyTypography.bodyLarge,
+            color = MaterialTheme.colorScheme.primary,
             modifier = Modifier.align(Alignment.Center)
         )
     }

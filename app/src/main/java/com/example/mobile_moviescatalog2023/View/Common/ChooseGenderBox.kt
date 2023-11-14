@@ -29,6 +29,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.mobile_moviescatalog2023.R
 import com.example.mobile_moviescatalog2023.View.AuthScreens.RegistrationScreen.RegistrationContract
+import com.example.mobile_moviescatalog2023.ui.theme.MyTypography
 import com.example.mobile_moviescatalog2023.ui.theme.interFamily
 
 @SuppressLint("SuspiciousIndentation")
@@ -44,12 +45,8 @@ fun ChooseGenderBox(
     ) {
         Text(
             text = stringResource(R.string.gender_label),
-            style = TextStyle(
-                fontFamily = interFamily,
-                fontWeight = FontWeight.W500,
-                fontSize = 15.sp,
-                color = MaterialTheme.colorScheme.onBackground
-            ),
+            style = MyTypography.labelLarge,
+            color = MaterialTheme.colorScheme.onBackground,
             modifier = Modifier.padding(bottom = 8.dp)
         )
         val items = listOf(stringResource(R.string.male), stringResource(R.string.female))

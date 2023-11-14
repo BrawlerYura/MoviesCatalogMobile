@@ -6,6 +6,7 @@ import com.example.mobile_moviescatalog2023.Navigation.Screen
 import com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.FavoriteScreen.Composables.FavoriteScreen
 import com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.FavoriteScreen.FavoriteScreenContract
 import com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.FavoriteScreen.FavoriteScreenViewModel
+import com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.FilmScreen.FilmScreenContract
 import com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.MainScreen.MainScreenContract
 import org.koin.androidx.compose.getViewModel
 
@@ -30,6 +31,13 @@ fun FavoriteScreenDestination(
 
                 is FavoriteScreenContract.Effect.Navigation.ToMain -> {
                     navController.navigate(Screen.Main.route)
+                }
+                is FavoriteScreenContract.Effect.Navigation.ToIntroducing -> {
+                    navController.navigate(Screen.Introducing.route) {
+                        popUpTo(Screen.Main.route) {
+                            inclusive = true
+                        }
+                    }
                 }
             }
         }

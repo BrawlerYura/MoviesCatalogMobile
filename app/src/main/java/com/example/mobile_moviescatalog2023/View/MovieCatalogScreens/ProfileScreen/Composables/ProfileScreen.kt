@@ -2,12 +2,16 @@ package com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.ProfileScr
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement.Absolute.spacedBy
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -29,13 +33,21 @@ import com.example.mobile_moviescatalog2023.View.Common.MyBirthDateTextBox
 import com.example.mobile_moviescatalog2023.View.Common.MyButton
 import com.example.mobile_moviescatalog2023.View.Common.MyTextFieldBox
 import com.example.mobile_moviescatalog2023.View.Common.BottomNavigationBar
+import com.example.mobile_moviescatalog2023.View.Common.NetworkErrorScreen
+import com.example.mobile_moviescatalog2023.View.Common.PreviewStateBuilder.profileStatePreview
+import com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.MainScreen.MainScreenContract
 import com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.ProfileScreen.ProfileScreenContract
 import com.example.mobile_moviescatalog2023.ui.theme.FilmusTheme
+import com.example.mobile_moviescatalog2023.ui.theme.MyTypography
 import com.example.mobile_moviescatalog2023.ui.theme.interFamily
+import eu.bambooapps.material3.pullrefresh.PullRefreshIndicator
+import eu.bambooapps.material3.pullrefresh.pullRefresh
+import eu.bambooapps.material3.pullrefresh.rememberPullRefreshState
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProfileScreen(
     state: ProfileScreenContract.State,
@@ -59,133 +71,183 @@ fun ProfileScreen(
             bottomBar = {
                 BottomNavigationBar(
                     onNavigationToMainRequested = { onEventSent(ProfileScreenContract.Event.NavigationToMain) },
-                    onNavigationToProfileRequested = {  },
+                    onNavigationToProfileRequested = {
+
+                    },
                     onNavigationToFavoriteRequested = { onEventSent(ProfileScreenContract.Event.NavigationToFavorite) },
                     currentScreen = 2
                 )
             }
         ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(it)
-                    .verticalScroll(rememberScrollState()),
-                verticalArrangement = spacedBy(15.dp)
+            val refreshState = rememberPullRefreshState(
+                refreshing = state.isRefreshing,
+                onRefresh = {
+                    onEventSent(ProfileScreenContract.Event.RefreshScreen)
+                }
+            )
+            Box(modifier = Modifier
+                .fillMaxSize()
+                .pullRefresh(refreshState)
+                .padding(it)
             ) {
-                ProfileBox(state)
 
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp),
-                    verticalArrangement = spacedBy(15.dp)
-                ) {
-                    MyTextFieldBox(
-                        value = state.email,
-                        isError = state.isSuccess == false,
-                        isValid = state.isEmailValid == false,
-                        onSaveEvent = { text ->
-                            onEventSent(ProfileScreenContract.Event.SaveEmailEvent(text))
-                        },
-                        headerText = stringResource(R.string.email_label),
-                        errorText = stringResource(R.string.invalid_email_message)
-                    )
-
-                    MyTextFieldBox(
-                        value = state.userIconUrl ?: "",
-                        isError = state.isSuccess == false,
-                        isValid = false,
-                        onSaveEvent = { text ->
-                            onEventSent(ProfileScreenContract.Event.SaveUserIconUrl(text))
-                        },
-                        headerText = stringResource(R.string.url_to_profile_icon),
-                        errorText = ""
-                    )
-
-                    MyTextFieldBox(
-                        value = state.name,
-                        isError = state.isSuccess == false,
-                        isValid = state.isNameValid == false,
-                        onSaveEvent = { text ->
-                            onEventSent(ProfileScreenContract.Event.SaveNameEvent(text))
-                        },
-                        headerText = stringResource(R.string.name_label),
-                        errorText = stringResource(R.string.invalid_name_message)
-                    )
-
-                    ChooseGenderBox(
-                        currentIndex = state.gender,
-                        onSaveEvent = { gender ->
-                            onEventSent(ProfileScreenContract.Event.SaveGenderEvent(gender))
+                when {
+                    state.isLoaded -> {
+                        ProfileScreenBoxes(state, onEventSent)
+                    }
+                    state.isError -> {
+                        NetworkErrorScreen {
+                            onEventSent(ProfileScreenContract.Event.RefreshScreen)
                         }
-                    )
-
-                    MyBirthDateTextBox(
-                        value = state.birthDate,
-                        isValid = state.isBirthDateValid == false,
-                        isError = state.isSuccess == false,
-                        onSaveDateEvent = { date ->
-                            onEventSent(
-                                ProfileScreenContract.Event.SaveBirthDateWithFormatEvent(
-                                    date
-                                )
-                            )
-                        },
-                        onSaveTextEvent = { text ->
-                            onEventSent(
-                                ProfileScreenContract.Event.SaveBirthDateEvent(text)
-                            )
-                        }
-                    )
+                    }
+                    else -> {
+                        MainSkeletonScreen()
+                    }
                 }
 
-                Column(
+                PullRefreshIndicator(
+                    refreshing = state.isRefreshing,
+                    state = refreshState,
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp),
-                    verticalArrangement = spacedBy(15.dp)
-                ) {
-                    val haptic = LocalHapticFeedback.current
-                    MyButton(
-                        isEnabled = state.isEnable,
-                        onEventSent = {
-                            onEventSent(
-                                ProfileScreenContract.Event.PutNewUserDetails(
-                                    haptic
-                                )
-                            )
-                        },
-                        text = stringResource(R.string.save),
-                        backgroundColor = MaterialTheme.colorScheme.primary,
-                        contentColor = MaterialTheme.colorScheme.onPrimary
-                    )
-
-                    MyButton(
-                        isEnabled = state.isCancelEnable,
-                        onEventSent = { onEventSent(ProfileScreenContract.Event.LoadUserDetails) },
-                        text = stringResource(R.string.refuse),
-                        backgroundColor = MaterialTheme.colorScheme.surface,
-                        contentColor = MaterialTheme.colorScheme.primary
-                    )
-                }
-
-                Text(
-                    text = stringResource(R.string.logout),
-                    style = TextStyle(
-                        fontFamily = interFamily,
-                        fontWeight = FontWeight.W600,
-                        fontSize = 14.sp,
-                        color = MaterialTheme.colorScheme.primary,
-                    ),
-                    modifier = Modifier
-                        .padding(top = 5.dp, bottom = 5.dp)
-                        .clickable {
-                            onEventSent(ProfileScreenContract.Event.Logout)
-                        }
-                        .align(Alignment.CenterHorizontally)
+                        .align(Alignment.TopCenter)
                 )
             }
         }
+    }
+}
+
+@Composable
+fun ProfileScreenBoxes(
+    state: ProfileScreenContract.State,
+    onEventSent: (event: ProfileScreenContract.Event) -> Unit,
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState()),
+        verticalArrangement = spacedBy(15.dp)
+    ) {
+        ProfileBox(state)
+
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp),
+            verticalArrangement = spacedBy(15.dp)
+        ) {
+            MyTextFieldBox(
+                value = state.email,
+                isError = !state.isSuccess,
+                isValid = !state.isEmailValid,
+                onSaveEvent = { text ->
+                    onEventSent(ProfileScreenContract.Event.SaveEmailEvent(text))
+                },
+                headerText = stringResource(R.string.email_label),
+                errorText = stringResource(R.string.invalid_email_message)
+            )
+
+            MyTextFieldBox(
+                value = state.userIconUrl ?: "",
+                isError = !state.isSuccess,
+                isValid = false,
+                onSaveEvent = { text ->
+                    onEventSent(ProfileScreenContract.Event.SaveUserIconUrl(text))
+                },
+                headerText = stringResource(R.string.url_to_profile_icon),
+                errorText = ""
+            )
+
+            MyTextFieldBox(
+                value = state.name,
+                isError = !state.isSuccess,
+                isValid = !state.isNameValid,
+                onSaveEvent = { text ->
+                    onEventSent(ProfileScreenContract.Event.SaveNameEvent(text))
+                },
+                headerText = stringResource(R.string.name_label),
+                errorText = stringResource(R.string.invalid_name_message)
+            )
+
+            ChooseGenderBox(
+                currentIndex = state.gender,
+                onSaveEvent = { gender ->
+                    onEventSent(ProfileScreenContract.Event.SaveGenderEvent(gender))
+                }
+            )
+
+            MyBirthDateTextBox(
+                value = state.birthDate,
+                isValid = !state.isBirthDateValid,
+                isError = !state.isSuccess,
+                onSaveDateEvent = { date ->
+                    onEventSent(
+                        ProfileScreenContract.Event.SaveBirthDateWithFormatEvent(
+                            date
+                        )
+                    )
+                },
+                onSaveTextEvent = { text ->
+                    onEventSent(
+                        ProfileScreenContract.Event.SaveBirthDateEvent(text)
+                    )
+                }
+            )
+        }
+
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp)
+        ) {
+            if(!state.isSuccess) {
+                Text(
+                    text = state.errorMessage ?: "",
+                    style = MyTypography.bodySmall,
+                    color = MaterialTheme.colorScheme.error
+                )
+            }
+            Spacer(modifier = Modifier.height(4.dp))
+            val haptic = LocalHapticFeedback.current
+            MyButton(
+                isEnabled = state.isEnable,
+                onEventSent = {
+                    onEventSent(
+                        ProfileScreenContract.Event.PutNewUserDetails(
+                            haptic
+                        )
+                    )
+                },
+                text = stringResource(R.string.save),
+                backgroundColor = MaterialTheme.colorScheme.primary,
+                contentColor = MaterialTheme.colorScheme.onPrimary
+            )
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            MyButton(
+                isEnabled = state.isCancelEnable,
+                onEventSent = { onEventSent(ProfileScreenContract.Event.LoadUserDetails) },
+                text = stringResource(R.string.refuse),
+                backgroundColor = MaterialTheme.colorScheme.surface,
+                contentColor = MaterialTheme.colorScheme.primary
+            )
+        }
+
+        Text(
+            text = stringResource(R.string.logout),
+            style = TextStyle(
+                fontFamily = interFamily,
+                fontWeight = FontWeight.W600,
+                fontSize = 14.sp,
+                color = MaterialTheme.colorScheme.primary,
+            ),
+            modifier = Modifier
+                .padding(top = 5.dp, bottom = 5.dp)
+                .clickable {
+                    onEventSent(ProfileScreenContract.Event.Logout)
+                }
+                .align(Alignment.CenterHorizontally)
+        )
     }
 }
 
@@ -199,21 +261,3 @@ private fun ProfileScreenPreview() {
         onNavigationRequested = { }
     )
 }
-
-val profileStatePreview = ProfileScreenContract.State(
-    id = "",
-    nickName = "BrawlerYura",
-    email = "my@email.com",
-    userIconUrl = null,
-    name = "my name",
-    gender = 0,
-    birthDate = "30.07.2004",
-    isSuccess = null,
-    errorMessage = null,
-    profileModel = null,
-    isEnable = true,
-    isCancelEnable = true,
-    isNameValid = true,
-    isEmailValid = true,
-    isBirthDateValid = true
-)

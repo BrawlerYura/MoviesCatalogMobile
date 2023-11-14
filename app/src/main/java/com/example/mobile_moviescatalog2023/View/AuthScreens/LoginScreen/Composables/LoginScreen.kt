@@ -3,12 +3,16 @@ package com.example.mobile_moviescatalog2023.View.AuthScreens.LoginScreen.Compos
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -25,10 +29,15 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.mobile_moviescatalog2023.R
 import com.example.mobile_moviescatalog2023.View.AuthScreens.LoginScreen.LoginContract
+import com.example.mobile_moviescatalog2023.View.AuthScreens.RegistrationPasswordScreen.RegistrationPasswordContract
 import com.example.mobile_moviescatalog2023.View.AuthScreens.SplashScreen.SplashContract
 import com.example.mobile_moviescatalog2023.View.Base.SIDE_EFFECTS_KEY
 import com.example.mobile_moviescatalog2023.View.Common.MyButton
+import com.example.mobile_moviescatalog2023.View.Common.MyPasswordTextFieldBox
+import com.example.mobile_moviescatalog2023.View.Common.MyTextFieldBox
+import com.example.mobile_moviescatalog2023.View.Common.NetworkErrorScreen
 import com.example.mobile_moviescatalog2023.ui.theme.FilmusTheme
+import com.example.mobile_moviescatalog2023.ui.theme.MyTypography
 import com.example.mobile_moviescatalog2023.ui.theme.interFamily
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
@@ -53,48 +62,87 @@ fun LoginScreen(
     }
 
     FilmusTheme {
-        Box(
+        when {
+            state.isError -> {
+                NetworkErrorScreen {
+                    onEventSent(LoginContract.Event.NavigationBack)
+                }
+            }
+            else -> {
+                LoginScreenInner(state, onEventSent)
+            }
+        }
+    }
+}
+
+@Composable
+fun LoginScreenInner(
+    state: LoginContract.State,
+    onEventSent: (event: LoginContract.Event) -> Unit,
+) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(color = MaterialTheme.colorScheme.background)
+    ) {
+        Column(
             modifier = Modifier
-                .fillMaxSize()
-                .background(color = MaterialTheme.colorScheme.background)
+                .fillMaxWidth()
+                .fillMaxHeight(.95f)
+                .padding(16.dp)
+                .verticalScroll(rememberScrollState()),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .fillMaxHeight(.95f)
-                    .padding(16.dp)
-                    .verticalScroll(rememberScrollState()),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
 
-                LoginHeader { onEventSent(LoginContract.Event.NavigationBack) }
+            LoginHeader { onEventSent(LoginContract.Event.NavigationBack) }
 
-                Text(
-                    text = stringResource(R.string.login_title),
-                    style = TextStyle(
-                        fontFamily = interFamily,
-                        fontWeight = FontWeight.W700,
-                        fontSize = 20.sp,
-                        color = MaterialTheme.colorScheme.onBackground
-                    ),
-                    modifier = Modifier.padding(bottom = 15.dp)
-                )
+            Text(
+                text = stringResource(R.string.login_title),
+                style = MyTypography.titleMedium,
+                color = MaterialTheme.colorScheme.onBackground,
+                modifier = Modifier.padding(bottom = 15.dp)
+            )
 
-                LoginTextBox(state, onEventSent)
+            MyTextFieldBox(
+                value = state.login,
+                isError = state.isSuccess == false,
+                isValid = false,
+                onSaveEvent = { text -> onEventSent(LoginContract.Event.SaveLoginEvent(text)) },
+                headerText = stringResource(R.string.login_label),
+                errorText = ""
+            )
 
-                PasswordTextBox(state, onEventSent)
+            Spacer(modifier = Modifier.height(15.dp))
 
-                val haptic = LocalHapticFeedback.current
-                MyButton(
-                    isEnabled = state.buttonEnabled,
-                    onEventSent = { onEventSent(LoginContract.Event.SignIn(haptic)) },
-                    text = stringResource(R.string.login_button),
-                    backgroundColor = MaterialTheme.colorScheme.primary,
-                    contentColor = MaterialTheme.colorScheme.onPrimary
+            MyPasswordTextFieldBox(
+                value = state.password,
+                isError = state.isSuccess == false,
+                isValid = state.isSuccess == false,
+                onSaveEvent = { text ->
+                    onEventSent(LoginContract.Event.SavePasswordEvent(text))
+                },
+                headerText = stringResource(R.string.password_label),
+                errorText = state.errorMessage ?: ""
+            )
+
+            val haptic = LocalHapticFeedback.current
+            MyButton(
+                isEnabled = state.buttonEnabled,
+                onEventSent = { onEventSent(LoginContract.Event.SignIn(haptic)) },
+                text = stringResource(R.string.login_button),
+                backgroundColor = MaterialTheme.colorScheme.primary,
+                contentColor = MaterialTheme.colorScheme.onPrimary
+            )
+            Spacer(modifier = Modifier.height(20.dp))
+            if(state.isLoading) {
+                CircularProgressIndicator(
+                    modifier = Modifier.width(32.dp),
+                    color = MaterialTheme.colorScheme.primary,
+                    trackColor = MaterialTheme.colorScheme.onBackground,
                 )
             }
-            LoginBottomText { onEventSent(LoginContract.Event.NavigationToRegistration) }
         }
+        LoginBottomText { onEventSent(LoginContract.Event.NavigationToRegistration) }
     }
 }
 
@@ -114,5 +162,7 @@ val loginStatePreview = LoginContract.State (
     password = "password",
     isSuccess = null,
     buttonEnabled = true,
-    errorMessage = null
+    errorMessage = null,
+    isLoading = false,
+    isError = false
 )

@@ -21,6 +21,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.mobile_moviescatalog2023.R
+import com.example.mobile_moviescatalog2023.ui.theme.MyTypography
 import com.example.mobile_moviescatalog2023.ui.theme.interFamily
 
 @Composable
@@ -39,23 +40,14 @@ fun ImageWithDescriptionBox() {
 
         Text(
             text = stringResource(R.string.world_of_cinema),
-            style = TextStyle(
-                fontFamily = interFamily,
-                fontWeight = FontWeight.W700,
-                fontSize = 20.sp,
-                color = MaterialTheme.colorScheme.onBackground
-            ),
+            style = MyTypography.titleMedium,
+            color = MaterialTheme.colorScheme.onBackground
         )
 
         Text(
             text = stringResource(R.string.app_description),
-            style = TextStyle(
-                fontFamily = interFamily,
-                fontWeight = FontWeight.W400,
-                fontSize = 15.sp,
-                color = MaterialTheme.colorScheme.onBackground,
-                textAlign = TextAlign.Center
-            ),
+            style = MyTypography.bodyMedium,
+            color = MaterialTheme.colorScheme.onBackground,
             modifier = Modifier.padding(top = 8.dp, bottom = 35.dp)
         )
     }
