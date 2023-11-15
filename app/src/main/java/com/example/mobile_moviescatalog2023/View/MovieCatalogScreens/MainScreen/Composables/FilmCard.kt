@@ -39,6 +39,7 @@ import com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.MainScreen.
 import com.example.mobile_moviescatalog2023.domain.Entities.Models.GenreModel
 import com.example.mobile_moviescatalog2023.domain.Entities.Models.MovieElementModel
 import com.example.mobile_moviescatalog2023.domain.Entities.Models.ReviewShortModel
+import com.example.mobile_moviescatalog2023.ui.theme.MyTypography
 import com.example.mobile_moviescatalog2023.ui.theme.interFamily
 
 @OptIn(ExperimentalLayoutApi::class)

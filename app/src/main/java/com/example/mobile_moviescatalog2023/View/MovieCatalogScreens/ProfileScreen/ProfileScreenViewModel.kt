@@ -1,9 +1,12 @@
 package com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.ProfileScreen
 
+import android.content.Context
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.ui.hapticfeedback.HapticFeedback
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.lifecycle.viewModelScope
+import com.example.mobile_moviescatalog2023.R
 import com.example.mobile_moviescatalog2023.domain.Entities.Models.ProfileModel
 import com.example.mobile_moviescatalog2023.View.Base.BaseViewModel
 import com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.MainScreen.MainScreenContract
@@ -13,6 +16,7 @@ import com.example.mobile_moviescatalog2023.domain.UseCases.AuthUseCases.LogoutU
 import com.example.mobile_moviescatalog2023.domain.UseCases.HandleErrorUseCase
 import com.example.mobile_moviescatalog2023.domain.UseCases.UserUseCases.PutProfileUseCase
 import com.example.mobile_moviescatalog2023.domain.UseCases.ValidationUseCase
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.flow.collect
@@ -25,6 +29,7 @@ class ProfileScreenViewModel(
     private val formatDateUseCase: FormatDateUseCase,
     private val validationUseCase: ValidationUseCase,
     private val handleErrorUseCase: HandleErrorUseCase,
+    private val context: Context,
 ) : BaseViewModel<ProfileScreenContract.Event, ProfileScreenContract.State, ProfileScreenContract.Effect>() {
 
     init {
@@ -191,50 +196,55 @@ class ProfileScreenViewModel(
         viewModelScope.launch(Dispatchers.IO) {
             getProfileUseCase.invoke().collect { result ->
                 result.onSuccess {
-                setState {
-                    copy(
-                        id = it.id,
-                        nickName = it.nickName,
-                        email = it.email,
-                        userIconUrl = it.avatarLink,
-                        name = it.name,
-                        gender = it.gender,
-                        birthDate = formatDateUseCase.formatDateFromApi(it.birthDate),
-                        profileModel = ProfileModel(
+                    setState {
+                        copy(
                             id = it.id,
                             nickName = it.nickName,
                             email = it.email,
-                            avatarLink = it.avatarLink,
+                            userIconUrl = it.avatarLink,
                             name = it.name,
                             gender = it.gender,
-                            birthDate = formatDateUseCase.formatDateFromApi(it.birthDate)
-                        ),
-                        isEnable = false,
-                        isCancelEnable = false,
-                        isLoaded = true,
-                        isError = false,
-                        isSuccess = true,
-                        isNameValid = true,
-                        isEmailValid = true,
-                        isBirthDateValid = true,
-                        isRefreshing = false
-                    )
-                }
-            }.onFailure {
+                            birthDate = formatDateUseCase.formatDateFromApi(it.birthDate),
+                            profileModel = ProfileModel(
+                                id = it.id,
+                                nickName = it.nickName,
+                                email = it.email,
+                                avatarLink = it.avatarLink,
+                                name = it.name,
+                                gender = it.gender,
+                                birthDate = formatDateUseCase.formatDateFromApi(it.birthDate)
+                            ),
+                            isEnable = false,
+                            isCancelEnable = false,
+                            isLoaded = true,
+                            isError = false,
+                            isSuccess = true,
+                            isNameValid = true,
+                            isEmailValid = true,
+                            isBirthDateValid = true,
+                            isRefreshing = false
+                        )
+                    }
+                }.onFailure {
                     handleErrorUseCase.handleError(
                         error = it.message,
                         onInputError = { },
                         onTokenError = {
                             setEffect { ProfileScreenContract.Effect.Navigation.ToIntroducing }
+                            launch(Dispatchers.Main) {
+                                MakeToast(text = context.getString(R.string.toast_auth_error))
+                            }
                         },
                         onOtherError = {
-                            setState { copy(
-                                isLoaded = false,
-                                isError = true,
-                            ) }
+                            setState {
+                                copy(
+                                    isLoaded = false,
+                                    isError = true,
+                                )
+                            }
                         }
                     )
-            }
+                }
                 setState { copy(isRefreshing = false) }
             }
         }
@@ -253,23 +263,23 @@ class ProfileScreenViewModel(
         viewModelScope.launch(Dispatchers.Main) {
             putProfileUseCase.invoke(profileModel).collect { result ->
                 result.onSuccess {
-                setState {
-                    copy(
-                        isEnable = false,
-                        isCancelEnable = false,
-                        isSuccess = true,
-                        profileModel = ProfileModel(
-                            id = state.value.id,
-                            nickName = state.value.nickName,
-                            email = state.value.email,
-                            avatarLink = state.value.userIconUrl,
-                            name = state.value.name,
-                            gender = state.value.gender,
-                            birthDate = state.value.birthDate
+                    setState {
+                        copy(
+                            isEnable = false,
+                            isCancelEnable = false,
+                            isSuccess = true,
+                            profileModel = ProfileModel(
+                                id = state.value.id,
+                                nickName = state.value.nickName,
+                                email = state.value.email,
+                                avatarLink = state.value.userIconUrl,
+                                name = state.value.name,
+                                gender = state.value.gender,
+                                birthDate = state.value.birthDate
+                            )
                         )
-                    )
-                }
-            }.onFailure {
+                    }
+                }.onFailure {
                     handleErrorUseCase.handleError(
                         error = it.message,
                         onInputError = {
@@ -283,15 +293,20 @@ class ProfileScreenViewModel(
                         },
                         onTokenError = {
                             setEffect { ProfileScreenContract.Effect.Navigation.ToIntroducing }
+                            launch(Dispatchers.Main) {
+                                MakeToast(text = context.getString(R.string.toast_auth_error))
+                            }
                         },
                         onOtherError = {
-                            setState { copy(
-                                isLoaded = false,
-                                isError = true,
-                            ) }
+                            setState {
+                                copy(
+                                    isLoaded = false,
+                                    isError = true,
+                                )
+                            }
                         }
                     )
-            }
+                }
             }
         }
     }
@@ -303,5 +318,15 @@ class ProfileScreenViewModel(
                 setEffect { ProfileScreenContract.Effect.Navigation.ToIntroducing }
             }
         }
+    }
+
+    private fun MakeToast(
+        text: String
+    ) {
+        Toast.makeText(
+            context,
+            text,
+            Toast.LENGTH_SHORT
+        ).show()
     }
 }

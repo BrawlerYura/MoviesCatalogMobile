@@ -1,12 +1,16 @@
 package com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.FavoriteScreen
 
+import android.content.Context
 import android.util.Log
+import android.widget.Toast
+import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewModelScope
 import com.example.mobile_moviescatalog2023.Network.Auth.AuthRepository
 import com.example.mobile_moviescatalog2023.domain.Entities.Models.MovieElementModel
 import com.example.mobile_moviescatalog2023.domain.Entities.Models.MoviesListModel
 import com.example.mobile_moviescatalog2023.Network.FavoriteMovies.FavoriteMoviesRepository
 import com.example.mobile_moviescatalog2023.Network.Network
+import com.example.mobile_moviescatalog2023.R
 import com.example.mobile_moviescatalog2023.View.AuthScreens.LoginScreen.LoginContract
 import com.example.mobile_moviescatalog2023.View.Base.BaseViewModel
 import com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.FilmScreen.FilmScreenContract
@@ -17,6 +21,7 @@ import com.example.mobile_moviescatalog2023.domain.UseCases.FavoriteMoviesUseCas
 import com.example.mobile_moviescatalog2023.domain.UseCases.FromListToPartsMovieUseCase
 import com.example.mobile_moviescatalog2023.domain.UseCases.HandleErrorUseCase
 import com.example.mobile_moviescatalog2023.domain.UseCases.MoviesUseCases.GetFilmDetailsUseCase
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
@@ -26,7 +31,8 @@ class FavoriteScreenViewModel(
     private val fromListToPartsMovieUseCase: FromListToPartsMovieUseCase,
     private val getFilmDetailsUseCase: GetFilmDetailsUseCase,
     private val calculateRatingUseCase: CalculateRatingUseCase,
-    private val handleErrorUseCase: HandleErrorUseCase
+    private val handleErrorUseCase: HandleErrorUseCase,
+    private val context: Context
 ): BaseViewModel<FavoriteScreenContract.Event, FavoriteScreenContract.State, FavoriteScreenContract.Effect>() {
 
     init{ getFavoriteMovies() }
@@ -81,6 +87,9 @@ class FavoriteScreenViewModel(
                         onInputError = {},
                         onTokenError = {
                             setEffect { FavoriteScreenContract.Effect.Navigation.ToIntroducing }
+                            launch(Dispatchers.Main) {
+                                MakeToast(text = context.getString(R.string.toast_auth_error))
+                            }
                         },
                         onOtherError = {
                             setState {
@@ -125,18 +134,34 @@ class FavoriteScreenViewModel(
             }.onFailure {
                 handleErrorUseCase.handleError(
                     error = it.message,
-                    onInputError = {},
+                    onInputError = { },
                     onTokenError = {
                         setEffect { FavoriteScreenContract.Effect.Navigation.ToIntroducing }
+                        CoroutineScope(Dispatchers.Main).launch {
+                            MakeToast(text = context.getString(R.string.toast_auth_error))
+                        }
                     },
                     onOtherError = {
                         setState {
                             copy(myRating = myRating + null)
+                        }
+                        CoroutineScope(Dispatchers.Main).launch {
+                            MakeToast(text = context.getString(R.string.toast_error))
                         }
                     }
                 )
 
             }
         }
+    }
+
+    private fun MakeToast(
+        text: String
+    ) {
+        Toast.makeText(
+            context,
+            text,
+            Toast.LENGTH_SHORT
+        ).show()
     }
 }

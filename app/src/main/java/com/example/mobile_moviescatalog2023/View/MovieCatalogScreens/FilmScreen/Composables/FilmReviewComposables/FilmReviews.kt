@@ -28,7 +28,8 @@ fun FilmReviews(
     reviews: List<ReviewModel>?,
     state: FilmScreenContract.State,
     onEventSent: (event: FilmScreenContract.Event) -> Unit,
-    filmId: String
+    filmId: String,
+    onImageClicked: (imageUrl: String?) -> Unit
 ) {
     Column(
         modifier = Modifier.padding(start = 15.dp, end = 15.dp, top = 25.dp)
@@ -53,7 +54,7 @@ fun FilmReviews(
                     )
                 }
 
-                CurrentReviewHeader(it, isMyReview.value, state, onEventSent, filmId)
+                CurrentReviewHeader(it, isMyReview.value, state, onEventSent, filmId, onImageClicked)
 
                 Text(
                     text = it.reviewText ?: "",
@@ -95,6 +96,7 @@ private fun FilmReviewsPreview() {
         ),
         state = filmScreensPreviewState,
         onEventSent = { },
-        filmId = ""
+        filmId = "",
+        onImageClicked = { }
     )
 }

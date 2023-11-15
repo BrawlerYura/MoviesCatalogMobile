@@ -1,5 +1,9 @@
 package com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.ProfileScreen.Composables
 
+import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.drawable.Drawable
+import androidx.compose.animation.core.Transition
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement.Absolute.spacedBy
 import androidx.compose.foundation.layout.Box
@@ -17,8 +21,14 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -26,6 +36,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.target.CustomTarget
 import com.example.mobile_moviescatalog2023.R
 import com.example.mobile_moviescatalog2023.View.Base.SIDE_EFFECTS_KEY
 import com.example.mobile_moviescatalog2023.View.Common.ChooseGenderBox
@@ -33,6 +45,7 @@ import com.example.mobile_moviescatalog2023.View.Common.MyBirthDateTextBox
 import com.example.mobile_moviescatalog2023.View.Common.MyButton
 import com.example.mobile_moviescatalog2023.View.Common.MyTextFieldBox
 import com.example.mobile_moviescatalog2023.View.Common.BottomNavigationBar
+import com.example.mobile_moviescatalog2023.View.Common.FullScreenImageDialog
 import com.example.mobile_moviescatalog2023.View.Common.NetworkErrorScreen
 import com.example.mobile_moviescatalog2023.View.Common.PreviewStateBuilder.profileStatePreview
 import com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.MainScreen.MainScreenContract
@@ -121,13 +134,28 @@ fun ProfileScreenBoxes(
     state: ProfileScreenContract.State,
     onEventSent: (event: ProfileScreenContract.Event) -> Unit,
 ) {
+
+    var dialogVisible by remember { mutableStateOf(false) }
+    val haptic = LocalHapticFeedback.current
+    if (dialogVisible) {
+        if(state.userIconUrl != "" && state.userIconUrl != null) {
+            FullScreenImageDialog(
+                imageUrl = state.userIconUrl,
+                onDismiss = { dialogVisible = false }
+            )
+        } else {
+            haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+            dialogVisible = false
+        }
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState()),
         verticalArrangement = spacedBy(15.dp)
     ) {
-        ProfileBox(state)
+        ProfileBox(state, onImageClicked = { dialogVisible = !dialogVisible})
 
         Column(
             modifier = Modifier
@@ -235,12 +263,8 @@ fun ProfileScreenBoxes(
 
         Text(
             text = stringResource(R.string.logout),
-            style = TextStyle(
-                fontFamily = interFamily,
-                fontWeight = FontWeight.W600,
-                fontSize = 14.sp,
-                color = MaterialTheme.colorScheme.primary,
-            ),
+            style = MyTypography.titleSmall,
+            color = MaterialTheme.colorScheme.primary,
             modifier = Modifier
                 .padding(top = 5.dp, bottom = 5.dp)
                 .clickable {

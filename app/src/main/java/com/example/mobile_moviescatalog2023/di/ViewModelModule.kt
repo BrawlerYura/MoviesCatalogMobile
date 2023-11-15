@@ -37,7 +37,8 @@ val ViewModelModule = module {
             getMyIdUseCase = get(),
             getFilmDetailsUseCase = get(),
             calculateRatingUseCase = get(),
-            handleErrorUseCase = get()
+            handleErrorUseCase = get(),
+            context = androidContext()
         )
     }
     viewModel {
@@ -46,7 +47,8 @@ val ViewModelModule = module {
             fromListToPartsMovieUseCase = get(),
             calculateRatingUseCase = get(),
             getFilmDetailsUseCase = get(),
-            handleErrorUseCase = get()
+            handleErrorUseCase = get(),
+            context = androidContext()
         )
     }
 
@@ -57,7 +59,8 @@ val ViewModelModule = module {
             logoutUseCase = get(),
             formatDateUseCase = get(),
             validationUseCase = get(),
-            handleErrorUseCase = get()
+            handleErrorUseCase = get(),
+            context = androidContext()
         )
     }
 
@@ -72,7 +75,8 @@ val ViewModelModule = module {
             putReviewUseCase = get(),
             formatDateUseCase = get(),
             calculateRatingUseCase = get(),
-            handleErrorUseCase = get()
+            handleErrorUseCase = get(),
+            context = androidContext()
         )
     }
 }

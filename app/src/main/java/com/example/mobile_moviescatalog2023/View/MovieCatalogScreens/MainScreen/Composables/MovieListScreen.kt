@@ -35,6 +35,7 @@ import androidx.compose.ui.unit.sp
 import com.example.mobile_moviescatalog2023.R
 import com.example.mobile_moviescatalog2023.View.Common.PreviewStateBuilder.mainStatePreview
 import com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.MainScreen.MainScreenContract
+import com.example.mobile_moviescatalog2023.ui.theme.MyTypography
 import com.example.mobile_moviescatalog2023.ui.theme.interFamily
 import eu.bambooapps.material3.pullrefresh.PullRefreshIndicator
 import eu.bambooapps.material3.pullrefresh.pullRefresh
@@ -60,12 +61,8 @@ fun MovieListScreen(
             item {
                 Text(
                     text = stringResource(R.string.catalog),
-                    style = TextStyle(
-                        fontFamily = interFamily,
-                        fontWeight = FontWeight.W700,
-                        fontSize = 24.sp,
-                        color = MaterialTheme.colorScheme.onBackground
-                    ),
+                    style = MyTypography.titleLarge,
+                    color = MaterialTheme.colorScheme.onBackground,
                     modifier = Modifier.padding(
                         bottom = 15.dp,
                         top = 16.dp,
@@ -100,7 +97,8 @@ fun MovieListScreen(
 
     if (
         !lazyListState.canScrollForward &&
-        (state.currentMoviePage - 1 < state.pageCount)
+        (state.currentMoviePage - 1 < state.pageCount) &&
+        !state.isUpdatingList
     ) {
         onUpdateListRequested()
     }

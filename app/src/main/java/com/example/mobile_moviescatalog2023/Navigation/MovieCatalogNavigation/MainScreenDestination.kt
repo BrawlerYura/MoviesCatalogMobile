@@ -25,11 +25,17 @@ fun MainScreenDestination(
                 }
 
                 is MainScreenContract.Effect.Navigation.ToFavorite -> {
-                    navController.navigate(Screen.Favorite.route)
+                    navController.navigate(Screen.Favorite.route){
+                        popUpTo(Screen.Favorite.route)
+                        launchSingleTop = true
+                    }
                 }
 
                 is MainScreenContract.Effect.Navigation.ToProfile -> {
-                    navController.navigate(Screen.Profile.route)
+                    navController.navigate(Screen.Profile.route){
+                        popUpTo(Screen.Profile.route)
+                        launchSingleTop = true
+                    }
                 }
 
                 is MainScreenContract.Effect.Navigation.ToIntroducing -> {

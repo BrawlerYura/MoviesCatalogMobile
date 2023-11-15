@@ -62,5 +62,12 @@
     <string name="invalid_password_message">Поле пароля не должно быть пустым</string>
     <string name="passwords_dont_match">Пароли не совпадают</string>
     <string name="retry_button">Попробовать снова</string>
-    <string name="network_error_text">Ошибка интернет соединения</string>
+    <string name="network_error_text">Упс, я не вижу интернет</string>
+    <string name="toast_auth_error">Ошибка авторизации, войдите снова</string>
+    <string name="toast_error">Произошла ошибка</string>
+    <string name="toast_review_input_error">Не удалось сохранить изменения</string>
+    <string name="toast_review_delete_error">Не удалось удалить изменения</string>
+    <string name="toast_review_add_error">Не удалось добавить изменения</string>
+    <string name="toast_fav_add_error">Не удалось добавить в избранное</string>
+    <string name="toast_fav_delete_error">Не удалось удалить из избранных</string>
 </resources>

@@ -1,10 +1,13 @@
 package com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.FilmScreen
 
+import android.content.Context
+import android.widget.Toast
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.lifecycle.viewModelScope
 import com.example.mobile_moviescatalog2023.domain.Entities.Models.MovieDetailsModel
 import com.example.mobile_moviescatalog2023.domain.Entities.Models.ReviewModifyModel
 import com.example.mobile_moviescatalog2023.Network.Network
+import com.example.mobile_moviescatalog2023.R
 import com.example.mobile_moviescatalog2023.View.Base.BaseViewModel
 import com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.ProfileScreen.ProfileScreenContract
 import com.example.mobile_moviescatalog2023.domain.UseCases.CalculateRatingUseCase
@@ -17,6 +20,7 @@ import com.example.mobile_moviescatalog2023.domain.UseCases.MoviesUseCases.GetFi
 import com.example.mobile_moviescatalog2023.domain.UseCases.ReviewUseCases.AddReviewUseCase
 import com.example.mobile_moviescatalog2023.domain.UseCases.ReviewUseCases.DeleteReviewUseCase
 import com.example.mobile_moviescatalog2023.domain.UseCases.ReviewUseCases.PutReviewUseCase
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
@@ -31,7 +35,8 @@ class FilmScreenViewModel(
     private val putReviewUseCase: PutReviewUseCase,
     private val formatDateUseCase: FormatDateUseCase,
     private val calculateRatingUseCase: CalculateRatingUseCase,
-    private val handleErrorUseCase: HandleErrorUseCase
+    private val handleErrorUseCase: HandleErrorUseCase,
+    private val context: Context
 ) : BaseViewModel<FilmScreenContract.Event, FilmScreenContract.State, FilmScreenContract.Effect>() {
     override fun setInitialState() = FilmScreenContract.State(
         isLoaded = false,
@@ -126,6 +131,7 @@ class FilmScreenViewModel(
         }
         loadFilmDetails(id)
     }
+
     private fun loadFilmDetails(id: String) {
         viewModelScope.launch(Dispatchers.Main) {
             getFilmDetailsUseCase.invoke(id).collect { result ->
@@ -145,6 +151,9 @@ class FilmScreenViewModel(
                         onInputError = {},
                         onTokenError = {
                             setEffect { FilmScreenContract.Effect.Navigation.ToIntroducing }
+                            launch(Dispatchers.Main) {
+                                MakeToast(text = context.getString(R.string.toast_auth_error))
+                            }
                         },
                         onOtherError = {
                             setState {
@@ -198,9 +207,14 @@ class FilmScreenViewModel(
                         onInputError = {},
                         onTokenError = {
                             setEffect { FilmScreenContract.Effect.Navigation.ToIntroducing }
+                            launch(Dispatchers.Main) {
+                                MakeToast(text = context.getString(R.string.toast_auth_error))
+                            }
                         },
                         onOtherError = {
-
+                            launch(Dispatchers.Main) {
+                                MakeToast(text = context.getString(R.string.toast_fav_add_error))
+                            }
                         }
                     )
             }
@@ -223,9 +237,14 @@ class FilmScreenViewModel(
                         onInputError = {},
                         onTokenError = {
                             setEffect { FilmScreenContract.Effect.Navigation.ToIntroducing }
+                            launch(Dispatchers.Main) {
+                                MakeToast(text = context.getString(R.string.toast_auth_error))
+                            }
                         },
                         onOtherError = {
-
+                            launch(Dispatchers.Main) {
+                                MakeToast(text = context.getString(R.string.toast_fav_delete_error))
+                            }
                         }
                     )
                 }
@@ -251,9 +270,14 @@ class FilmScreenViewModel(
                     onInputError = {},
                     onTokenError = {
                         setEffect { FilmScreenContract.Effect.Navigation.ToIntroducing }
+                        CoroutineScope(Dispatchers.Main).launch {
+                            MakeToast(text = context.getString(R.string.toast_auth_error))
+                        }
                     },
                     onOtherError = {
-
+                        CoroutineScope(Dispatchers.Main).launch {
+                            MakeToast(text = context.getString(R.string.toast_error))
+                        }
                     }
                 )
             }
@@ -293,12 +317,21 @@ class FilmScreenViewModel(
                 }.onFailure {
                     handleErrorUseCase.handleError(
                         error = it.message,
-                        onInputError = {},
+                        onInputError = {
+                            launch(Dispatchers.Main) {
+                                MakeToast(text = context.getString(R.string.toast_review_delete_error))
+                            }
+                        },
                         onTokenError = {
                             setEffect { FilmScreenContract.Effect.Navigation.ToIntroducing }
+                            launch(Dispatchers.Main) {
+                                MakeToast(text = context.getString(R.string.toast_auth_error))
+                            }
                         },
                         onOtherError = {
-
+                            launch(Dispatchers.Main) {
+                                MakeToast(text = context.getString(R.string.toast_review_delete_error))
+                            }
                         }
                     )
                 }
@@ -311,16 +344,26 @@ class FilmScreenViewModel(
             addReviewUseCase.invoke(reviewModifyModel, filmId).collect { result ->
                 result.onSuccess {
                     loadFilmDetails(filmId)
+                    setState { copy(isWithMyReview = true) }
                 }
                     .onFailure {
                         handleErrorUseCase.handleError(
                             error = it.message,
-                            onInputError = {},
+                            onInputError = {
+                                launch(Dispatchers.Main) {
+                                    MakeToast(text = context.getString(R.string.toast_review_add_error))
+                                }
+                            },
                             onTokenError = {
                                 setEffect { FilmScreenContract.Effect.Navigation.ToIntroducing }
+                                launch(Dispatchers.Main) {
+                                    MakeToast(text = context.getString(R.string.toast_auth_error))
+                                }
                             },
                             onOtherError = {
-
+                                launch(Dispatchers.Main) {
+                                    MakeToast(text = context.getString(R.string.toast_review_add_error))
+                                }
                             }
                         )
                     }
@@ -334,8 +377,42 @@ class FilmScreenViewModel(
         reviewId: String
     ) {
         viewModelScope.launch(Dispatchers.IO) {
-            putReviewUseCase.invoke(reviewModifyModel, filmId, reviewId)
-            loadFilmDetails(filmId)
+            putReviewUseCase.invoke(reviewModifyModel, filmId, reviewId).collect { result ->
+                result.onSuccess {
+                    loadFilmDetails(filmId)
+                }
+                    .onFailure {
+                        handleErrorUseCase.handleError(
+                            error = it.message,
+                            onInputError = {
+                                launch(Dispatchers.Main) {
+                                    MakeToast(text = context.getString(R.string.toast_review_input_error))
+                                }
+                            },
+                            onTokenError = {
+                                setEffect { FilmScreenContract.Effect.Navigation.ToIntroducing }
+                                launch(Dispatchers.Main) {
+                                    MakeToast(text = context.getString(R.string.toast_auth_error))
+                                }
+                            },
+                            onOtherError = {
+                                launch(Dispatchers.Main) {
+                                    MakeToast(text = context.getString(R.string.toast_review_input_error))
+                                }
+                            }
+                        )
+                    }
+            }
         }
+    }
+
+    private fun MakeToast(
+        text: String
+    ) {
+        Toast.makeText(
+            context,
+            text,
+            Toast.LENGTH_SHORT
+        ).show()
     }
 }

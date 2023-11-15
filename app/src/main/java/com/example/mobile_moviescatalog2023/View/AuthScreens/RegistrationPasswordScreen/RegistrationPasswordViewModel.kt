@@ -83,12 +83,19 @@ class RegistrationPasswordViewModel(
                 state.value.repPassword
             )
         ) {
-            setState { copy(isSuccess = false, errorMessage = "Пароли не совпадают") }
+            setState { copy(isSuccess = false, errorMessage = "Пароли не совпадают", isLoading = false) }
             haptic.performHapticFeedback(HapticFeedbackType.LongPress)
         } else {
-
+            val registrationBody = RegisterRequestBody(
+                userName = body.userName,
+                name = body.name,
+                password = state.value.password,
+                email = body.email,
+                birthDate = body.birthDate,
+                gender = body.gender
+            )
             viewModelScope.launch(Dispatchers.IO) {
-                registerUseCase.invoke(body).collect { result ->
+                registerUseCase.invoke(registrationBody).collect { result ->
                     result.onSuccess {
                         TokenManager(context).saveToken(it.token)
                         Network.token = it.token

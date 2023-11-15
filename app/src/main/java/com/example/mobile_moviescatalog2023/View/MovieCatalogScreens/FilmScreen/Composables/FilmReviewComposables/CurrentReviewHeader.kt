@@ -35,6 +35,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
+import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
+import com.bumptech.glide.integration.compose.GlideImage
 import com.example.mobile_moviescatalog2023.domain.Entities.Models.ReviewModel
 import com.example.mobile_moviescatalog2023.domain.Entities.Models.UserShortModel
 import com.example.mobile_moviescatalog2023.R
@@ -44,13 +46,15 @@ import com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.FilmScreen.
 import com.example.mobile_moviescatalog2023.ui.theme.MyTypography
 import com.example.mobile_moviescatalog2023.ui.theme.interFamily
 
+@OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun CurrentReviewHeader(
     it: ReviewModel,
     isMyReview: Boolean,
     state: FilmScreenContract.State,
     onEventSent: (FilmScreenContract.Event) -> Unit,
-    filmId: String
+    filmId: String,
+    onImageClicked: (imageUrl: String?) -> Unit
 ) {
     Box(
         modifier = Modifier.fillMaxWidth()
@@ -58,8 +62,8 @@ fun CurrentReviewHeader(
         Row(
             horizontalArrangement = Arrangement.Absolute.spacedBy(10.dp)
         ) {
-            AsyncImage(
-                model = if((!it.isAnonymous || isMyReview) && it.author != null) {
+            GlideImage(
+                model = if((!it.isAnonymous || (isMyReview && state.isWithMyReview)) && it.author != null) {
                     it.author.avatar ?: R.drawable.logo
                 } else {
                     R.drawable.logo
@@ -67,7 +71,22 @@ fun CurrentReviewHeader(
                 contentDescription = null,
                 modifier = Modifier
                     .size(40.dp)
-                    .clip(CircleShape),
+                    .clip(CircleShape)
+                    .clickable(
+                        onClick = {
+                            onImageClicked(
+                                if(
+                                    (!it.isAnonymous || (isMyReview && state.isWithMyReview))
+                                    && it.author != null
+                                    && it.author.avatar != ""
+                                    ) {
+                                    it.author.avatar
+                                } else {
+                                    null
+                                }
+                            )
+                        }
+                    ),
                 contentScale = ContentScale.Crop
             )
             Box(modifier = Modifier.fillMaxWidth()) {
@@ -79,7 +98,7 @@ fun CurrentReviewHeader(
                         .padding(end = 100.dp)
                 ) {
                     Text(
-                        text = if((!it.isAnonymous || isMyReview) && it.author != null) {
+                        text = if((!it.isAnonymous || (isMyReview && state.isWithMyReview)) && it.author != null) {
                             it.author.nickName ?: ""
                         } else {
                             stringResource(R.string.anonymous_name)
@@ -89,7 +108,7 @@ fun CurrentReviewHeader(
                         textAlign = TextAlign.Start,
                         modifier = Modifier.fillMaxWidth()
                     )
-                    if (isMyReview) {
+                    if (isMyReview && state.isWithMyReview) {
                         Text(
                             text = if (!it.isAnonymous) {
                                 stringResource(R.string.my_review)
@@ -109,7 +128,7 @@ fun CurrentReviewHeader(
                     Box(
                         modifier = Modifier
                             .padding(
-                                end = if (isMyReview) {
+                                end = if (isMyReview && state.isWithMyReview) {
                                     36.dp
                                 } else {
                                     0.dp
@@ -163,7 +182,7 @@ fun CurrentReviewHeader(
                             )
                         }
                     }
-                    if (isMyReview) {
+                    if (isMyReview && state.isWithMyReview) {
                         var showDialog by remember { mutableStateOf(false) }
 
                         ReviewDialog(
@@ -231,6 +250,7 @@ private fun CurrentReviewHeaderPreview() {
         isMyReview = true,
         state = filmScreensPreviewState,
         onEventSent = { },
-        filmId = ""
+        filmId = "",
+        onImageClicked = { }
     )
 }

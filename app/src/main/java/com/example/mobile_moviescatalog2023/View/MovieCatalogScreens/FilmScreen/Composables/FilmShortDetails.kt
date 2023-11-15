@@ -52,12 +52,18 @@ fun FilmShortDetails(
             ) {
                 Text(
                     text = state.currentFilmRating.rating,
-                    style = TextStyle(
-                        fontFamily = interFamily,
-                        fontWeight = FontWeight.W700,
-                        fontSize = 13.sp,
-                        color = Color(0xFF1D1D1D)
-                    ),
+                    style = MyTypography.labelLarge,
+                    color = when (state.currentFilmRating.color) {
+                        Color(0xFFA3CD4A) -> {
+                            Color(0xFF1D1D1D)
+                        }
+                        Color(0xFFFFD54F) -> {
+                            Color(0xFF1D1D1D)
+                        }
+                        else -> {
+                            Color.White
+                        }
+                    },
                     modifier = Modifier.align(Alignment.Center)
                         .padding(horizontal = 14.dp, vertical = 4.dp)
                 )

@@ -33,11 +33,14 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import com.example.mobile_moviescatalog2023.View.Base.SIDE_EFFECTS_KEY
+import com.example.mobile_moviescatalog2023.View.Common.FullScreenImageDialog
 import com.example.mobile_moviescatalog2023.View.Common.NetworkErrorScreen
 import com.example.mobile_moviescatalog2023.View.Common.PreviewStateBuilder.filmScreensPreviewState
 import com.example.mobile_moviescatalog2023.domain.Entities.Models.GenreModel
@@ -115,6 +118,21 @@ fun FilmLoadedScreen(
 
     val showName = remember { mutableStateOf(false) }
 
+    var dialogVisible by remember { mutableStateOf(false) }
+    var avatarUrl: String? by remember { mutableStateOf(null) }
+    val haptic = LocalHapticFeedback.current
+    if (dialogVisible) {
+        if(avatarUrl != "" && avatarUrl != null) {
+            FullScreenImageDialog(
+                imageUrl = avatarUrl!!,
+                onDismiss = { dialogVisible = false }
+            )
+        }else {
+            haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+            dialogVisible = false
+        }
+    }
+
     Scaffold(
         topBar = {
             TopBar(
@@ -158,7 +176,13 @@ fun FilmLoadedScreen(
                 FilmAbout(state.movieDetails)
             }
             item {
-                FilmReviews(state.movieDetails.reviews, state, onEventSent, filmId)
+                FilmReviews(
+                    state.movieDetails.reviews, state, onEventSent, filmId,
+                    onImageClicked = { imageUrl ->
+                        avatarUrl = imageUrl
+                        dialogVisible = !dialogVisible
+                    }
+                )
             }
         }
     }

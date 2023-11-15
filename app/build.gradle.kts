@@ -85,4 +85,5 @@ dependencies {
     implementation("io.coil-kt:coil-compose:2.4.0")
     implementation("javax.inject:javax.inject:1")
     implementation("eu.bambooapps:compose-material3-pullrefresh:1.0.1")
+    implementation("com.github.bumptech.glide:compose:1.0.0-beta01")
 }

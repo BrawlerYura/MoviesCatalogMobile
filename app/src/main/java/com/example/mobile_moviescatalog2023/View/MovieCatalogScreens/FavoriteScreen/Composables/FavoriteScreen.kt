@@ -69,7 +69,10 @@ fun FavoriteScreen(
                 is FavoriteScreenContract.Effect.Navigation.ToProfile -> onNavigationRequested(
                     effect
                 )
-                is FavoriteScreenContract.Effect.Navigation.ToIntroducing -> onNavigationRequested(effect)
+
+                is FavoriteScreenContract.Effect.Navigation.ToIntroducing -> onNavigationRequested(
+                    effect
+                )
             }
         }?.collect()
     }
@@ -82,10 +85,10 @@ fun FavoriteScreen(
                 BottomNavigationBar(
                     onNavigationToMainRequested = {
                         onEventSent(FavoriteScreenContract.Event.NavigationToMain)
-                        },
+                    },
                     onNavigationToProfileRequested = {
                         onEventSent(FavoriteScreenContract.Event.NavigationToProfile)
-                        },
+                    },
                     onNavigationToFavoriteRequested = {
                         coroutineScope.launch {
                             lazyListState.animateScrollToItem(index = 0)
@@ -107,10 +110,16 @@ fun FavoriteScreen(
                     .pullRefresh(refreshState)
             ) {
                 when {
-                    state.isLoaded -> { FavoriteMoviesListScreen(state, onEventSent, lazyListState) }
-                    state.isError -> { NetworkErrorScreen {
-                        onEventSent(FavoriteScreenContract.Event.RefreshScreen)
-                    } }
+                    state.isLoaded -> {
+                        FavoriteMoviesListScreen(state, onEventSent, lazyListState)
+                    }
+
+                    state.isError -> {
+                        NetworkErrorScreen {
+                            onEventSent(FavoriteScreenContract.Event.RefreshScreen)
+                        }
+                    }
+
                     else -> {
                         FavoriteFilmsPlaceholder()
                     }
@@ -157,10 +166,10 @@ fun FavoriteMoviesListScreen(
             }
         }
         if (state.favoriteMovieList?.isEmpty() == false) {
-            itemsIndexed(state.favoriteMovieList) {index, item ->
+            itemsIndexed(state.favoriteMovieList) { index, item ->
                 FavoriteFilmCard(
                     item = item,
-                    firstMyRating=
+                    firstMyRating =
                     try {
                         state.myRating[index * 3]
                     } catch (e: Exception) {
