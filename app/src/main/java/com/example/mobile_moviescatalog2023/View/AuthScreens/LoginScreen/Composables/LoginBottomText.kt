@@ -24,12 +24,12 @@ fun LoginBottomText(onNavigationRequested: () -> Unit) {
         Row(modifier = Modifier.align(Alignment.BottomCenter)) {
             Text(
                 text = stringResource(R.string.no_account_question),
-                style = MyTypography.titleSmall,
+                style = MyTypography.labelLarge,
                 color = MaterialTheme.colorScheme.onBackground
             )
             Text(
                 text = stringResource(R.string.registration_prompt),
-                style = MyTypography.titleSmall,
+                style = MyTypography.labelLarge,
                 color = MaterialTheme.colorScheme.primary,
                 modifier = Modifier.clickable {
                     onNavigationRequested()

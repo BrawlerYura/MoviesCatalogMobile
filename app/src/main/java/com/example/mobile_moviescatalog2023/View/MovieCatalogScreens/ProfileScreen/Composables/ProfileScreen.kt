@@ -64,7 +64,6 @@ fun ProfileScreen(
                 is ProfileScreenContract.Effect.Navigation.ToFavorite -> onNavigationRequested(
                     effect
                 )
-
                 is ProfileScreenContract.Effect.Navigation.ToIntroducing -> onNavigationRequested(
                     effect
                 )

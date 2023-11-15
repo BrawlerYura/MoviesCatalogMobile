@@ -16,7 +16,7 @@ val filmScreensPreviewState = FilmScreenContract.State(
         id = "",
         name = "Тайна кокоё",
         poster = null,
-        year = 0,
+        year = 2007,
         country = "Россия",
         genres = listOf(
             GenreModel(

@@ -12,6 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.mobile_moviescatalog2023.R
@@ -40,8 +41,9 @@ fun ImageWithDescriptionBox() {
         Text(
             text = stringResource(R.string.app_description),
             style = MyTypography.bodyMedium,
+            textAlign = TextAlign.Center,
             color = MaterialTheme.colorScheme.onBackground,
-            modifier = Modifier.padding(top = 8.dp, bottom = 35.dp)
+            modifier = Modifier.padding(top = 8.dp, bottom = 35.dp),
         )
     }
 }

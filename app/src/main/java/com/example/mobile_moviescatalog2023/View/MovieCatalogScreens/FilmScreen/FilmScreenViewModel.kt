@@ -131,7 +131,7 @@ class FilmScreenViewModel(
     }
 
     private fun loadFilmDetails(id: String) {
-        viewModelScope.launch(Dispatchers.Main) {
+        viewModelScope.launch(Dispatchers.IO) {
             getFilmDetailsUseCase.invoke(id).collect { result ->
                 result.onSuccess {
                     checkIfWithMyReview(it)

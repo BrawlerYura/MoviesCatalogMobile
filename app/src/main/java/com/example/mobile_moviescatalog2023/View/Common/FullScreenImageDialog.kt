@@ -3,6 +3,8 @@ package com.example.mobile_moviescatalog2023.View.Common
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
@@ -40,8 +42,15 @@ fun FullScreenImageDialog(
                 modifier = Modifier
                     .align(Alignment.Center)
                     .fillMaxWidth()
-                    .clickable { onDismiss() },
-                contentScale = ContentScale.Fit
+                    .fillMaxHeight(0.55f)
+                    .clickable(
+                        interactionSource = remember { MutableInteractionSource() },
+                        indication = null,
+                        onClick = {
+                            onDismiss()
+                        }
+                    ),
+                contentScale = ContentScale.FillWidth
             )
         }
     }

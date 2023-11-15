@@ -22,5 +22,6 @@ class LogoutUseCase(
         }
         TokenManager(context).deleteToken()
         Network.token = ""
+        Network.userId = ""
     }
 }
