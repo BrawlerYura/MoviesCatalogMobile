@@ -39,32 +39,69 @@ fun FilmSkeletonScreen(
         }
     ) {
         Column(
-            modifier = Modifier.fillMaxSize().padding(it),
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(it),
             verticalArrangement = Arrangement.Absolute.spacedBy(16.dp),
             horizontalAlignment = Alignment.Start
         ) {
-            Box(modifier = Modifier.fillMaxWidth().height(497.dp).shimmerEffect())
+            Box(modifier = Modifier
+                .fillMaxWidth()
+                .height(497.dp)
+                .shimmerEffect())
 
             Box(
-                modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp)
             ) {
-                Box(modifier = Modifier.width(51.dp).height(26.dp).align(Alignment.CenterStart)
-                    .clip(RoundedCornerShape(5.dp)).shimmerEffect())
-                Box(modifier = Modifier.width(120.dp).height(30.dp).align(Alignment.Center)
-                    .clip(RoundedCornerShape(5.dp)).shimmerEffect())
-                Box(modifier = Modifier.width(40.dp).height(40.dp).align(Alignment.CenterEnd)
-                    .clip(CircleShape).shimmerEffect())
+                Box(
+                    modifier = Modifier
+                        .width(51.dp)
+                        .height(26.dp)
+                        .align(Alignment.CenterStart)
+                        .clip(RoundedCornerShape(5.dp))
+                        .shimmerEffect()
+                )
+                Box(
+                    modifier = Modifier
+                        .width(120.dp)
+                        .height(30.dp)
+                        .align(Alignment.Center)
+                        .clip(RoundedCornerShape(5.dp))
+                        .shimmerEffect()
+                )
+                Box(
+                    modifier = Modifier
+                        .width(40.dp)
+                        .height(40.dp)
+                        .align(Alignment.CenterEnd)
+                        .clip(CircleShape)
+                        .shimmerEffect()
+                )
             }
             Column(
-                modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp),
                 verticalArrangement = Arrangement.Absolute.spacedBy(4.dp),
                 horizontalAlignment = Alignment.Start
             ) {
-                Box(modifier = Modifier.fillMaxWidth().height(140.dp)
-                    .clip(RoundedCornerShape(10.dp)).shimmerEffect())
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(140.dp)
+                        .clip(RoundedCornerShape(10.dp))
+                        .shimmerEffect()
+                )
 
-                Box(modifier = Modifier.fillMaxWidth(0.3f).height(20.dp)
-                    .clip(RoundedCornerShape(15.dp)).shimmerEffect())
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth(0.3f)
+                        .height(20.dp)
+                        .clip(RoundedCornerShape(15.dp))
+                        .shimmerEffect()
+                )
             }
         }
     }
@@ -73,7 +110,9 @@ fun FilmSkeletonScreen(
 @Preview(showBackground = true)
 @Composable
 fun FilmSkeletonScreenPreview() {
-    Box(modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)) {
+    Box(modifier = Modifier
+        .fillMaxSize()
+        .background(MaterialTheme.colorScheme.background)) {
         FilmSkeletonScreen(
             state = filmScreensPreviewState,
             onEventSent = { }

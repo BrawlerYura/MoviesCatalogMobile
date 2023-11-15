@@ -9,8 +9,8 @@ import com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.FilmScreen.
 import com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.MainScreen.MainScreenViewModel
 import com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.ProfileScreen.ProfileScreenViewModel
 import org.koin.android.ext.koin.androidContext
-import org.koin.dsl.module
 import org.koin.androidx.viewmodel.dsl.viewModel
+import org.koin.dsl.module
 
 val ViewModelModule = module {
     viewModel { SplashScreenViewModel(checkTokenUseCase = get(), handleErrorUseCase = get()) }

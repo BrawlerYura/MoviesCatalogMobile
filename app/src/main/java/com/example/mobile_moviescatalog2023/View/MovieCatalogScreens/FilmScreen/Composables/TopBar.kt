@@ -8,14 +8,12 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -47,7 +45,10 @@ fun TopBar(
     state: FilmScreenContract.State,
     onEventSent: (FilmScreenContract.Event) -> Unit
 ) {
-    Box(modifier = Modifier.fillMaxWidth().height(48.dp).padding(horizontal = 16.dp)) {
+    Box(modifier = Modifier
+        .fillMaxWidth()
+        .height(48.dp)
+        .padding(horizontal = 16.dp)) {
         var isClickable by remember { mutableStateOf(true) }
 
         IconButton(
@@ -61,17 +62,22 @@ fun TopBar(
                     }
                 }
             },
-            modifier = Modifier.size(20.dp).align(Alignment.CenterStart),
+            modifier = Modifier
+                .size(20.dp)
+                .align(Alignment.CenterStart),
             content = {
                 Icon(
                     painter = painterResource(R.drawable.back_icon),
                     contentDescription = null,
-                    modifier = Modifier.height(12.dp).width(12.dp).align(Alignment.Center),
+                    modifier = Modifier
+                        .height(12.dp)
+                        .width(12.dp)
+                        .align(Alignment.Center),
                     tint = MaterialTheme.colorScheme.onBackground
                 )
             }
         )
-        if(showName) {
+        if (showName) {
             Text(
                 text = state.movieDetails.name ?: "",
                 style = TextStyle(
@@ -83,13 +89,18 @@ fun TopBar(
                 ),
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
-                modifier = Modifier.align(Alignment.Center).fillMaxWidth()
+                modifier = Modifier
+                    .align(Alignment.Center)
+                    .fillMaxWidth()
                     .padding(horizontal = 60.dp)
             )
 
             Box(
-                modifier = Modifier.height(40.dp).width(40.dp)
-                    .clip(CircleShape).align(Alignment.CenterEnd)
+                modifier = Modifier
+                    .height(40.dp)
+                    .width(40.dp)
+                    .clip(CircleShape)
+                    .align(Alignment.CenterEnd)
                     .background(MaterialTheme.colorScheme.surfaceVariant)
                     .clickable {
                         if (state.isMyFavorite) {

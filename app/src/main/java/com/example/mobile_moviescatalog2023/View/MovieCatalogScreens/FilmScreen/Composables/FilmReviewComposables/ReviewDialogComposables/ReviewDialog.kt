@@ -16,19 +16,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.example.mobile_moviescatalog2023.R
 import com.example.mobile_moviescatalog2023.View.Common.PreviewStateBuilder.filmScreensPreviewState
 import com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.FilmScreen.FilmScreenContract
 import com.example.mobile_moviescatalog2023.ui.theme.MyTypography
-import com.example.mobile_moviescatalog2023.ui.theme.interFamily
 
 @Composable
 fun ReviewDialog(
@@ -59,7 +55,9 @@ fun ReviewDialog(
             )
         ) {
             Surface(
-                modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp),
                 shape = RoundedCornerShape(5.dp),
                 color = MaterialTheme.colorScheme.background
             ) {
@@ -70,7 +68,7 @@ fun ReviewDialog(
                     Text(
                         text = stringResource(R.string.make_review),
                         style = MyTypography.titleMedium,
-                        color =  MaterialTheme.colorScheme.onBackground,
+                        color = MaterialTheme.colorScheme.onBackground,
                         textAlign = TextAlign.Center,
                     )
 
@@ -87,7 +85,9 @@ fun ReviewDialog(
                             onEventSent(FilmScreenContract.Event.SaveReviewText(it))
                         },
                         shape = RoundedCornerShape(5.dp),
-                        modifier = Modifier.fillMaxWidth().height(100.dp)
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(100.dp)
                     )
 
                     IsAnonymousCheckBox(state, onEventSent)

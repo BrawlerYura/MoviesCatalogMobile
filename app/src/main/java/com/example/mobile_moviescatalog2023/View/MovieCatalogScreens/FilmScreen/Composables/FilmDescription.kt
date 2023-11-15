@@ -26,14 +26,10 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.example.mobile_moviescatalog2023.R
 import com.example.mobile_moviescatalog2023.ui.theme.MyTypography
-import com.example.mobile_moviescatalog2023.ui.theme.interFamily
 
 @Composable
 fun FilmDescription(
@@ -79,7 +75,8 @@ fun FilmDescription(
                 }
             }
             Row(
-                modifier = Modifier.padding(top = 5.dp, start = 15.dp, end = 15.dp)
+                modifier = Modifier
+                    .padding(top = 5.dp, start = 15.dp, end = 15.dp)
                     .clickable { expanded = !expanded },
                 horizontalArrangement = Arrangement.Absolute.spacedBy(5.dp),
                 verticalAlignment = Alignment.CenterVertically
@@ -98,7 +95,9 @@ fun FilmDescription(
                     Icon(
                         painterResource(R.drawable.arrow_down),
                         null,
-                        modifier = Modifier.width(10.dp).height(10.dp),
+                        modifier = Modifier
+                            .width(10.dp)
+                            .height(10.dp),
                         tint = MaterialTheme.colorScheme.primary
                     )
                 }

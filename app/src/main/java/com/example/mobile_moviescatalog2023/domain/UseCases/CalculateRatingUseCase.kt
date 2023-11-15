@@ -33,7 +33,7 @@ class CalculateRatingUseCase {
     }
 
     fun calculateFilmRatingColor(rating: Double): Color {
-        return  when {
+        return when {
             rating >= 0.0 && rating < 3.0 -> {
                 Color(0xFFE64646)
             }

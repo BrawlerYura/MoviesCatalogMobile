@@ -22,8 +22,8 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.example.mobile_moviescatalog2023.View.Common.MyRatingCard
 import com.example.mobile_moviescatalog2023.View.Common.PreviewStateBuilder.movieElementModel
-import com.example.mobile_moviescatalog2023.domain.Entities.Models.MovieElementModel
 import com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.MainScreen.Composables.FilmRating
+import com.example.mobile_moviescatalog2023.domain.Entities.Models.MovieElementModel
 import com.example.mobile_moviescatalog2023.ui.theme.MyTypography
 
 @Composable
@@ -35,19 +35,21 @@ fun FavoriteMovieCard(
 ) {
     Column(
         verticalArrangement = Arrangement.Absolute.spacedBy(5.dp),
-        modifier = when(index) {
+        modifier = when (index) {
             1 -> {
                 Modifier
                     .clickable { onNavigationRequested(item.id) }
                     .fillMaxWidth(0.5f)
                     .padding(start = 16.dp, end = 7.dp)
             }
+
             2 -> {
                 Modifier
                     .clickable { onNavigationRequested(item.id) }
                     .fillMaxWidth()
                     .padding(start = 7.dp, end = 16.dp)
             }
+
             else -> {
                 Modifier
                     .clickable { onNavigationRequested(item.id) }
@@ -57,16 +59,20 @@ fun FavoriteMovieCard(
         }
     ) {
         Box(
-            modifier = Modifier.fillMaxWidth().height(205.dp)
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(205.dp)
         ) {
             AsyncImage(
                 model = item.poster,
                 contentDescription = null,
-                modifier = Modifier.fillMaxSize().clip(RoundedCornerShape(3.dp)),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .clip(RoundedCornerShape(3.dp)),
                 contentScale = ContentScale.Crop
             )
 
-            if(myRating != null) {
+            if (myRating != null) {
                 MyRatingCard(myRating)
             }
         }
@@ -89,7 +95,7 @@ private fun FirstFavoriteMovieCardPreview() {
         myRating = FilmRating(
             rating = 10.toString(),
             color = Color.Green
-            ),
+        ),
         index = 3
     )
 }

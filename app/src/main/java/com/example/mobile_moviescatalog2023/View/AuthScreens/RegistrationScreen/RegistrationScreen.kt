@@ -16,12 +16,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import com.example.mobile_moviescatalog2023.domain.Entities.RequestBodies.RegisterRequestBody
 import com.example.mobile_moviescatalog2023.R
 import com.example.mobile_moviescatalog2023.View.AuthScreens.LoginScreen.Composables.LoginHeader
 import com.example.mobile_moviescatalog2023.View.AuthScreens.RegistrationPasswordScreen.Composables.BottomRegistrationText
@@ -29,9 +25,9 @@ import com.example.mobile_moviescatalog2023.View.Common.ChooseGenderBox
 import com.example.mobile_moviescatalog2023.View.Common.MyBirthDateTextBox
 import com.example.mobile_moviescatalog2023.View.Common.MyButton
 import com.example.mobile_moviescatalog2023.View.Common.MyTextFieldBox
+import com.example.mobile_moviescatalog2023.domain.Entities.RequestBodies.RegisterRequestBody
 import com.example.mobile_moviescatalog2023.ui.theme.FilmusTheme
 import com.example.mobile_moviescatalog2023.ui.theme.MyTypography
-import com.example.mobile_moviescatalog2023.ui.theme.interFamily
 
 @Composable
 fun RegistrationScreen(
@@ -124,9 +120,9 @@ fun RegistrationScreen(
 
                 MyButton(
                     isEnabled = state.isBirthDateValid == true &&
-                        state.isLoginValid == true &&
-                        state.isEmailValid == true &&
-                        state.isNameValid == true,
+                            state.isLoginValid == true &&
+                            state.isEmailValid == true &&
+                            state.isNameValid == true,
                     onEventSent = {
                         onNavigationRequested(
                             RegistrationContract.Effect.Navigation.NextScreen(

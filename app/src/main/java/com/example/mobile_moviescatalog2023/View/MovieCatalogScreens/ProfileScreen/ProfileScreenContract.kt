@@ -1,7 +1,6 @@
 package com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.ProfileScreen
 
 import androidx.compose.ui.hapticfeedback.HapticFeedback
-import com.example.mobile_moviescatalog2023.View.AuthScreens.RegistrationScreen.RegistrationContract
 import com.example.mobile_moviescatalog2023.View.Base.ViewEvent
 import com.example.mobile_moviescatalog2023.View.Base.ViewSideEffect
 import com.example.mobile_moviescatalog2023.View.Base.ViewState

@@ -1,11 +1,10 @@
 package com.example.mobile_moviescatalog2023.View.AuthScreens.RegistrationPasswordScreen
 
 import androidx.compose.ui.hapticfeedback.HapticFeedback
-import androidx.core.view.HapticFeedbackConstantsCompat.HapticFeedbackType
-import com.example.mobile_moviescatalog2023.domain.Entities.RequestBodies.RegisterRequestBody
 import com.example.mobile_moviescatalog2023.View.Base.ViewEvent
 import com.example.mobile_moviescatalog2023.View.Base.ViewSideEffect
 import com.example.mobile_moviescatalog2023.View.Base.ViewState
+import com.example.mobile_moviescatalog2023.domain.Entities.RequestBodies.RegisterRequestBody
 
 class RegistrationPasswordContract {
 

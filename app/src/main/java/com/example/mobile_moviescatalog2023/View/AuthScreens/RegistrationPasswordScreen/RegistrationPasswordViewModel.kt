@@ -5,9 +5,9 @@ import androidx.compose.ui.hapticfeedback.HapticFeedback
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.lifecycle.viewModelScope
 import com.example.mobile_moviescatalog2023.Network.Network
-import com.example.mobile_moviescatalog2023.domain.Entities.RequestBodies.RegisterRequestBody
 import com.example.mobile_moviescatalog2023.TokenManager.TokenManager
 import com.example.mobile_moviescatalog2023.View.Base.BaseViewModel
+import com.example.mobile_moviescatalog2023.domain.Entities.RequestBodies.RegisterRequestBody
 import com.example.mobile_moviescatalog2023.domain.UseCases.AuthUseCases.RegisterUseCase
 import com.example.mobile_moviescatalog2023.domain.UseCases.HandleErrorUseCase
 import com.example.mobile_moviescatalog2023.domain.UseCases.ValidationUseCase
@@ -70,7 +70,12 @@ class RegistrationPasswordViewModel(
             is RegistrationPasswordContract.Event.SaveRepeatedPasswordEvent -> saveRepeatedPassword(
                 event.repPassword
             )
-            is RegistrationPasswordContract.Event.SignUp -> signUp(haptic = event.haptic, body = event.body)
+
+            is RegistrationPasswordContract.Event.SignUp -> signUp(
+                haptic = event.haptic,
+                body = event.body
+            )
+
             is RegistrationPasswordContract.Event.NavigationToLogin -> setEffect { RegistrationPasswordContract.Effect.Navigation.ToLogin }
             is RegistrationPasswordContract.Event.NavigationBack -> setEffect { RegistrationPasswordContract.Effect.Navigation.Back }
         }
@@ -83,7 +88,13 @@ class RegistrationPasswordViewModel(
                 state.value.repPassword
             )
         ) {
-            setState { copy(isSuccess = false, errorMessage = "Пароли не совпадают", isLoading = false) }
+            setState {
+                copy(
+                    isSuccess = false,
+                    errorMessage = "Пароли не совпадают",
+                    isLoading = false
+                )
+            }
             haptic.performHapticFeedback(HapticFeedbackType.LongPress)
         } else {
             val registrationBody = RegisterRequestBody(

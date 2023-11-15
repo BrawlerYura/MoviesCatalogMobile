@@ -1,15 +1,7 @@
 package com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.MainScreen.Composables
 
-import android.util.Log
-import androidx.compose.foundation.layout.Arrangement.Absolute.spacedBy
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
@@ -19,18 +11,12 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.example.mobile_moviescatalog2023.View.Base.SIDE_EFFECTS_KEY
-import com.example.mobile_moviescatalog2023.domain.Entities.Models.GenreModel
-import com.example.mobile_moviescatalog2023.domain.Entities.Models.MovieElementModel
-import com.example.mobile_moviescatalog2023.domain.Entities.Models.ReviewShortModel
 import com.example.mobile_moviescatalog2023.View.Common.BottomNavigationBar
 import com.example.mobile_moviescatalog2023.View.Common.NetworkErrorScreen
 import com.example.mobile_moviescatalog2023.View.Common.PreviewStateBuilder.mainStatePreview
 import com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.MainScreen.MainScreenContract
 import com.example.mobile_moviescatalog2023.ui.theme.FilmusTheme
-import com.example.mobile_moviescatalog2023.ui.theme.interFamily
 import eu.bambooapps.material3.pullrefresh.PullRefreshIndicator
 import eu.bambooapps.material3.pullrefresh.pullRefresh
 import eu.bambooapps.material3.pullrefresh.rememberPullRefreshState
@@ -54,7 +40,9 @@ fun MainScreen(
                 is MainScreenContract.Effect.Navigation.ToFilm -> onNavigationRequested(effect)
                 is MainScreenContract.Effect.Navigation.ToFavorite -> onNavigationRequested(effect)
                 is MainScreenContract.Effect.Navigation.ToProfile -> onNavigationRequested(effect)
-                is MainScreenContract.Effect.Navigation.ToIntroducing -> onNavigationRequested(effect)
+                is MainScreenContract.Effect.Navigation.ToIntroducing -> onNavigationRequested(
+                    effect
+                )
             }
         }?.collect()
     }
@@ -98,9 +86,11 @@ fun MainScreen(
                             { id -> onEventSent(MainScreenContract.Event.NavigationToFilm(id)) }
                         )
                     }
+
                     state.isError -> {
                         NetworkErrorScreen { onEventSent(MainScreenContract.Event.RefreshMovies) }
                     }
+
                     else -> {
                         MainSkeletonScreen()
                     }

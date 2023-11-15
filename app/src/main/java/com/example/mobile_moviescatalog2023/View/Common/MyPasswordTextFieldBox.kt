@@ -21,7 +21,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -32,8 +31,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.mobile_moviescatalog2023.R
-import com.example.mobile_moviescatalog2023.View.AuthScreens.LoginScreen.Composables.loginStatePreview
-import com.example.mobile_moviescatalog2023.View.AuthScreens.LoginScreen.LoginContract
 import com.example.mobile_moviescatalog2023.ui.theme.MyTypography
 import com.example.mobile_moviescatalog2023.ui.theme.interFamily
 
@@ -47,7 +44,9 @@ fun MyPasswordTextFieldBox(
     errorText: String
 ) {
     Column(
-        modifier = Modifier.fillMaxWidth().padding(bottom = 15.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(bottom = 15.dp),
         horizontalAlignment = Alignment.Start
     ) {
         Text(
@@ -61,7 +60,7 @@ fun MyPasswordTextFieldBox(
         OutlinedTextField(
             value = value,
             keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Password),
-            visualTransformation =  if (isTextHidden) PasswordVisualTransformation() else VisualTransformation.None,
+            visualTransformation = if (isTextHidden) PasswordVisualTransformation() else VisualTransformation.None,
             isError = isError,
             colors = OutlinedTextFieldDefaults.colors(
                 errorContainerColor = Color(0xFFE64646).copy(alpha = 0.1f)
@@ -78,11 +77,14 @@ fun MyPasswordTextFieldBox(
             trailingIcon = {
                 IconButton(onClick = { isTextHidden = !isTextHidden }) {
                     Icon(
-                        imageVector = ImageVector.vectorResource(id =
-                        if (isTextHidden) {
-                            R.drawable.opened_eye}
-                        else {
-                            R.drawable.closed_eye}),
+                        imageVector = ImageVector.vectorResource(
+                            id =
+                            if (isTextHidden) {
+                                R.drawable.opened_eye
+                            } else {
+                                R.drawable.closed_eye
+                            }
+                        ),
                         contentDescription = null,
                         modifier = Modifier.size(24.dp)
                     )
@@ -92,7 +94,7 @@ fun MyPasswordTextFieldBox(
             modifier = Modifier.fillMaxWidth()
         )
 
-        if(isValid) {
+        if (isValid) {
             Text(
                 text = errorText,
                 style = MyTypography.bodySmall,

@@ -1,6 +1,5 @@
 package com.example.mobile_moviescatalog2023.View.AuthScreens.LoginScreen.Composables
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -18,18 +17,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.example.mobile_moviescatalog2023.R
-import com.example.mobile_moviescatalog2023.View.AuthScreens.LoginScreen.LoginContract
 import com.example.mobile_moviescatalog2023.ui.theme.MyTypography
-import com.example.mobile_moviescatalog2023.ui.theme.interFamily
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -56,12 +49,17 @@ fun LoginHeader(onNavigationRequested: () -> Unit) {
                     }
                 }
             },
-            modifier = Modifier.size(20.dp).align(Alignment.CenterStart),
+            modifier = Modifier
+                .size(20.dp)
+                .align(Alignment.CenterStart),
             content = {
                 Icon(
                     painter = painterResource(R.drawable.back_icon),
                     contentDescription = null,
-                    modifier = Modifier.height(12.dp).width(12.dp).align(Alignment.Center),
+                    modifier = Modifier
+                        .height(12.dp)
+                        .width(12.dp)
+                        .align(Alignment.Center),
                     tint = MaterialTheme.colorScheme.onBackground
                 )
             }

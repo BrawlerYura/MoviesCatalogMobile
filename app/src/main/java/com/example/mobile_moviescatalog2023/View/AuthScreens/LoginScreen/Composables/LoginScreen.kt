@@ -19,18 +19,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.hapticfeedback.HapticFeedback
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.example.mobile_moviescatalog2023.R
 import com.example.mobile_moviescatalog2023.View.AuthScreens.LoginScreen.LoginContract
-import com.example.mobile_moviescatalog2023.View.AuthScreens.RegistrationPasswordScreen.RegistrationPasswordContract
-import com.example.mobile_moviescatalog2023.View.AuthScreens.SplashScreen.SplashContract
 import com.example.mobile_moviescatalog2023.View.Base.SIDE_EFFECTS_KEY
 import com.example.mobile_moviescatalog2023.View.Common.MyButton
 import com.example.mobile_moviescatalog2023.View.Common.MyPasswordTextFieldBox
@@ -38,7 +32,6 @@ import com.example.mobile_moviescatalog2023.View.Common.MyTextFieldBox
 import com.example.mobile_moviescatalog2023.View.Common.NetworkErrorScreen
 import com.example.mobile_moviescatalog2023.ui.theme.FilmusTheme
 import com.example.mobile_moviescatalog2023.ui.theme.MyTypography
-import com.example.mobile_moviescatalog2023.ui.theme.interFamily
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
@@ -68,6 +61,7 @@ fun LoginScreen(
                     onEventSent(LoginContract.Event.NavigationBack)
                 }
             }
+
             else -> {
                 LoginScreenInner(state, onEventSent)
             }
@@ -134,7 +128,7 @@ fun LoginScreenInner(
                 contentColor = MaterialTheme.colorScheme.onPrimary
             )
             Spacer(modifier = Modifier.height(20.dp))
-            if(state.isLoading) {
+            if (state.isLoading) {
                 CircularProgressIndicator(
                     modifier = Modifier.width(32.dp),
                     color = MaterialTheme.colorScheme.primary,
@@ -157,7 +151,7 @@ private fun LoginScreenPreview() {
     )
 }
 
-val loginStatePreview = LoginContract.State (
+val loginStatePreview = LoginContract.State(
     login = "my login",
     password = "password",
     isSuccess = null,

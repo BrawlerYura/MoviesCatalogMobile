@@ -7,7 +7,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import androidx.navigation.navigation
 import com.example.mobile_moviescatalog2023.Navigation.Screen
- 
+
 
 fun NavGraphBuilder.NavGraphMovie(
     navController: NavHostController
@@ -38,10 +38,10 @@ fun NavGraphBuilder.NavGraphMovie(
         composable(
             route = Screen.Film.route + "/{id}",
             arguments = listOf(navArgument("id") { type = NavType.StringType })
-        ) {entry ->
+        ) { entry ->
             FilmScreenDestination(
                 navController,
-               entry.arguments?.getString("id") ?: ""
+                entry.arguments?.getString("id") ?: ""
             )
         }
     }

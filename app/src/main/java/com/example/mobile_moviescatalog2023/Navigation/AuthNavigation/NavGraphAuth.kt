@@ -41,7 +41,7 @@ fun NavGraphBuilder.NavGraphAuth(
                 navArgument("birthDate") { type = NavType.StringType },
                 navArgument("gender") { type = NavType.IntType }
             )
-        ) {entry ->
+        ) { entry ->
             val registerRequestBody = RegisterRequestBody(
                 userName = (entry.arguments?.getString("userName") ?: ""),
                 name = (entry.arguments?.getString("name") ?: ""),

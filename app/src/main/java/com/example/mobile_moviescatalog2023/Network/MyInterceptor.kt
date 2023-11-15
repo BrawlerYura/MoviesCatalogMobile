@@ -17,11 +17,11 @@ class MyInterceptor : Interceptor {
 
         var response: Response? = null
 
-        return try{
+        return try {
             response = chain.proceed(request)
-            Log.d("123456", response.message)
+            Log.d("123", response.message)
             response
-        } catch (e: Exception){
+        } catch (e: Exception) {
             response?.close()
             chain.proceed(request)
         }

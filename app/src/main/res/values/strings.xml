@@ -62,7 +62,7 @@
     <string name="invalid_password_message">Поле пароля не должно быть пустым</string>
     <string name="passwords_dont_match">Пароли не совпадают</string>
     <string name="retry_button">Попробовать снова</string>
-    <string name="network_error_text">Упс, я не вижу интернет</string>
+    <string name="network_error_text">Упс, я не вижу интернет(</string>
     <string name="toast_auth_error">Ошибка авторизации, войдите снова</string>
     <string name="toast_error">Произошла ошибка</string>
     <string name="toast_review_input_error">Не удалось сохранить изменения</string>

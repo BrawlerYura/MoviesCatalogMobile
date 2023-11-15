@@ -1,4 +1,5 @@
 package com.example.mobile_moviescatalog2023.ui.theme
+
 import androidx.compose.ui.graphics.Color
 
 val md_theme_dark_primary = Color(0xFFFC315E)

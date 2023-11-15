@@ -1,25 +1,21 @@
 package com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.ProfileScreen
 
 import android.content.Context
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.ui.hapticfeedback.HapticFeedback
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.lifecycle.viewModelScope
 import com.example.mobile_moviescatalog2023.R
-import com.example.mobile_moviescatalog2023.domain.Entities.Models.ProfileModel
 import com.example.mobile_moviescatalog2023.View.Base.BaseViewModel
-import com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.MainScreen.MainScreenContract
-import com.example.mobile_moviescatalog2023.domain.UseCases.FormatDateUseCase
-import com.example.mobile_moviescatalog2023.domain.UseCases.UserUseCases.GetProfileUseCase
+import com.example.mobile_moviescatalog2023.domain.Entities.Models.ProfileModel
 import com.example.mobile_moviescatalog2023.domain.UseCases.AuthUseCases.LogoutUseCase
+import com.example.mobile_moviescatalog2023.domain.UseCases.FormatDateUseCase
 import com.example.mobile_moviescatalog2023.domain.UseCases.HandleErrorUseCase
+import com.example.mobile_moviescatalog2023.domain.UseCases.UserUseCases.GetProfileUseCase
 import com.example.mobile_moviescatalog2023.domain.UseCases.UserUseCases.PutProfileUseCase
 import com.example.mobile_moviescatalog2023.domain.UseCases.ValidationUseCase
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 class ProfileScreenViewModel(

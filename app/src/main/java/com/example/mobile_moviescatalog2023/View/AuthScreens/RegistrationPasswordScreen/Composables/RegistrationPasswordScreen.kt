@@ -23,7 +23,6 @@ import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.mobile_moviescatalog2023.domain.Entities.RequestBodies.RegisterRequestBody
 import com.example.mobile_moviescatalog2023.R
 import com.example.mobile_moviescatalog2023.View.AuthScreens.LoginScreen.Composables.LoginHeader
 import com.example.mobile_moviescatalog2023.View.AuthScreens.RegistrationPasswordScreen.Composables.BottomRegistrationText
@@ -32,6 +31,7 @@ import com.example.mobile_moviescatalog2023.View.Base.SIDE_EFFECTS_KEY
 import com.example.mobile_moviescatalog2023.View.Common.MyButton
 import com.example.mobile_moviescatalog2023.View.Common.MyPasswordTextFieldBox
 import com.example.mobile_moviescatalog2023.View.Common.NetworkErrorScreen
+import com.example.mobile_moviescatalog2023.domain.Entities.RequestBodies.RegisterRequestBody
 import com.example.mobile_moviescatalog2023.ui.theme.FilmusTheme
 import com.example.mobile_moviescatalog2023.ui.theme.MyTypography
 import kotlinx.coroutines.flow.Flow
@@ -70,8 +70,10 @@ fun RegistrationPasswordScreen(
                 NetworkErrorScreen {
                     onEventSent(RegistrationPasswordContract.Event.NavigationBack)
                 }
-            } else -> {
-            RegisterPasswordScreenInner(state, onEventSent, registerRequestBody)
+            }
+
+            else -> {
+                RegisterPasswordScreenInner(state, onEventSent, registerRequestBody)
             }
         }
 

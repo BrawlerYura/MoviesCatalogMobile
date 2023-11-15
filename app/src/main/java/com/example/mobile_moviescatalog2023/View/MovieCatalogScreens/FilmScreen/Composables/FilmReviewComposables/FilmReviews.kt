@@ -9,19 +9,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import com.example.mobile_moviescatalog2023.domain.Entities.Models.ReviewModel
-import com.example.mobile_moviescatalog2023.domain.Entities.Models.UserShortModel
 import com.example.mobile_moviescatalog2023.Network.Network
 import com.example.mobile_moviescatalog2023.View.Common.PreviewStateBuilder.filmScreensPreviewState
 import com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.FilmScreen.FilmScreenContract
+import com.example.mobile_moviescatalog2023.domain.Entities.Models.ReviewModel
+import com.example.mobile_moviescatalog2023.domain.Entities.Models.UserShortModel
 import com.example.mobile_moviescatalog2023.ui.theme.MyTypography
-import com.example.mobile_moviescatalog2023.ui.theme.interFamily
 
 @Composable
 fun FilmReviews(
@@ -42,7 +38,7 @@ fun FilmReviews(
             ) {
                 val isMyReview = remember {
                     mutableStateOf(
-                        if(it.author != null) {
+                        if (it.author != null) {
                             try {
                                 it.author.userId == Network.userId
                             } catch (e: Exception) {
@@ -54,7 +50,14 @@ fun FilmReviews(
                     )
                 }
 
-                CurrentReviewHeader(it, isMyReview.value, state, onEventSent, filmId, onImageClicked)
+                CurrentReviewHeader(
+                    it,
+                    isMyReview.value,
+                    state,
+                    onEventSent,
+                    filmId,
+                    onImageClicked
+                )
 
                 Text(
                     text = it.reviewText ?: "",

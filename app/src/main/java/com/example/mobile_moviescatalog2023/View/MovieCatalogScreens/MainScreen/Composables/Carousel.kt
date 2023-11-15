@@ -28,7 +28,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.example.mobile_moviescatalog2023.R
-import com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.MainScreen.MainScreenContract
 import com.example.mobile_moviescatalog2023.domain.Entities.Models.MovieElementModel
 import kotlinx.coroutines.delay
 
@@ -42,12 +41,12 @@ fun Carousel(
     val pagerState = rememberPagerState(initialPage = 0, pageCount = { movieCarouselList.size })
 
     LaunchedEffect(pagerState) {
-            while (true) {
-                delay(5000)
-                pagerState.animateScrollToPage(
-                    page = (pagerState.currentPage + 1) % 4,
-                    animationSpec = tween(500)
-                )
+        while (true) {
+            delay(5000)
+            pagerState.animateScrollToPage(
+                page = (pagerState.currentPage + 1) % 4,
+                animationSpec = tween(500)
+            )
         }
     }
 
@@ -64,7 +63,8 @@ fun Carousel(
             AsyncImage(
                 model = movieCarouselList[page].poster,
                 contentDescription = null,
-                modifier = Modifier.fillMaxSize()
+                modifier = Modifier
+                    .fillMaxSize()
                     .clickable {
                         onNavigationRequested(movieCarouselList[page].id)
                     },
@@ -87,8 +87,8 @@ fun Carousel(
                     Box(
                         modifier = Modifier
                             .size(8.dp)
-                    ){
-                        if(pagerState.currentPage == pageIndex) {
+                    ) {
+                        if (pagerState.currentPage == pageIndex) {
                             Icon(painterResource(R.drawable.dotactive), contentDescription = null)
                         } else {
                             Icon(painterResource(R.drawable.dotcircle), contentDescription = null)

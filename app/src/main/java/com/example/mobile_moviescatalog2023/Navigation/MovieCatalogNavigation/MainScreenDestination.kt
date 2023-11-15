@@ -6,7 +6,7 @@ import com.example.mobile_moviescatalog2023.Navigation.Screen
 import com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.MainScreen.Composables.MainScreen
 import com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.MainScreen.MainScreenContract
 import com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.MainScreen.MainScreenViewModel
- 
+
 import org.koin.androidx.compose.getViewModel
 
 @Composable
@@ -16,7 +16,7 @@ fun MainScreenDestination(
     val viewModel = getViewModel<MainScreenViewModel>()
     MainScreen(
         state = viewModel.state.value,
-        onEventSent = { event ->  viewModel.setEvent(event) },
+        onEventSent = { event -> viewModel.setEvent(event) },
         effectFlow = viewModel.effect,
         onNavigationRequested = { navigationEffect ->
             when (navigationEffect) {
@@ -25,14 +25,14 @@ fun MainScreenDestination(
                 }
 
                 is MainScreenContract.Effect.Navigation.ToFavorite -> {
-                    navController.navigate(Screen.Favorite.route){
+                    navController.navigate(Screen.Favorite.route) {
                         popUpTo(Screen.Favorite.route)
                         launchSingleTop = true
                     }
                 }
 
                 is MainScreenContract.Effect.Navigation.ToProfile -> {
-                    navController.navigate(Screen.Profile.route){
+                    navController.navigate(Screen.Profile.route) {
                         popUpTo(Screen.Profile.route)
                         launchSingleTop = true
                     }

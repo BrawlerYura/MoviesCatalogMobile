@@ -28,23 +28,18 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import coil.compose.AsyncImage
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
-import com.example.mobile_moviescatalog2023.domain.Entities.Models.ReviewModel
-import com.example.mobile_moviescatalog2023.domain.Entities.Models.UserShortModel
 import com.example.mobile_moviescatalog2023.R
 import com.example.mobile_moviescatalog2023.View.Common.PreviewStateBuilder.filmScreensPreviewState
 import com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.FilmScreen.Composables.FilmReviewComposables.ReviewDialogComposables.ReviewDialog
 import com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.FilmScreen.FilmScreenContract
+import com.example.mobile_moviescatalog2023.domain.Entities.Models.ReviewModel
+import com.example.mobile_moviescatalog2023.domain.Entities.Models.UserShortModel
 import com.example.mobile_moviescatalog2023.ui.theme.MyTypography
-import com.example.mobile_moviescatalog2023.ui.theme.interFamily
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
@@ -63,11 +58,11 @@ fun CurrentReviewHeader(
             horizontalArrangement = Arrangement.Absolute.spacedBy(10.dp)
         ) {
             GlideImage(
-                model = if((!it.isAnonymous || (isMyReview && state.isWithMyReview)) && it.author != null) {
+                model = if ((!it.isAnonymous || (isMyReview && state.isWithMyReview)) && it.author != null) {
                     it.author.avatar ?: R.drawable.logo
                 } else {
                     R.drawable.logo
-                       },
+                },
                 contentDescription = null,
                 modifier = Modifier
                     .size(40.dp)
@@ -75,11 +70,11 @@ fun CurrentReviewHeader(
                     .clickable(
                         onClick = {
                             onImageClicked(
-                                if(
+                                if (
                                     (!it.isAnonymous || (isMyReview && state.isWithMyReview))
                                     && it.author != null
                                     && it.author.avatar != ""
-                                    ) {
+                                ) {
                                     it.author.avatar
                                 } else {
                                     null
@@ -98,11 +93,11 @@ fun CurrentReviewHeader(
                         .padding(end = 100.dp)
                 ) {
                     Text(
-                        text = if((!it.isAnonymous || (isMyReview && state.isWithMyReview)) && it.author != null) {
+                        text = if ((!it.isAnonymous || (isMyReview && state.isWithMyReview)) && it.author != null) {
                             it.author.nickName ?: ""
                         } else {
                             stringResource(R.string.anonymous_name)
-                               },
+                        },
                         style = MyTypography.labelMedium,
                         color = MaterialTheme.colorScheme.onBackground,
                         textAlign = TextAlign.Start,

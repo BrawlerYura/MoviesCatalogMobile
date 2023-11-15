@@ -8,10 +8,10 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.TimeZone
 
-class FormatDateUseCase  {
+class FormatDateUseCase {
 
     fun formatCreateDateTime(movieDetails: MovieDetailsModel): MovieDetailsModel {
-        return MovieDetailsModel (
+        return MovieDetailsModel(
             id = movieDetails.id,
             name = movieDetails.name,
             poster = movieDetails.poster,
@@ -30,13 +30,13 @@ class FormatDateUseCase  {
     }
 
     private fun formatDateInReviews(reviews: List<ReviewModel>?): List<ReviewModel>? {
-        if(reviews == null) {
+        if (reviews == null) {
             return null
         }
         var newReviews: List<ReviewModel> = listOf()
         reviews.forEach {
             newReviews += listOf(
-                ReviewModel (
+                ReviewModel(
                     id = it.id,
                     rating = it.rating,
                     reviewText = it.reviewText,

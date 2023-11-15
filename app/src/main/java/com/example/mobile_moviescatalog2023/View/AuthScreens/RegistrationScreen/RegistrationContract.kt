@@ -1,9 +1,9 @@
 package com.example.mobile_moviescatalog2023.View.AuthScreens.RegistrationScreen
 
-import com.example.mobile_moviescatalog2023.domain.Entities.RequestBodies.RegisterRequestBody
 import com.example.mobile_moviescatalog2023.View.Base.ViewEvent
 import com.example.mobile_moviescatalog2023.View.Base.ViewSideEffect
 import com.example.mobile_moviescatalog2023.View.Base.ViewState
+import com.example.mobile_moviescatalog2023.domain.Entities.RequestBodies.RegisterRequestBody
 
 class RegistrationContract {
 
@@ -21,7 +21,7 @@ class RegistrationContract {
         class SaveBirthDateWithFormatEvent(val birthDate: Long?) : Event()
     }
 
-    data class State (
+    data class State(
         val name: String,
         val gender: Int,
         val login: String,

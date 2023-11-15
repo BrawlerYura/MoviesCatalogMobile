@@ -13,7 +13,7 @@ fun SplashScreenDestination(navController: NavHostController) {
     val viewModel = getViewModel<SplashScreenViewModel>()
     SplashScreen(
         state = viewModel.state.value,
-        onEventSent = { event ->  viewModel.setEvent(event) },
+        onEventSent = { event -> viewModel.setEvent(event) },
         effectFlow = viewModel.effect,
         onNavigationRequested = { navigationEffect ->
             when (navigationEffect) {
@@ -21,6 +21,7 @@ fun SplashScreenDestination(navController: NavHostController) {
                     navController.popBackStack()
                     navController.navigate(Screen.Introducing.route)
                 }
+
                 is SplashContract.Effect.Navigation.ToMain -> {
                     navController.popBackStack()
                     navController.navigate(Screen.Main.route)

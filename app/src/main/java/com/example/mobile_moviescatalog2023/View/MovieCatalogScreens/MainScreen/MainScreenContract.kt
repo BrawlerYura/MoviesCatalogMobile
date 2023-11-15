@@ -1,10 +1,10 @@
 package com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.MainScreen
 
-import com.example.mobile_moviescatalog2023.domain.Entities.Models.MovieElementModel
 import com.example.mobile_moviescatalog2023.View.Base.ViewEvent
 import com.example.mobile_moviescatalog2023.View.Base.ViewSideEffect
 import com.example.mobile_moviescatalog2023.View.Base.ViewState
 import com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.MainScreen.Composables.FilmRating
+import com.example.mobile_moviescatalog2023.domain.Entities.Models.MovieElementModel
 
 class MainScreenContract {
 

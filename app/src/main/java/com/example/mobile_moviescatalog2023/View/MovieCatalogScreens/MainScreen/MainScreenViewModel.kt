@@ -1,7 +1,6 @@
 package com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.MainScreen
 
 import android.content.Context
-import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.viewModelScope
 import com.example.mobile_moviescatalog2023.Network.Network
@@ -16,7 +15,6 @@ import com.example.mobile_moviescatalog2023.domain.UseCases.UserUseCases.GetMyId
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 class MainScreenViewModel(

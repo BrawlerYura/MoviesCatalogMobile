@@ -18,22 +18,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import com.example.mobile_moviescatalog2023.domain.Entities.Models.MovieDetailsModel
-import com.example.mobile_moviescatalog2023.domain.Entities.Models.ReviewModel
-import com.example.mobile_moviescatalog2023.domain.Entities.Models.ReviewShortModel
-import com.example.mobile_moviescatalog2023.domain.Entities.Models.UserShortModel
 import com.example.mobile_moviescatalog2023.R
 import com.example.mobile_moviescatalog2023.View.Common.PreviewStateBuilder.filmScreensPreviewState
 import com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.FilmScreen.FilmScreenContract
-import com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.MainScreen.Composables.FilmRating
 import com.example.mobile_moviescatalog2023.ui.theme.MyTypography
-import com.example.mobile_moviescatalog2023.ui.theme.interFamily
 
 @Composable
 fun FilmShortDetails(
@@ -41,9 +32,11 @@ fun FilmShortDetails(
     onEventSent: (event: FilmScreenContract.Event) -> Unit
 ) {
     Box(
-        modifier = Modifier.fillMaxWidth().padding(top = 15.dp, start = 15.dp, end = 15.dp)
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 15.dp, start = 15.dp, end = 15.dp)
     ) {
-        if(state.currentFilmRating != null) {
+        if (state.currentFilmRating != null) {
             Box(
                 modifier = Modifier
                     .align(Alignment.CenterStart)
@@ -57,14 +50,17 @@ fun FilmShortDetails(
                         Color(0xFFA3CD4A) -> {
                             Color(0xFF1D1D1D)
                         }
+
                         Color(0xFFFFD54F) -> {
                             Color(0xFF1D1D1D)
                         }
+
                         else -> {
                             Color.White
                         }
                     },
-                    modifier = Modifier.align(Alignment.Center)
+                    modifier = Modifier
+                        .align(Alignment.Center)
                         .padding(horizontal = 14.dp, vertical = 4.dp)
                 )
             }
@@ -74,15 +70,21 @@ fun FilmShortDetails(
             style = MyTypography.titleLarge,
             color = MaterialTheme.colorScheme.onBackground,
             textAlign = TextAlign.Center,
-            modifier = Modifier.align(Alignment.Center).fillMaxWidth().padding(horizontal = 60.dp)
+            modifier = Modifier
+                .align(Alignment.Center)
+                .fillMaxWidth()
+                .padding(horizontal = 60.dp)
         )
 
         Box(
-            modifier = Modifier.height(40.dp).width(40.dp)
-                .clip(CircleShape).align(Alignment.CenterEnd)
+            modifier = Modifier
+                .height(40.dp)
+                .width(40.dp)
+                .clip(CircleShape)
+                .align(Alignment.CenterEnd)
                 .background(MaterialTheme.colorScheme.surfaceVariant)
                 .clickable {
-                    if(state.isMyFavorite) {
+                    if (state.isMyFavorite) {
                         onEventSent(FilmScreenContract.Event.DeleteFavorite(state.movieDetails.id))
                     } else {
                         onEventSent(FilmScreenContract.Event.AddToFavorite(state.movieDetails.id))
@@ -90,14 +92,14 @@ fun FilmShortDetails(
                 },
         ) {
             Icon(
-                painter = if(state.isMyFavorite) {
+                painter = if (state.isMyFavorite) {
                     painterResource(R.drawable.heart_enabled)
                 } else {
                     painterResource(R.drawable.heart_disabled)
                 },
                 contentDescription = null,
                 modifier = Modifier.align(Alignment.Center),
-                tint = if(state.isMyFavorite) {
+                tint = if (state.isMyFavorite) {
                     MaterialTheme.colorScheme.primary
                 } else {
                     MaterialTheme.colorScheme.onBackground
@@ -106,7 +108,6 @@ fun FilmShortDetails(
         }
     }
 }
-
 
 
 @Preview(showBackground = true)

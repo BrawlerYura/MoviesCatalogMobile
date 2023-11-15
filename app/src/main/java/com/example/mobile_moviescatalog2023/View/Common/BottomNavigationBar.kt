@@ -13,7 +13,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.mobile_moviescatalog2023.R
- 
+
 
 @Composable
 fun BottomNavigationBar(
@@ -23,9 +23,9 @@ fun BottomNavigationBar(
     currentScreen: Int
 ) {
     val screens = listOf(
-            "home",
-            "favorite",
-            "profile"
+        "home",
+        "favorite",
+        "profile"
     )
     Box(
         modifier = Modifier
@@ -41,45 +41,56 @@ fun BottomNavigationBar(
                     onClick = {
                         when (index) {
                             0 -> {
-                                    onNavigationToMainRequested()
-                                }
+                                onNavigationToMainRequested()
+                            }
 
                             1 -> {
-                                    onNavigationToFavoriteRequested()
-                                }
+                                onNavigationToFavoriteRequested()
+                            }
 
                             else -> {
-                                    onNavigationToProfileRequested()
-                                }
+                                onNavigationToProfileRequested()
+                            }
                         }
                     },
                     icon = {
-                        when(index) {
+                        when (index) {
                             0 -> {
                                 Icon(
                                     painter = painterResource(R.drawable.ic_home_enabled),
                                     contentDescription = item,
                                     tint =
-                                    if(index == currentScreen) { Color(0xFFFC315E) }
-                                    else { Color(0xFF909499) }
+                                    if (index == currentScreen) {
+                                        Color(0xFFFC315E)
+                                    } else {
+                                        Color(0xFF909499)
+                                    }
                                 )
                             }
+
                             1 -> {
                                 Icon(
                                     painter = painterResource(R.drawable.ic_favorite_enabled),
                                     contentDescription = item,
                                     tint =
-                                    if(index == currentScreen) { Color(0xFFFC315E) }
-                                    else { Color(0xFF909499) }
+                                    if (index == currentScreen) {
+                                        Color(0xFFFC315E)
+                                    } else {
+                                        Color(0xFF909499)
+                                    }
                                 )
                             }
+
                             else -> {
                                 Icon(
                                     painter = painterResource(R.drawable.ic_profile_enabled),
                                     contentDescription = item,
                                     tint =
-                                    if(index == currentScreen) { Color(0xFFFC315E) }
-                                    else { Color(0xFF909499) }
+                                    if (index == currentScreen) {
+                                        Color(0xFFFC315E)
+                                    } else {
+                                        Color(0xFF909499)
+                                    }
                                 )
                             }
                         }

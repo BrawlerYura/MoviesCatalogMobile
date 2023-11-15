@@ -8,7 +8,7 @@ import com.example.mobile_moviescatalog2023.domain.Entities.Models.MovieDetailsM
 import com.example.mobile_moviescatalog2023.domain.Entities.Models.ReviewModel
 import com.example.mobile_moviescatalog2023.domain.Entities.Models.UserShortModel
 
-val filmScreensPreviewState = FilmScreenContract.State (
+val filmScreensPreviewState = FilmScreenContract.State(
     isLoaded = true,
     isError = false,
     isRefreshing = false,

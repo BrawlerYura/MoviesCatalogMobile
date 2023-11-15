@@ -6,9 +6,9 @@ import androidx.compose.ui.hapticfeedback.HapticFeedback
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.lifecycle.viewModelScope
 import com.example.mobile_moviescatalog2023.Network.Network
-import com.example.mobile_moviescatalog2023.domain.Entities.RequestBodies.LoginRequestBody
 import com.example.mobile_moviescatalog2023.TokenManager.TokenManager
 import com.example.mobile_moviescatalog2023.View.Base.BaseViewModel
+import com.example.mobile_moviescatalog2023.domain.Entities.RequestBodies.LoginRequestBody
 import com.example.mobile_moviescatalog2023.domain.UseCases.AuthUseCases.LoginUseCase
 import com.example.mobile_moviescatalog2023.domain.UseCases.HandleErrorUseCase
 import com.example.mobile_moviescatalog2023.domain.UseCases.ValidationUseCase

@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
@@ -15,23 +14,19 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import com.example.mobile_moviescatalog2023.domain.Entities.Models.GenreModel
 import com.example.mobile_moviescatalog2023.R
+import com.example.mobile_moviescatalog2023.domain.Entities.Models.GenreModel
 import com.example.mobile_moviescatalog2023.ui.theme.MyTypography
-import com.example.mobile_moviescatalog2023.ui.theme.interFamily
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun FilmGenres(
     movieGenres: List<GenreModel>?
 ) {
-    if(movieGenres != null) {
+    if (movieGenres != null) {
         Column(
             modifier = Modifier.padding(start = 15.dp, end = 15.dp, top = 20.dp),
             verticalArrangement = Arrangement.Absolute.spacedBy(10.dp)

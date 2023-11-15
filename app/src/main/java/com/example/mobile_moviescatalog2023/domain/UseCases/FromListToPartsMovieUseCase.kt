@@ -6,10 +6,10 @@ import com.example.mobile_moviescatalog2023.domain.Entities.Models.ThreeFavorite
 class FromListToPartsMovieUseCase {
     fun fromListToPartsMovies(movies: List<MovieElementModel>?): List<ThreeFavoriteMovies>? {
         val listFavoriteMovies: MutableList<ThreeFavoriteMovies> = mutableListOf()
-        return if(movies != null) {
+        return if (movies != null) {
             var index = 0
-            while(index < movies.count()) {
-                val threeFavoriteMovies = when(movies.count() - index) {
+            while (index < movies.count()) {
+                val threeFavoriteMovies = when (movies.count() - index) {
                     2 -> {
                         ThreeFavoriteMovies(
                             firstMovie = movies[index],
@@ -17,6 +17,7 @@ class FromListToPartsMovieUseCase {
                             thirdMovie = null
                         )
                     }
+
                     1 -> {
                         ThreeFavoriteMovies(
                             firstMovie = null,
@@ -24,6 +25,7 @@ class FromListToPartsMovieUseCase {
                             thirdMovie = movies[index]
                         )
                     }
+
                     else -> {
                         ThreeFavoriteMovies(
                             firstMovie = movies[index],

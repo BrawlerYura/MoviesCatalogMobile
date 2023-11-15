@@ -24,7 +24,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.mobile_moviescatalog2023.R
-import com.example.mobile_moviescatalog2023.View.AuthScreens.RegistrationScreen.RegistrationContract
 import com.example.mobile_moviescatalog2023.ui.theme.MyTypography
 import com.example.mobile_moviescatalog2023.ui.theme.interFamily
 
@@ -39,7 +38,9 @@ fun MyBirthDateTextBox(
 ) {
     val openDialog = remember { mutableStateOf(false) }
     Column(
-        modifier = Modifier.fillMaxWidth().padding(bottom = 20.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(bottom = 20.dp),
         horizontalAlignment = Alignment.Start
     ) {
         Text(
@@ -86,7 +87,7 @@ fun MyBirthDateTextBox(
             modifier = Modifier.fillMaxWidth()
         )
 
-        if(isValid) {
+        if (isValid) {
             Text(
                 text = stringResource(R.string.invalid_birth_date_message),
                 style = TextStyle(

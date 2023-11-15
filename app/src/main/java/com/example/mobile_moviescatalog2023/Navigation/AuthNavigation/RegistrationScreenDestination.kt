@@ -13,7 +13,7 @@ fun RegistratinoScreenDestination(navController: NavHostController) {
     val viewModel = getViewModel<RegistrationViewModel>()
     RegistrationScreen(
         state = viewModel.state.value,
-        onEventSent = { event ->  viewModel.setEvent(event) },
+        onEventSent = { event -> viewModel.setEvent(event) },
         onNavigationRequested = { navigationEffect ->
             when (navigationEffect) {
                 is RegistrationContract.Effect.Navigation.NextScreen -> {

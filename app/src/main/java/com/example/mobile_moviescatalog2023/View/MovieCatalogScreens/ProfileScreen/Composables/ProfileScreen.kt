@@ -1,9 +1,5 @@
 package com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.ProfileScreen.Composables
 
-import android.content.Context
-import android.graphics.Bitmap
-import android.graphics.drawable.Drawable
-import androidx.compose.animation.core.Transition
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement.Absolute.spacedBy
 import androidx.compose.foundation.layout.Box
@@ -28,31 +24,23 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import com.bumptech.glide.Glide
-import com.bumptech.glide.request.target.CustomTarget
 import com.example.mobile_moviescatalog2023.R
 import com.example.mobile_moviescatalog2023.View.Base.SIDE_EFFECTS_KEY
+import com.example.mobile_moviescatalog2023.View.Common.BottomNavigationBar
 import com.example.mobile_moviescatalog2023.View.Common.ChooseGenderBox
+import com.example.mobile_moviescatalog2023.View.Common.FullScreenImageDialog
 import com.example.mobile_moviescatalog2023.View.Common.MyBirthDateTextBox
 import com.example.mobile_moviescatalog2023.View.Common.MyButton
 import com.example.mobile_moviescatalog2023.View.Common.MyTextFieldBox
-import com.example.mobile_moviescatalog2023.View.Common.BottomNavigationBar
-import com.example.mobile_moviescatalog2023.View.Common.FullScreenImageDialog
 import com.example.mobile_moviescatalog2023.View.Common.NetworkErrorScreen
 import com.example.mobile_moviescatalog2023.View.Common.PreviewStateBuilder.profileStatePreview
-import com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.MainScreen.MainScreenContract
 import com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.ProfileScreen.ProfileScreenContract
 import com.example.mobile_moviescatalog2023.ui.theme.FilmusTheme
 import com.example.mobile_moviescatalog2023.ui.theme.MyTypography
-import com.example.mobile_moviescatalog2023.ui.theme.interFamily
 import eu.bambooapps.material3.pullrefresh.PullRefreshIndicator
 import eu.bambooapps.material3.pullrefresh.pullRefresh
 import eu.bambooapps.material3.pullrefresh.rememberPullRefreshState
@@ -73,8 +61,13 @@ fun ProfileScreen(
         effectFlow?.onEach { effect ->
             when (effect) {
                 is ProfileScreenContract.Effect.Navigation.ToMain -> onNavigationRequested(effect)
-                is ProfileScreenContract.Effect.Navigation.ToFavorite -> onNavigationRequested(effect)
-                is ProfileScreenContract.Effect.Navigation.ToIntroducing -> onNavigationRequested(effect)
+                is ProfileScreenContract.Effect.Navigation.ToFavorite -> onNavigationRequested(
+                    effect
+                )
+
+                is ProfileScreenContract.Effect.Navigation.ToIntroducing -> onNavigationRequested(
+                    effect
+                )
             }
         }?.collect()
     }
@@ -98,21 +91,24 @@ fun ProfileScreen(
                     onEventSent(ProfileScreenContract.Event.RefreshScreen)
                 }
             )
-            Box(modifier = Modifier
-                .fillMaxSize()
-                .pullRefresh(refreshState)
-                .padding(it)
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .pullRefresh(refreshState)
+                    .padding(it)
             ) {
 
                 when {
                     state.isLoaded -> {
                         ProfileScreenBoxes(state, onEventSent)
                     }
+
                     state.isError -> {
                         NetworkErrorScreen {
                             onEventSent(ProfileScreenContract.Event.RefreshScreen)
                         }
                     }
+
                     else -> {
                         MainSkeletonScreen()
                     }
@@ -138,7 +134,7 @@ fun ProfileScreenBoxes(
     var dialogVisible by remember { mutableStateOf(false) }
     val haptic = LocalHapticFeedback.current
     if (dialogVisible) {
-        if(state.userIconUrl != "" && state.userIconUrl != null) {
+        if (state.userIconUrl != "" && state.userIconUrl != null) {
             FullScreenImageDialog(
                 imageUrl = state.userIconUrl,
                 onDismiss = { dialogVisible = false }
@@ -155,7 +151,7 @@ fun ProfileScreenBoxes(
             .verticalScroll(rememberScrollState()),
         verticalArrangement = spacedBy(15.dp)
     ) {
-        ProfileBox(state, onImageClicked = { dialogVisible = !dialogVisible})
+        ProfileBox(state, onImageClicked = { dialogVisible = !dialogVisible })
 
         Column(
             modifier = Modifier
@@ -227,7 +223,7 @@ fun ProfileScreenBoxes(
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp)
         ) {
-            if(!state.isSuccess) {
+            if (!state.isSuccess) {
                 Text(
                     text = state.errorMessage ?: "",
                     style = MyTypography.bodySmall,

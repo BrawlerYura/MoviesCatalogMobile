@@ -1,7 +1,5 @@
 package com.example.mobile_moviescatalog2023.View.Common.PreviewStateBuilder
 
-import androidx.compose.ui.graphics.Color
-import com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.MainScreen.Composables.FilmRating
 import com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.MainScreen.MainScreenContract
 import com.example.mobile_moviescatalog2023.domain.Entities.Models.GenreModel
 import com.example.mobile_moviescatalog2023.domain.Entities.Models.MovieElementModel
@@ -39,7 +37,7 @@ private val mainMovieElementModel =
         reviews = reviews,
     )
 
-val mainStatePreview = MainScreenContract.State (
+val mainStatePreview = MainScreenContract.State(
     currentMoviePage = 1,
     movieList = listOf(
         mainMovieElementModel,
@@ -51,7 +49,7 @@ val mainStatePreview = MainScreenContract.State (
     ),
     isError = true,
     pageCount = 1,
-    isUpdatingList = true,
+    isUpdatingList = false,
     myRating = listOf(),
     filmRatingsList = listOf(),
     isLoaded = true,

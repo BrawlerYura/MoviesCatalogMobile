@@ -23,10 +23,10 @@ fun RatingBox(
         horizontalArrangement = Arrangement.SpaceBetween,
         modifier = Modifier.fillMaxWidth()
     ) {
-        for(i in 1..10) {
+        for (i in 1..10) {
             Icon(
                 painter = painterResource(
-                    if(i <= state.myRating){
+                    if (i <= state.myRating) {
                         R.drawable.raiting_star_enabled
                     } else {
                         R.drawable.raiting_star_disabled
@@ -37,7 +37,7 @@ fun RatingBox(
                     onEventSent(FilmScreenContract.Event.SaveReviewRating(i))
                 },
                 tint =
-                if(i <= state.myRating){
+                if (i <= state.myRating) {
                     Color(0xFFFFD54F)
                 } else {
                     Color(0xFF909499)

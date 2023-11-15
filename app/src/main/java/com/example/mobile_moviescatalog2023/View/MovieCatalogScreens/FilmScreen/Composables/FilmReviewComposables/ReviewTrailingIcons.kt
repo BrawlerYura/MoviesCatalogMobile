@@ -24,20 +24,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import com.example.mobile_moviescatalog2023.domain.Entities.Models.ReviewModel
-import com.example.mobile_moviescatalog2023.domain.Entities.Models.UserShortModel
 import com.example.mobile_moviescatalog2023.R
 import com.example.mobile_moviescatalog2023.View.Common.PreviewStateBuilder.filmScreensPreviewState
 import com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.FilmScreen.Composables.FilmReviewComposables.ReviewDialogComposables.ReviewDialog
 import com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.FilmScreen.FilmScreenContract
+import com.example.mobile_moviescatalog2023.domain.Entities.Models.ReviewModel
+import com.example.mobile_moviescatalog2023.domain.Entities.Models.UserShortModel
 import com.example.mobile_moviescatalog2023.ui.theme.MyTypography
-import com.example.mobile_moviescatalog2023.ui.theme.interFamily
 
 @Composable
 fun ReviewTrailingIcons(
@@ -126,7 +122,8 @@ fun ReviewTrailingIcons(
 
             Box(
                 modifier = Modifier
-                    .height(26.dp).width(26.dp)
+                    .height(26.dp)
+                    .width(26.dp)
                     .clip(CircleShape)
                     .background(MaterialTheme.colorScheme.onSurface)
                     .align(Alignment.TopEnd)

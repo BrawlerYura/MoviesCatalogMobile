@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -23,23 +22,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
-import com.example.mobile_moviescatalog2023.R
 import com.example.mobile_moviescatalog2023.View.Common.MyRatingCard
 import com.example.mobile_moviescatalog2023.View.Common.PreviewStateBuilder.mainStatePreview
 import com.example.mobile_moviescatalog2023.View.Common.PreviewStateBuilder.movieElementModel
 import com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.MainScreen.MainScreenContract
-import com.example.mobile_moviescatalog2023.domain.Entities.Models.GenreModel
 import com.example.mobile_moviescatalog2023.domain.Entities.Models.MovieElementModel
-import com.example.mobile_moviescatalog2023.domain.Entities.Models.ReviewShortModel
-import com.example.mobile_moviescatalog2023.ui.theme.MyTypography
 import com.example.mobile_moviescatalog2023.ui.theme.interFamily
 
 @OptIn(ExperimentalLayoutApi::class)
@@ -68,20 +61,25 @@ fun FilmCard(
 
     Row(
         modifier = Modifier
-            .padding(bottom = 16.dp, start = 16.dp, end = 16.dp).fillMaxWidth()
+            .padding(bottom = 16.dp, start = 16.dp, end = 16.dp)
+            .fillMaxWidth()
             .clickable {
                 onNavigationRequested(item.id)
             }
     ) {
-        Box(modifier = Modifier.width(95.dp).height(130.dp)) {
+        Box(modifier = Modifier
+            .width(95.dp)
+            .height(130.dp)) {
             AsyncImage(
                 model = item.poster,
                 contentDescription = null,
-                modifier = Modifier.fillMaxWidth().clip(RoundedCornerShape(3.dp)),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(3.dp)),
                 contentScale = ContentScale.Crop
             )
 
-            if(filmRating != null) {
+            if (filmRating != null) {
                 Box(
                     modifier = Modifier
                         .padding(2.dp)
@@ -97,7 +95,8 @@ fun FilmCard(
                             fontSize = 13.sp,
                             color = Color(0xFF1D1D1D)
                         ),
-                        modifier = Modifier.align(Alignment.Center)
+                        modifier = Modifier
+                            .align(Alignment.Center)
                             .padding(horizontal = 8.dp, vertical = 2.dp)
                     )
                 }
@@ -108,7 +107,9 @@ fun FilmCard(
             horizontalAlignment = Alignment.Start
         ) {
             Box(
-                modifier = Modifier.padding(bottom = 4.dp).fillMaxWidth()
+                modifier = Modifier
+                    .padding(bottom = 4.dp)
+                    .fillMaxWidth()
             ) {
                 Text(
                     text = item.name ?: "",
@@ -118,15 +119,17 @@ fun FilmCard(
                         fontSize = 16.sp,
                         color = MaterialTheme.colorScheme.onBackground
                     ),
-                    modifier = Modifier.align(Alignment.TopStart).padding(
-                        end = if(myRating != null) {
-                            50.dp
-                        } else {
-                            0.dp
-                        }
-                    )
+                    modifier = Modifier
+                        .align(Alignment.TopStart)
+                        .padding(
+                            end = if (myRating != null) {
+                                50.dp
+                            } else {
+                                0.dp
+                            }
+                        )
                 )
-                if(myRating != null) {
+                if (myRating != null) {
                     MyRatingCard(myRating)
                 }
             }
@@ -168,7 +171,8 @@ fun FilmCard(
         }
     }
 }
-data class FilmRating (
+
+data class FilmRating(
     val rating: String,
     val color: Color
 )
@@ -177,7 +181,7 @@ data class FilmRating (
 @Composable
 private fun FilmCardPreview() {
     FilmCard(
-        item =  movieElementModel,
+        item = movieElementModel,
         index = 0,
         state = mainStatePreview,
         onNavigationRequested = { }

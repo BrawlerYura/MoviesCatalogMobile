@@ -2,14 +2,12 @@ package com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.FilmScreen
 
 import android.content.Context
 import android.widget.Toast
-import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.lifecycle.viewModelScope
-import com.example.mobile_moviescatalog2023.domain.Entities.Models.MovieDetailsModel
-import com.example.mobile_moviescatalog2023.domain.Entities.Models.ReviewModifyModel
 import com.example.mobile_moviescatalog2023.Network.Network
 import com.example.mobile_moviescatalog2023.R
 import com.example.mobile_moviescatalog2023.View.Base.BaseViewModel
-import com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.ProfileScreen.ProfileScreenContract
+import com.example.mobile_moviescatalog2023.domain.Entities.Models.MovieDetailsModel
+import com.example.mobile_moviescatalog2023.domain.Entities.Models.ReviewModifyModel
 import com.example.mobile_moviescatalog2023.domain.UseCases.CalculateRatingUseCase
 import com.example.mobile_moviescatalog2023.domain.UseCases.FavoriteMoviesUseCases.AddToFavoriteUseCase
 import com.example.mobile_moviescatalog2023.domain.UseCases.FavoriteMoviesUseCases.DeleteFavoriteMovieUseCase
@@ -22,7 +20,6 @@ import com.example.mobile_moviescatalog2023.domain.UseCases.ReviewUseCases.Delet
 import com.example.mobile_moviescatalog2023.domain.UseCases.ReviewUseCases.PutReviewUseCase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 class FilmScreenViewModel(
@@ -91,6 +88,7 @@ class FilmScreenViewModel(
 
             is FilmScreenContract.Event.SaveIsAnonymous ->
                 saveIsAnonymous(isAnonymous = event.isAnonymous)
+
             is FilmScreenContract.Event.NavigationBack -> setEffect {
                 FilmScreenContract.Effect.Navigation.Back
             }
@@ -136,8 +134,8 @@ class FilmScreenViewModel(
         viewModelScope.launch(Dispatchers.Main) {
             getFilmDetailsUseCase.invoke(id).collect { result ->
                 result.onSuccess {
-                checkIfWithMyReview(it)
-                checkIfFavorite(id = it.id)
+                    checkIfWithMyReview(it)
+                    checkIfFavorite(id = it.id)
                     setState {
                         copy(
                             isLoaded = true,
@@ -145,7 +143,7 @@ class FilmScreenViewModel(
                             currentFilmRating = calculateRatingUseCase.calculateFilmRating(it.reviews)
                         )
                     }
-            }.onFailure {
+                }.onFailure {
                     handleErrorUseCase.handleError(
                         error = it.message,
                         onInputError = {},
@@ -164,9 +162,9 @@ class FilmScreenViewModel(
                             }
                         }
                     )
+                }
             }
-            }
-            setState {copy(isRefreshing = false)}
+            setState { copy(isRefreshing = false) }
         }
     }
 
@@ -196,12 +194,12 @@ class FilmScreenViewModel(
         viewModelScope.launch(Dispatchers.IO) {
             addToFavoriteUseCase.invoke(id).collect { result ->
                 result.onSuccess {
-                setState {
-                    copy(
-                        isMyFavorite = true
-                    )
-                }
-            }.onFailure {
+                    setState {
+                        copy(
+                            isMyFavorite = true
+                        )
+                    }
+                }.onFailure {
                     handleErrorUseCase.handleError(
                         error = it.message,
                         onInputError = {},
@@ -217,7 +215,7 @@ class FilmScreenViewModel(
                             }
                         }
                     )
-            }
+                }
             }
         }
     }

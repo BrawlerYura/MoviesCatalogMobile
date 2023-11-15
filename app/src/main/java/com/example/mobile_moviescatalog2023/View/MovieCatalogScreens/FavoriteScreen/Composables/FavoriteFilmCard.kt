@@ -10,9 +10,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.mobile_moviescatalog2023.View.Common.PreviewStateBuilder.movieElementModel
 import com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.MainScreen.Composables.FilmRating
-import com.example.mobile_moviescatalog2023.domain.Entities.Models.GenreModel
-import com.example.mobile_moviescatalog2023.domain.Entities.Models.MovieElementModel
-import com.example.mobile_moviescatalog2023.domain.Entities.Models.ReviewShortModel
 import com.example.mobile_moviescatalog2023.domain.Entities.Models.ThreeFavoriteMovies
 
 @Composable
@@ -27,7 +24,7 @@ fun FavoriteFilmCard(
         modifier = Modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.Absolute.spacedBy(20.dp)
     ) {
-        if(item.firstMovie != null) {
+        if (item.firstMovie != null) {
             Row(
                 modifier = Modifier.fillMaxWidth()
             ) {
@@ -52,9 +49,11 @@ fun FavoriteFilmCard(
                 item = item.thirdMovie,
                 onNavigationRequested = onNavigationRequested,
                 myRating =
-                if(item.firstMovie == null && item.secondMovie == null) {
+                if (item.firstMovie == null && item.secondMovie == null) {
                     firstMyRating
-                } else { thirdMyRating },
+                } else {
+                    thirdMyRating
+                },
                 index = 3
             )
         }

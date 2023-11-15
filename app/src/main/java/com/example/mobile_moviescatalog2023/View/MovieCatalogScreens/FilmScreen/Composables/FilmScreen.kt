@@ -1,22 +1,10 @@
 package com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.FilmScreen.Composables
 
-import androidx.compose.animation.core.animateFloat
-import androidx.compose.animation.core.infiniteRepeatable
-import androidx.compose.animation.core.rememberInfiniteTransition
-import androidx.compose.animation.core.tween
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -28,29 +16,15 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.composed
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
-import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.IntSize
-import androidx.compose.ui.unit.dp
 import com.example.mobile_moviescatalog2023.View.Base.SIDE_EFFECTS_KEY
 import com.example.mobile_moviescatalog2023.View.Common.FullScreenImageDialog
 import com.example.mobile_moviescatalog2023.View.Common.NetworkErrorScreen
 import com.example.mobile_moviescatalog2023.View.Common.PreviewStateBuilder.filmScreensPreviewState
-import com.example.mobile_moviescatalog2023.domain.Entities.Models.GenreModel
-import com.example.mobile_moviescatalog2023.domain.Entities.Models.MovieDetailsModel
-import com.example.mobile_moviescatalog2023.domain.Entities.Models.ReviewModel
-import com.example.mobile_moviescatalog2023.domain.Entities.Models.UserShortModel
 import com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.FilmScreen.Composables.FilmReviewComposables.FilmReviews
 import com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.FilmScreen.FilmScreenContract
-import com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.MainScreen.Composables.FilmRating
-import com.example.mobile_moviescatalog2023.View.MovieCatalogScreens.MainScreen.MainScreenContract
 import com.example.mobile_moviescatalog2023.ui.theme.FilmusTheme
 import eu.bambooapps.material3.pullrefresh.PullRefreshIndicator
 import eu.bambooapps.material3.pullrefresh.pullRefresh
@@ -73,7 +47,9 @@ fun FilmScreen(
         effectFlow?.onEach { effect ->
             when (effect) {
                 is FilmScreenContract.Effect.Navigation.Back -> onNavigationRequested(effect)
-                is FilmScreenContract.Effect.Navigation.ToIntroducing -> onNavigationRequested(effect)
+                is FilmScreenContract.Effect.Navigation.ToIntroducing -> onNavigationRequested(
+                    effect
+                )
             }
         }?.collect()
     }
@@ -85,7 +61,9 @@ fun FilmScreen(
     )
 
     FilmusTheme {
-        Box(modifier = Modifier.fillMaxSize().pullRefresh(refreshState)) {
+        Box(modifier = Modifier
+            .fillMaxSize()
+            .pullRefresh(refreshState)) {
             when {
                 state.isLoaded -> {
                     FilmLoadedScreen(state, onEventSent, filmId)
@@ -122,12 +100,12 @@ fun FilmLoadedScreen(
     var avatarUrl: String? by remember { mutableStateOf(null) }
     val haptic = LocalHapticFeedback.current
     if (dialogVisible) {
-        if(avatarUrl != "" && avatarUrl != null) {
+        if (avatarUrl != "" && avatarUrl != null) {
             FullScreenImageDialog(
                 imageUrl = avatarUrl!!,
                 onDismiss = { dialogVisible = false }
             )
-        }else {
+        } else {
             haptic.performHapticFeedback(HapticFeedbackType.LongPress)
             dialogVisible = false
         }

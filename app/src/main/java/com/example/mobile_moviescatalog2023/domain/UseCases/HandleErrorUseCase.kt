@@ -10,13 +10,15 @@ class HandleErrorUseCase {
         onOtherError: () -> Unit
     ) {
         Log.e("sasa", error ?: "")
-        when(error?.split(" ")?.get(1)) {
+        when (error?.split(" ")?.get(1)) {
             "401" -> {
                 onTokenError()
             }
+
             "400" -> {
                 onInputError()
             }
+
             else -> {
                 onOtherError()
             }
