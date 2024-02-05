@@ -13,7 +13,6 @@
     <string name="login_prompt">Войдите</string>
     <string name="repeat_password">Повторите пароль</string>
 
-
     <string name="name_label">Имя</string>
     <string name="gender_label">Пол</string>
     <string name="email_label">Электронная почта</string>
@@ -22,4 +21,53 @@
     <string name="password_label">Пароль</string>
     <string name="male">Мужчина</string>
     <string name="female">Женщина</string>
+
+    <string name="catalog">Каталог</string>
+    <string name="save">Сохранить</string>
+    <string name="refuse">Отмена</string>
+    <string name="url_to_profile_icon">Ссылка на аватар</string>
+    <string name="ok">Ок</string>
+    <string name="logout">Выйти из аккаунта</string>
+    <string name="favorite">Любимое</string>
+
+    <string name="no_favorite_movies">У вас пока нет любимых фильмов</string>
+    <string name="choose_favorite_film">Выберите понравившийся фильм в каталоге и добавьте его в любимые</string>
+
+    <string name="anonymous_check_box">Анонимный отзыв</string>
+    <string name="anonymous_name">Аноним</string>
+    <string name="make_review">Оставить отзыв</string>
+    <string name="reviews">Отзывы</string>
+    <string name="my_review">мой отзыв</string>
+    <string name="my_anonymous_review">мой анонимный отзыв</string>
+    <string name="delete">Удалить</string>
+    <string name="edit">Редактировать</string>
+    <string name="minutes">мин.</string>
+    <string name="time">Время</string>
+    <string name="age">Возраст</string>
+    <string name="fees">Сборы в мире</string>
+    <string name="budget">Бюджет</string>
+    <string name="director">Режиссёр</string>
+    <string name="tagline">Слоган</string>
+    <string name="country">Страна</string>
+    <string name="year">Год</string>
+    <string name="about_film">О фильме</string>
+    <string name="genres">Жанры</string>
+    <string name="more">Подробнее</string>
+    <string name="hide">Скрыть</string>
+
+    <string name="invalid_birth_date_message">Неверный формат даты</string>
+    <string name="invalid_login_message">Поле логина не должно быть пустым</string>
+    <string name="invalid_name_message">Поле имени не должно быть пустым</string>
+    <string name="invalid_email_message">Неверная почта</string>
+    <string name="invalid_password_message">Поле пароля не должно быть пустым</string>
+    <string name="passwords_dont_match">Пароли не совпадают</string>
+    <string name="retry_button">Попробовать снова</string>
+    <string name="network_error_text">Упс, я не вижу интернет(</string>
+    <string name="toast_auth_error">Ошибка авторизации, войдите снова</string>
+    <string name="toast_error">Произошла ошибка</string>
+    <string name="toast_review_input_error">Не удалось сохранить изменения</string>
+    <string name="toast_review_delete_error">Не удалось удалить изменения</string>
+    <string name="toast_review_add_error">Не удалось добавить изменения</string>
+    <string name="toast_fav_add_error">Не удалось добавить в избранное</string>
+    <string name="toast_fav_delete_error">Не удалось удалить из избранных</string>
 </resources>

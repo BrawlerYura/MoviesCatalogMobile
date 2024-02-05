@@ -23,22 +23,51 @@ val interFamily = FontFamily(
 
 // Set of Material typography styles to start with
 val MyTypography = Typography(
+    titleLarge = TextStyle(
+        fontFamily = interFamily,
+        fontWeight = FontWeight.W700,
+        fontSize = 23.sp
+    ),
     titleMedium = TextStyle(
         fontFamily = interFamily,
-        fontWeight = FontWeight.W600,
-        fontSize = 17.sp
+        fontWeight = FontWeight.W700,
+        fontSize = 20.sp
     ),
     titleSmall = TextStyle(
         fontFamily = interFamily,
         fontWeight = FontWeight.W600,
         fontSize = 15.sp
     ),
-    labelMedium = TextStyle(
+    bodyLarge = TextStyle(
+        fontFamily = interFamily,
+        fontWeight = FontWeight.W600,
+        fontSize = 17.sp
+    ),
+    bodyMedium = TextStyle(
+        fontFamily = interFamily,
+        fontWeight = FontWeight.W400,
+        fontSize = 15.sp
+    ),
+    bodySmall = TextStyle(
+        fontFamily = interFamily,
+        fontWeight = FontWeight.W400,
+        fontSize = 14.sp
+    ),
+    labelLarge = TextStyle(
         fontFamily = interFamily,
         fontWeight = FontWeight.W500,
         fontSize = 15.sp
     ),
-
-    )
+    labelMedium = TextStyle(
+        fontFamily = interFamily,
+        fontWeight = FontWeight.W500,
+        fontSize = 14.sp
+    ),
+    labelSmall = TextStyle(
+        fontFamily = interFamily,
+        fontWeight = FontWeight.W500,
+        fontSize = 12.sp
+    ),
+)
 
 

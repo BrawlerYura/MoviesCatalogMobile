@@ -1,4 +1,5 @@
 package com.example.mobile_moviescatalog2023.ui.theme
+
 import androidx.compose.ui.graphics.Color
 
 val md_theme_dark_primary = Color(0xFFFC315E)
@@ -13,7 +14,7 @@ val md_theme_dark_tertiary = Color(0xFFE8C08E)
 val md_theme_dark_onTertiary = Color(0xFF432C06)
 val md_theme_dark_tertiaryContainer = Color(0xFF5D421B)
 val md_theme_dark_onTertiaryContainer = Color(0xFFFFDDB5)
-val md_theme_dark_error = Color(0xFFFFB4AB)
+val md_theme_dark_error = Color(0xFFE64646)
 val md_theme_dark_errorContainer = Color(0xFF93000A)
 val md_theme_dark_onError = Color(0xFF690005)
 val md_theme_dark_onErrorContainer = Color(0xFFFFDAD6)
@@ -28,5 +29,5 @@ val md_theme_dark_outlineVariant = Color(0xFF524344)
 val md_theme_dark_scrim = Color(0xFF000000)
 val md_theme_dark_surface = Color(0xFF292929)
 val md_theme_dark_onSurface = Color(0xFF909499)
-val md_theme_dark_surfaceVariant = Color(0xFF524344)
+val md_theme_dark_surfaceVariant = Color(0xFF404040)
 val md_theme_dark_onSurfaceVariant = Color(0xFF909499)
